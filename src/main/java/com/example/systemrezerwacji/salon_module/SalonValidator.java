@@ -43,31 +43,53 @@ class SalonValidator {
     private  void validateName(String name) {
         if(name == null) {
             errors.add(EMPTY_NAME);
+            return;
         }
+        if(name.length() <= 3) {
+            errors.add(SHORT_NAME);
+        }
+
     }
     private  void validateCategory(String category) {
         if(category == null) {
             errors.add(EMPTY_CATEGORY);
+            return;
+        }
+        if(category.length() <= 3) {
+            errors.add(SHORT_CATEGORY);
         }
     }
     private void validateCity(String city) {
         if(city == null) {
             errors.add(EMPTY_CITY);
+            return;
+        }
+        if(!city.matches("^[a-zA-Z\\s]+$")) {
+            errors.add(FORBIDDEN_CHARACTERS_IN_CITY);
         }
     }
     private void validateZipCode(String zipCode) {
         if(zipCode == null) {
             errors.add(EMPTY_ZIP_CODE);
+            return;
+        }
+        if(!zipCode.matches("\\d{2}-\\d{3}")) {
+            errors.add(INCORRECT_ZIP_CODE);
         }
     }
     private void validateStreet(String street) {
         if(street == null) {
             errors.add(EMPTY_STREET);
+            return;
+        }
+        if(!street.matches("^[a-zA-Z\\s]+$")) {
+            errors.add(FORBIDDEN_CHARACTERS_IN_STREET);
         }
     }
     private void validateNumber(String number) {
         if(number == null) {
             errors.add(EMPTY_NUMBER);
+            return;
         }
     }
 
