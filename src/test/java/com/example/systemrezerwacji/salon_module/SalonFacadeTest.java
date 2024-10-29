@@ -1,19 +1,31 @@
 package com.example.systemrezerwacji.salon_module;
 
+import com.example.systemrezerwacji.salon_module.dto.SalonDto;
 import com.example.systemrezerwacji.salon_module.dto.SalonFacadeDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import static com.example.systemrezerwacji.salon_module.SalonValidationResult.*;
 import static com.example.systemrezerwacji.salon_module.ValidationError.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SalonFacadeTest {
+    @Mock
+    private SalonValidator validator;
+
+    @Mock
+    private SalonService salonService;
+
+    @InjectMocks
     private SalonFacade salonFacade;
 
     @BeforeEach
     void init() {
-        salonFacade = new SalonFacade();
+        MockitoAnnotations.openMocks(this);
     }
 
 
@@ -27,8 +39,12 @@ class SalonFacadeTest {
         String street = "Kopernika";
         String number = "37a";
 
+        SalonValidationResult validationResult = new SalonValidationResult(SUCCESS_MESSAGE);
+        Mockito.when(validator.validate(Mockito.any(SalonDto.class))).thenReturn(validationResult);
+
+
         //When
-        SalonFacadeDto result = salonFacade.createNewSalon(name, category, city, zipCode, street, number);
+        SalonFacadeDto result = salonFacade.createNewSalon(new SalonDto(name, category, city, zipCode, street, number));
         //Then
         assertThat(result.message()).isEqualTo(SUCCESS_MESSAGE);
     }
@@ -43,8 +59,12 @@ class SalonFacadeTest {
         String street = "Kopernika";
         String number = "37a";
 
+
+        SalonValidationResult validationResult = new SalonValidationResult(EMPTY_NAME.message);
+        Mockito.when(validator.validate(Mockito.any(SalonDto.class))).thenReturn(validationResult);
+
         //When
-        SalonFacadeDto result = salonFacade.createNewSalon(name, category, city, zipCode, street, number);
+        SalonFacadeDto result = salonFacade.createNewSalon(new SalonDto(name, category, city, zipCode, street, number));
         //Then
         assertThat(result.message()).isEqualTo(EMPTY_NAME.message);
     }
@@ -59,8 +79,11 @@ class SalonFacadeTest {
         String street = "Kopernika";
         String number = "37a";
 
+
+        SalonValidationResult validationResult = new SalonValidationResult(EMPTY_CATEGORY.message);
+        Mockito.when(validator.validate(Mockito.any(SalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeDto result = salonFacade.createNewSalon(name, category, city, zipCode, street, number);
+        SalonFacadeDto result = salonFacade.createNewSalon(new SalonDto(name, category, city, zipCode, street, number));
         //Then
         assertThat(result.message()).isEqualTo(EMPTY_CATEGORY.message);
 
@@ -75,8 +98,10 @@ class SalonFacadeTest {
         String street = "Kopernika";
         String number = "37a";
 
+        SalonValidationResult validationResult = new SalonValidationResult(EMPTY_CITY.message);
+        Mockito.when(validator.validate(Mockito.any(SalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeDto result = salonFacade.createNewSalon(name, category, city, zipCode, street, number);
+        SalonFacadeDto result = salonFacade.createNewSalon(new SalonDto(name, category, city, zipCode, street, number));
         //Then
         assertThat(result.message()).isEqualTo(EMPTY_CITY.message);
 
@@ -91,8 +116,11 @@ class SalonFacadeTest {
         String street = "Kopernika";
         String number = "37a";
 
+        SalonValidationResult validationResult = new SalonValidationResult(EMPTY_ZIP_CODE.message);
+        Mockito.when(validator.validate(Mockito.any(SalonDto.class))).thenReturn(validationResult);
+
         //When
-        SalonFacadeDto result = salonFacade.createNewSalon(name, category, city, zipCode, street, number);
+        SalonFacadeDto result = salonFacade.createNewSalon(new SalonDto(name, category, city, zipCode, street, number));
         //Then
         assertThat(result.message()).isEqualTo(EMPTY_ZIP_CODE.message);
 
@@ -107,8 +135,10 @@ class SalonFacadeTest {
         String street = null;
         String number = "37a";
 
+        SalonValidationResult validationResult = new SalonValidationResult(EMPTY_STREET.message);
+        Mockito.when(validator.validate(Mockito.any(SalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeDto result = salonFacade.createNewSalon(name, category, city, zipCode, street, number);
+        SalonFacadeDto result = salonFacade.createNewSalon(new SalonDto(name, category, city, zipCode, street, number));
         //Then
         assertThat(result.message()).isEqualTo(EMPTY_STREET.message);
 
@@ -123,8 +153,10 @@ class SalonFacadeTest {
         String street = "Kopernika";
         String number = null;
 
+        SalonValidationResult validationResult = new SalonValidationResult(EMPTY_NUMBER.message);
+        Mockito.when(validator.validate(Mockito.any(SalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeDto result = salonFacade.createNewSalon(name, category, city, zipCode, street, number);
+        SalonFacadeDto result = salonFacade.createNewSalon(new SalonDto(name, category, city, zipCode, street, number));
         //Then
         assertThat(result.message()).isEqualTo(EMPTY_NUMBER.message);
     }
@@ -139,8 +171,10 @@ class SalonFacadeTest {
         String street = "Kopernika";
         String number = null;
 
+        SalonValidationResult validationResult = new SalonValidationResult(EMPTY_NAME.message + " " + EMPTY_NUMBER.message);
+        Mockito.when(validator.validate(Mockito.any(SalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeDto result = salonFacade.createNewSalon(name, category, city, zipCode, street, number);
+        SalonFacadeDto result = salonFacade.createNewSalon(new SalonDto(name, category, city, zipCode, street, number));
         //Then
         assertThat(result.message()).contains(EMPTY_NAME.message);
         assertThat(result.message()).contains(EMPTY_NUMBER.message);
@@ -156,8 +190,10 @@ class SalonFacadeTest {
         String street = "Kopernika";
         String number = "57 a";
 
+        SalonValidationResult validationResult = new SalonValidationResult(SHORT_NAME.message);
+        Mockito.when(validator.validate(Mockito.any(SalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeDto result = salonFacade.createNewSalon(name, category, city, zipCode, street, number);
+        SalonFacadeDto result = salonFacade.createNewSalon(new SalonDto(name, category, city, zipCode, street, number));
         //Then
         assertThat(result.message()).isEqualTo(SHORT_NAME.message);
     }
@@ -172,8 +208,10 @@ class SalonFacadeTest {
         String street = "Kopernika";
         String number = "57 a";
 
+        SalonValidationResult validationResult = new SalonValidationResult(SHORT_CATEGORY.message);
+        Mockito.when(validator.validate(Mockito.any(SalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeDto result = salonFacade.createNewSalon(name, category, city, zipCode, street, number);
+        SalonFacadeDto result = salonFacade.createNewSalon(new SalonDto(name, category, city, zipCode, street, number));
         //Then
         assertThat(result.message()).isEqualTo(SHORT_CATEGORY.message);
     }
@@ -188,8 +226,10 @@ class SalonFacadeTest {
         String street = "Kopernika";
         String number = "57 a";
 
+        SalonValidationResult validationResult = new SalonValidationResult(FORBIDDEN_CHARACTERS_IN_CITY.message);
+        Mockito.when(validator.validate(Mockito.any(SalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeDto result = salonFacade.createNewSalon(name, category, city, zipCode, street, number);
+        SalonFacadeDto result = salonFacade.createNewSalon(new SalonDto(name, category, city, zipCode, street, number));
         //Then
         assertThat(result.message()).isEqualTo(FORBIDDEN_CHARACTERS_IN_CITY.message);
     }
@@ -204,8 +244,10 @@ class SalonFacadeTest {
         String street = "Kopernika";
         String number = "57 a";
 
+        SalonValidationResult validationResult = new SalonValidationResult(INCORRECT_ZIP_CODE.message);
+        Mockito.when(validator.validate(Mockito.any(SalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeDto result = salonFacade.createNewSalon(name, category, city, zipCode, street, number);
+        SalonFacadeDto result = salonFacade.createNewSalon(new SalonDto(name, category, city, zipCode, street, number));
         //Then
         assertThat(result.message()).isEqualTo(INCORRECT_ZIP_CODE.message);
     }
@@ -220,8 +262,10 @@ class SalonFacadeTest {
         String street = "K0pe*n1ka";
         String number = "57 a";
 
+        SalonValidationResult validationResult = new SalonValidationResult(FORBIDDEN_CHARACTERS_IN_STREET.message);
+        Mockito.when(validator.validate(Mockito.any(SalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeDto result = salonFacade.createNewSalon(name, category, city, zipCode, street, number);
+        SalonFacadeDto result = salonFacade.createNewSalon(new SalonDto(name, category, city, zipCode, street, number));
         //Then
         assertThat(result.message()).isEqualTo(FORBIDDEN_CHARACTERS_IN_STREET.message);
     }

@@ -1,0 +1,38 @@
+name: reservations
+
+services:
+  mysql:
+    image: mysql:8.0.0
+    container_name: mysql
+    environment:
+      - "MYSQL_ROOT_PASSWORD=hard"
+      - "MYSQL_DATABASE=reservations"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqldb:/var/lib/mysql
+    healthcheck:
+      test: mysqladmin ping --protocol tcp
+      interval: 5s
+      timeout: 1s
+      retries: 5
+      start_period: 15s
+    restart: always
+
+  application:
+    build: .
+    image: system/reservations:1.0
+    container_name: reservations
+    ports:
+      - "8080:8080"
+    environment:
+      - "SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/reservations"
+      - "SPRING_DATASOURCE_USERNAME=root"
+      - "SPRING_DATASOURCE_PASSWORD=hard"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: always
+
+volumes:
+  mysqldb:

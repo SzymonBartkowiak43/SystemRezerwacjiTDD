@@ -1,4 +1,6 @@
 package com.example.systemrezerwacji.salon_module.dto;
 
-public record SalonFacadeDto(String message) {
+import jakarta.annotation.Nullable;
+
+public record SalonFacadeDto(String message, @Nullable Long salonId) {
 }

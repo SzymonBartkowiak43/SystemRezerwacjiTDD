@@ -1,32 +1,32 @@
 package com.example.systemrezerwacji.salon_module;
 
-import java.util.LinkedList;
+import com.example.systemrezerwacji.salon_module.dto.SalonDto;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.example.systemrezerwacji.salon_module.ValidationError.*;
 import static com.example.systemrezerwacji.salon_module.SalonValidationResult.*;
 
-
+@Component
 class SalonValidator {
 
     private static final String ERROR_DELIMITER = ",";
-    private List<ValidationError> errors = new LinkedList<>();
+    private List<ValidationError> errors;
 
 
-    SalonValidationResult validate(String name,
-                                   String category,
-                                   String city,
-                                   String zipCode,
-                                   String street,
-                                   String number) {
+    SalonValidationResult validate(SalonDto salonDto) {
 
-        validateName(name);
-        validateCategory(category);
-        validateCity(city);
-        validateZipCode(zipCode);
-        validateStreet(street);
-        validateNumber(number);
+        errors = new ArrayList<>();
+
+        validateName(salonDto.salonName());
+        validateCategory(salonDto.category());
+        validateCity(salonDto.city());
+        validateZipCode(salonDto.zipCode());
+        validateStreet(salonDto.street());
+        validateNumber(salonDto.number());
 
 
         if(errors.isEmpty()) {

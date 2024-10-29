@@ -1,18 +1,28 @@
 package com.example.systemrezerwacji.salon_module;
 
-public class Salon {
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Getter;
+
+@Entity
+@Getter
+class Salon {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private final String name;
-    private final String category;
-    private final String city;
-    private final String zipCode;
-    private final String street;
-    private final String number;
+    private String salonName;
+    private String category;
+    private String city;
+    private String zipCode;
+    private String street;
+    private String number;
 
 
     private Salon(SalonBuilder salonServiceBuilder) {
-        id = 1L;
-        this.name = salonServiceBuilder.name;
+        this.salonName = salonServiceBuilder.name;
         this.category = salonServiceBuilder.category;
         this.city = salonServiceBuilder.city;
         this.zipCode = salonServiceBuilder.zipCode;
@@ -20,9 +30,12 @@ public class Salon {
         this.number = salonServiceBuilder.number;
     }
 
+    public Salon() {
+
+    }
+
 
     static class SalonBuilder {
-        SalonValidator salonValidator = new SalonValidator();
         private String name;
         private String category;
         private String city;
