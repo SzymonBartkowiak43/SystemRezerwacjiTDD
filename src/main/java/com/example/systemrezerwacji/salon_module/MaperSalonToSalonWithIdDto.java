@@ -18,7 +18,8 @@ class MaperSalonToSalonWithIdDto {
                 salon.getCity(),
                 salon.getZipCode(),
                 salon.getStreet(),
-                salon.getNumber()
+                salon.getNumber(),
+                salon.getUserid().toString()
         );
     }
 }

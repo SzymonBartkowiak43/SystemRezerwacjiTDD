@@ -1,6 +1,6 @@
 package com.example.systemrezerwacji.salon_module;
 
-import com.example.systemrezerwacji.salon_module.dto.SalonDto;
+import com.example.systemrezerwacji.salon_module.dto.SalonRegisterDto;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,10 +14,10 @@ import static com.example.systemrezerwacji.salon_module.SalonValidationResult.*;
 class SalonValidator {
 
     private static final String ERROR_DELIMITER = ",";
-    private List<ValidationError> errors;
+    List<ValidationError> errors;
 
 
-    SalonValidationResult validate(SalonDto salonDto) {
+    SalonValidationResult validate(SalonRegisterDto salonDto) {
 
         errors = new ArrayList<>();
 
@@ -40,7 +40,7 @@ class SalonValidator {
 
     }
 
-    private  void validateName(String name) {
+    void validateName(String name) {
         if(name == null) {
             errors.add(EMPTY_NAME);
             return;
@@ -50,7 +50,7 @@ class SalonValidator {
         }
 
     }
-    private  void validateCategory(String category) {
+    void validateCategory(String category) {
         if(category == null) {
             errors.add(EMPTY_CATEGORY);
             return;
@@ -59,7 +59,7 @@ class SalonValidator {
             errors.add(SHORT_CATEGORY);
         }
     }
-    private void validateCity(String city) {
+    void validateCity(String city) {
         if(city == null) {
             errors.add(EMPTY_CITY);
             return;
@@ -68,7 +68,7 @@ class SalonValidator {
             errors.add(FORBIDDEN_CHARACTERS_IN_CITY);
         }
     }
-    private void validateZipCode(String zipCode) {
+    void validateZipCode(String zipCode) {
         if(zipCode == null) {
             errors.add(EMPTY_ZIP_CODE);
             return;
@@ -77,7 +77,7 @@ class SalonValidator {
             errors.add(INCORRECT_ZIP_CODE);
         }
     }
-    private void validateStreet(String street) {
+    void validateStreet(String street) {
         if(street == null) {
             errors.add(EMPTY_STREET);
             return;
@@ -86,7 +86,7 @@ class SalonValidator {
             errors.add(FORBIDDEN_CHARACTERS_IN_STREET);
         }
     }
-    private void validateNumber(String number) {
+    void validateNumber(String number) {
         if(number == null) {
             errors.add(EMPTY_NUMBER);
             return;

@@ -1,12 +1,3 @@
-CREATE TABLE salon (
-    id bigint auto_increment primary key,
-    salon_name varchar(250),
-    category varchar(250),
-    city varchar(250),
-    zip_code varchar(10),
-    street varchar(250),
-    number varchar(220)
-);
 
 CREATE TABLE users (
                        id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -27,4 +18,16 @@ CREATE TABLE  user_roles (
                              PRIMARY KEY (user_id, role_id),
                              FOREIGN KEY (user_id) REFERENCES users(id),
                              FOREIGN KEY (role_id) REFERENCES user_role(id)
+);
+
+CREATE TABLE salon (
+                       id bigint auto_increment primary key,
+                       salon_name varchar(250),
+                       category varchar(250),
+                       city varchar(250),
+                       zip_code varchar(10),
+                       street varchar(250),
+                       number varchar(220),
+                       user_id BIGINT,
+                       FOREIGN KEY (user_id) REFERENCES users(id)
 );

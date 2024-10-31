@@ -1,15 +1,16 @@
 package com.example.systemrezerwacji.salon_module;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.systemrezerwacji.user_module.User;
+import jakarta.persistence.*;
 import lombok.Getter;
+
+import java.util.Optional;
+
 
 @Entity
 @Getter
-class Salon {
+public class Salon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,6 +21,10 @@ class Salon {
     private String street;
     private String number;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
 
     private Salon(SalonBuilder salonServiceBuilder) {
         this.salonName = salonServiceBuilder.name;
@@ -28,10 +33,14 @@ class Salon {
         this.zipCode = salonServiceBuilder.zipCode;
         this.street = salonServiceBuilder.street;
         this.number = salonServiceBuilder.number;
+        this.user = salonServiceBuilder.user;
     }
 
     public Salon() {
 
+    }
+    Long getUserid() {
+        return user.getId();
     }
 
 
@@ -42,6 +51,7 @@ class Salon {
         private String zipCode;
         private String street;
         private String number;
+        private User user;
 
         SalonBuilder addName(String name) {
             this.name = name;
@@ -70,6 +80,11 @@ class Salon {
 
         SalonBuilder addNumber(String number) {
             this.number = number;
+            return this;
+        }
+
+        SalonBuilder addUser(Optional<User> user) {
+            this.user = user.orElseThrow(() -> new IllegalArgumentException("User must be present"));
             return this;
         }
 

@@ -1,4 +1,4 @@
-package com.example.systemrezerwacji.controllers;
+package com.example.systemrezerwacji.rest_controllers;
 
 
 import com.example.systemrezerwacji.user_module.UserFacade;

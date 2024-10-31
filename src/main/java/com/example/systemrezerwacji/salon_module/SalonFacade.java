@@ -1,8 +1,10 @@
 package com.example.systemrezerwacji.salon_module;
 
-import com.example.systemrezerwacji.salon_module.dto.SalonDto;
+import com.example.systemrezerwacji.salon_module.dto.SalonRegisterDto;
 import com.example.systemrezerwacji.salon_module.dto.SalonFacadeDto;
 import com.example.systemrezerwacji.salon_module.dto.SalonWithIdDto;
+import com.example.systemrezerwacji.user_module.User;
+import com.example.systemrezerwacji.user_module.UserFacade;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,21 +16,25 @@ import static com.example.systemrezerwacji.salon_module.SalonValidationResult.SU
 public class SalonFacade {
     private final SalonValidator validator;
     private final SalonService salonService;
+    private final UserFacade userFacade;
 
-    public SalonFacade(SalonValidator validator, SalonService salonService) {
+    public SalonFacade(SalonValidator validator, SalonService salonService, UserFacade userFacade) {
         this.validator = validator;
         this.salonService = salonService;
+        this.userFacade = userFacade;
     }
 
 
-    public SalonFacadeDto createNewSalon(SalonDto salonDto) {
+    public SalonFacadeDto createNewSalon(SalonRegisterDto salonDto) {
         SalonValidationResult validate = validator.validate(salonDto);
         String message = validate.validationMessage();
 
         if(!message.equals(SUCCESS_MESSAGE)) {
             return new SalonFacadeDto(message, null);
         }
-        Long newSalonId = salonService.createNewSalon(salonDto);
+        Optional<User> user = userFacade.getUserToCreateSalon(Long.valueOf(salonDto.userId()));
+
+        Long newSalonId = salonService.createNewSalon(salonDto, user);
 
         return new SalonFacadeDto(message,newSalonId);
     }

@@ -40,4 +40,8 @@ class UserService {
     private UserRole getDefaultRole() {
         return userRoleRepository.findByName(DEFAULT_USER_ROLE).orElseThrow();
     }
+
+    public Optional<User> getUserWithId(Long id) {
+        return userRepository.findById(id);
+    }
 }

@@ -6,5 +6,6 @@ public record SalonWithIdDto(String id,
                              String city,
                              String zipCode,
                              String street,
-                             String number) {
+                             String number,
+                             String userId) {
 }

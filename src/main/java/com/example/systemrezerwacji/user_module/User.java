@@ -1,17 +1,20 @@
 package com.example.systemrezerwacji.user_module;
 
+import com.example.systemrezerwacji.salon_module.Salon;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "users")
-class User {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,6 +28,9 @@ class User {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     private Set<UserRole> roles;
+
+    @OneToMany(mappedBy = "user")
+    List<Salon> salons;
 
 
     private User(UserBuilder userBuilder){
