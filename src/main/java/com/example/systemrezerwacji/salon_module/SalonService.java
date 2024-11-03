@@ -1,6 +1,6 @@
 package com.example.systemrezerwacji.salon_module;
 
-import com.example.systemrezerwacji.salon_module.dto.SalonRegisterDto;
+import com.example.systemrezerwacji.salon_module.dto.CreatedNewSalonDto;
 import com.example.systemrezerwacji.salon_module.dto.SalonWithIdDto;
 import com.example.systemrezerwacji.user_module.User;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ class SalonService {
         this.mapper = mapper;
     }
 
-    Long createNewSalon(SalonRegisterDto salonDto, Optional<User> user) {
+    Long createNewSalon(CreatedNewSalonDto salonDto, Optional<User> user) {
         Salon salon = new Salon.SalonBuilder()
                 .addName(salonDto.salonName())
                 .addCity(salonDto.city())

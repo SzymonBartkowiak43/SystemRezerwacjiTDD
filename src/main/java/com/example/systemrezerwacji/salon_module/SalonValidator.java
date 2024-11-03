@@ -1,6 +1,6 @@
 package com.example.systemrezerwacji.salon_module;
 
-import com.example.systemrezerwacji.salon_module.dto.SalonRegisterDto;
+import com.example.systemrezerwacji.salon_module.dto.CreatedNewSalonDto;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ class SalonValidator {
     List<ValidationError> errors;
 
 
-    SalonValidationResult validate(SalonRegisterDto salonDto) {
+    SalonValidationResult validate(CreatedNewSalonDto salonDto) {
 
         errors = new ArrayList<>();
 

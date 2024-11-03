@@ -1,6 +1,6 @@
 package com.example.systemrezerwacji.salon_module;
 
-import com.example.systemrezerwacji.salon_module.dto.SalonRegisterDto;
+import com.example.systemrezerwacji.salon_module.dto.CreatedNewSalonDto;
 import com.example.systemrezerwacji.salon_module.dto.SalonFacadeDto;
 import com.example.systemrezerwacji.salon_module.dto.SalonWithIdDto;
 import com.example.systemrezerwacji.user_module.User;
@@ -25,7 +25,7 @@ public class SalonFacade {
     }
 
 
-    public SalonFacadeDto createNewSalon(SalonRegisterDto salonDto) {
+    public SalonFacadeDto createNewSalon(CreatedNewSalonDto salonDto) {
         SalonValidationResult validate = validator.validate(salonDto);
         String message = validate.validationMessage();
 

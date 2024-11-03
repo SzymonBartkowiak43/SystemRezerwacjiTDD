@@ -31,3 +31,14 @@ CREATE TABLE salon (
                        user_id BIGINT,
                        FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+CREATE TABLE code (
+                      id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                      code VARCHAR(255) NOT NULL,
+                      is_active BOOLEAN DEFAULT TRUE,
+                      data_generated TIMESTAMP NOT NULL,
+                      data_consumption TIMESTAMP,
+                      user_id BIGINT,
+                      CONSTRAINT fk_user
+                          FOREIGN KEY (user_id) REFERENCES users(id)
+);

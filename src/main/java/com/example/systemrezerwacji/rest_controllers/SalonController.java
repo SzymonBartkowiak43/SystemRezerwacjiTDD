@@ -2,7 +2,7 @@ package com.example.systemrezerwacji.rest_controllers;
 
 
 import com.example.systemrezerwacji.salon_module.SalonFacade;
-import com.example.systemrezerwacji.salon_module.dto.SalonRegisterDto;
+import com.example.systemrezerwacji.salon_module.dto.CreatedNewSalonDto;
 import com.example.systemrezerwacji.salon_module.dto.SalonFacadeDto;
 import com.example.systemrezerwacji.salon_module.dto.SalonWithIdDto;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class SalonController {
 
 
     @PostMapping("/salon")
-    public ResponseEntity<SalonFacadeDto> createSalon(@RequestBody SalonRegisterDto salon) {
+    public ResponseEntity<SalonFacadeDto> createSalon(@RequestBody CreatedNewSalonDto salon) {
         SalonFacadeDto newSalon = salonFacade.createNewSalon(salon);
 
         if(newSalon.salonId() == null) {
