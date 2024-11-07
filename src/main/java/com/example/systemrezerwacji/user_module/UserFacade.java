@@ -6,7 +6,11 @@ import com.example.systemrezerwacji.user_module.dto.UserFacadeDto;
 import com.example.systemrezerwacji.user_module.dto.UserRegisterDto;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.example.systemrezerwacji.user_module.UserValidationResult.SUCCESS_MESSAGE;
 
@@ -50,4 +54,11 @@ public class UserFacade {
     }
 
 
+    public Map<Long, String> getEmployeeNameByid(List<Long> employessId) {
+        return employessId.stream()
+                .collect(Collectors.toMap(
+                        id -> id,
+                        userService::getNameByid
+                ));
+    }
 }

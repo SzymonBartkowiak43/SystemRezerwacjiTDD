@@ -2,7 +2,7 @@ package com.example.systemrezerwacji.code_module;
 
 import com.example.systemrezerwacji.code_module.dto.CodeDto;
 
-class codeMapper {
+class CodeMapper {
     static CodeDto toDto(Code code) {
         return new CodeDto(
                 code.getCode(),

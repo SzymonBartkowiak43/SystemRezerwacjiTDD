@@ -57,10 +57,6 @@ class UserService {
         return userWithId;
     }
 
-
-
-
-
     Optional<User> createEmployee(EmployeeDto employeeDto) {
 
         String password = PasswordGenerator.generatePassword();
@@ -70,6 +66,11 @@ class UserService {
         Optional<User> employee = addRoleEmployee(newUser);
 
         return employee;
+    }
+
+    String getNameByid(Long id) {
+        User userById = userRepository.getUserById(id);
+        return userById.getName();
     }
 
 

@@ -67,3 +67,21 @@ CREATE TABLE employee_availability (
                                        employee_id BIGINT,
                                        FOREIGN KEY (employee_id) REFERENCES employee(id)
 );
+
+CREATE TABLE offer (
+                         id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                         name VARCHAR(255) NOT NULL,
+                         description TEXT,
+                         price DECIMAL(10, 2),
+                         duration TIME,
+                         salon_id BIGINT,
+                         FOREIGN KEY (salon_id) REFERENCES salon(id) ON DELETE CASCADE
+);
+
+CREATE TABLE employee_offers (
+                                 employee_id BIGINT,
+                                 offer_id BIGINT,
+                                 PRIMARY KEY (employee_id, offer_id),
+                                 FOREIGN KEY (employee_id) REFERENCES employee(id) ON DELETE CASCADE,
+                                 FOREIGN KEY (offer_id) REFERENCES offer(id) ON DELETE CASCADE
+);

@@ -43,3 +43,15 @@ INSERT INTO employee_availability (day_of_week, start_time, end_time, employee_i
                                                                                        ('FRIDAY', '12:00:00', '14:00:00', 1),
                                                                                        ('SATURDAY', '10:00:00', '15:00:00', 1),
                                                                                        ('SUNDAY', NULL, NULL, 1);
+
+INSERT INTO offer (name, description, price, duration, salon_id)
+VALUES
+    ('Haircut', 'Basic haircut service', 50.00, '00:30:00', 2),
+    ('Massage', 'Full body massage', 120.00, '01:00:00', 1),
+    ('Manicure', 'Professional manicure service', 70.00, '00:45:00', 2);
+
+INSERT INTO employee_offers (employee_id, offer_id)
+VALUES
+    (1,1),
+    (1,3);
+

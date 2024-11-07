@@ -1,10 +1,12 @@
 package com.example.systemrezerwacji.employee_module;
 
 import com.example.systemrezerwacji.employee_module.dto.EmployeeAvailabilityDto;
+import com.example.systemrezerwacji.user_module.User;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 class EmployeeService {
@@ -14,8 +16,8 @@ class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
-    void saveEmployee(Employee employee) {
-        employeeRepository.save(employee);
+    Employee saveEmployee(Employee employee) {
+        return employeeRepository.save(employee);
     }
 
 
@@ -31,4 +33,40 @@ class EmployeeService {
                 })
                 .toList();
     }
+
+    List<Long> findEmployeesIdByOfferId(Long offerId) {
+        List<Employee> offersId = employeeRepository.findByOffersId(offerId);
+
+        return offersId.stream()
+                .map(Employee::getId)
+                .toList();
+    }
+
+    List<Long> findEmployeesUserIdById(List<Long> employeesId) {
+        List<Employee> allById = (List<Employee>) employeeRepository.findAllById(employeesId);
+
+        return allById.stream()
+                .map(Employee::getUser)
+                .map(User::getId)
+                .toList();
+    }
+
+    Long getUserIdByEmployeeId(Long employeeId) {
+        Optional<Employee> byId = employeeRepository.findById(employeeId);
+        return byId.get().getUser().getId();
+    }
+
+
+
+
+
+
+
+
+    void addServiceToEmployee(Long employeeId, List<Long> servicesId ) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
+    }
+
+
 }

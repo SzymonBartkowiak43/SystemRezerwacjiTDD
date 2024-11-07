@@ -22,7 +22,7 @@ class CodeService {
 
         Code save = codeRepository.save(newCode);
 
-        return codeMapper.toDto(save);
+        return CodeMapper.toDto(save);
     }
 
     @Transactional

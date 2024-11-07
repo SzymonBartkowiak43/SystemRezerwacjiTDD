@@ -2,12 +2,11 @@ package com.example.systemrezerwacji.rest_controllers;
 
 
 import com.example.systemrezerwacji.employee_module.dto.EmployeeDto;
+import com.example.systemrezerwacji.employee_module.dto.EmployeeToOfferDto;
+import com.example.systemrezerwacji.offer_module.dto.OfferDto;
 import com.example.systemrezerwacji.salon_module.SalonFacade;
-import com.example.systemrezerwacji.salon_module.dto.CreateEmployeeResponseDto;
-import com.example.systemrezerwacji.salon_module.dto.CreatedNewSalonDto;
+import com.example.systemrezerwacji.salon_module.dto.*;
 import com.example.systemrezerwacji.opening_hours_module.dto.OpeningHoursDto;
-import com.example.systemrezerwacji.salon_module.dto.SalonFacadeResponseDto;
-import com.example.systemrezerwacji.salon_module.dto.SalonWithIdDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -74,4 +73,12 @@ public class SalonController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
+
+    @GetMapping("/offers/{id}")
+    public ResponseEntity<List<OfferDto>> getOffers(@PathVariable Integer id) {
+        SalonOffersListDto allOffers = salonFacade.getAllOffersSalon(id.longValue());
+
+        return ResponseEntity.ok(allOffers.offers());
+    }
+
  }

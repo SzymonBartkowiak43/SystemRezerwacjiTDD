@@ -4,6 +4,8 @@ import com.example.systemrezerwacji.code_module.CodeFacade;
 import com.example.systemrezerwacji.code_module.ConsumeMessage;
 import com.example.systemrezerwacji.employee_module.EmployeeFacade;
 import com.example.systemrezerwacji.employee_module.dto.EmployeeDto;
+import com.example.systemrezerwacji.offer_module.OfferFacade;
+import com.example.systemrezerwacji.offer_module.dto.OfferDto;
 import com.example.systemrezerwacji.opening_hours_module.OpeningHoursFacade;
 import com.example.systemrezerwacji.salon_module.dto.AddHoursResponseDto;
 import com.example.systemrezerwacji.salon_module.dto.*;
@@ -26,27 +28,29 @@ public class SalonFacade {
     private final CodeFacade codeFacade;
     private final OpeningHoursFacade openingHoursFacade;
     private final EmployeeFacade employeeFacade;
+    private final OfferFacade offerFacade;
+
 
     public SalonFacade(SalonValidator validator, SalonService salonService, UserFacade userFacade,
-                       CodeFacade codeFacade, OpeningHoursFacade openingHoursFacade, EmployeeFacade employeeFacade) {
+                       CodeFacade codeFacade, OpeningHoursFacade openingHoursFacade, EmployeeFacade employeeFacade,
+                       OfferFacade offerFacade) {
         this.validator = validator;
         this.salonService = salonService;
         this.userFacade = userFacade;
         this.codeFacade = codeFacade;
         this.openingHoursFacade = openingHoursFacade;
         this.employeeFacade = employeeFacade;
+        this.offerFacade = offerFacade;
     }
 
 
     public SalonFacadeResponseDto createNewSalon(CreatedNewSalonDto salonDto) {
-
         SalonValidationResult validate = validator.validate(salonDto);
         String message = validate.validationMessage();
 
         if(!message.equals(SUCCESS_MESSAGE)) {
             return new SalonFacadeResponseDto(message, null);
         }
-
 
         Optional<User> user = userFacade.getUserToCreateSalon(Long.valueOf(salonDto.userId()));
 
@@ -87,6 +91,12 @@ public class SalonFacade {
         CreateEmployeeResponseDto employeeResponse = employeeFacade.addEmployeeToSalon(employeeDto, salon);
 
         return employeeResponse;
+    }
+
+    public SalonOffersListDto getAllOffersSalon(Long salonId) {
+        List<OfferDto> allOffers = offerFacade.getAllOffers(salonId);
+
+        return new SalonOffersListDto("success", allOffers);
     }
 
 
