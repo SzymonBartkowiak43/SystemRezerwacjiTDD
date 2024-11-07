@@ -7,6 +7,7 @@ public record CreatedNewSalonDto(String salonName,
                                  String zipCode,
                                  String street,
                                  String number,
-                                 String userId){
+                                 String userId,
+                                 String code){
 
 }

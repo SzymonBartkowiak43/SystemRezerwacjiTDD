@@ -48,4 +48,7 @@ class SalonService {
 
         return optionalSalon.map(mapper::map);
     }
+    Optional<Salon> getSalon(Long id) {
+        return salonRepository.findById(id);
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.systemrezerwacji.user_module;
 
 
+import com.example.systemrezerwacji.employee_module.dto.EmployeeDto;
 import com.example.systemrezerwacji.user_module.dto.UserFacadeDto;
 import com.example.systemrezerwacji.user_module.dto.UserRegisterDto;
 import org.springframework.stereotype.Component;
@@ -39,5 +40,14 @@ public class UserFacade {
     public Optional<User> getUserToCreateSalon(Long id) {
         return userService.getUserWithId(id);
     }
+
+    public Optional<User> addUserRoleOwner(Long id) {
+        return userService.addRoleOwner(id);
+    }
+
+    public Optional<User> createEmployee(EmployeeDto employeeDto) {
+        return userService.createEmployee(employeeDto);
+    }
+
 
 }

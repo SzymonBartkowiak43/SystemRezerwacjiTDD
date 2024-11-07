@@ -1,10 +1,12 @@
 package com.example.systemrezerwacji.salon_module;
 
 
+import com.example.systemrezerwacji.opening_hours_module.OpeningHours;
 import com.example.systemrezerwacji.user_module.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -26,6 +28,10 @@ public class Salon {
     private User user;
 
 
+    @OneToMany(mappedBy = "salon", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OpeningHours> openingHours;
+
+
     private Salon(SalonBuilder salonServiceBuilder) {
         this.salonName = salonServiceBuilder.name;
         this.category = salonServiceBuilder.category;
@@ -41,6 +47,10 @@ public class Salon {
     }
     Long getUserid() {
         return user.getId();
+    }
+
+    void addOpeningHours(List<OpeningHours> openingHoursList) {
+        openingHours = openingHoursList;
     }
 
 

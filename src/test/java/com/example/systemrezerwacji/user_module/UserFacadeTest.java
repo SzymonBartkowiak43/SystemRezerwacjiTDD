@@ -168,23 +168,6 @@ class UserFacadeTest {
     }
 
     @Test
-    public void should_failed_password_do_not_contains_number() {
-        //Given
-        String name = "Kuba";
-        String email = "kubatest.pl";
-        String password = "Kuba@";
-
-        UserValidationResult validationResult = new UserValidationResult(NO_NUMBER_IN_EMAIL.getMessage());
-        Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
-
-        //When
-        UserFacadeDto result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
-
-        //Then
-        assertThat(result.message()).isEqualTo(NO_NUMBER_IN_EMAIL.getMessage());
-    }
-
-    @Test
     public void should_failed_password_do_not_contains_special_characters() {
         //Given
         String name = "Kuba";

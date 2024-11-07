@@ -42,6 +42,10 @@ public class User {
     public User() {
 
     }
+    User addUserRole(UserRole userRole) {
+        roles.add(userRole);
+        return this;
+    }
 
 
     static class UserBuilder {

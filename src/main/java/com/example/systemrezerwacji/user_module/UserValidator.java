@@ -52,9 +52,6 @@ class UserValidator {
         if (!email.matches("^[\\w\\.-]+@[\\w\\.-]+\\.\\w{2,}$")) {
             errors.add(ValidationError.INVALID_EMAIL);
         }
-        if (!email.matches(".*\\d.*")) {
-            errors.add(ValidationError.NO_NUMBER_IN_EMAIL);
-        }
     }
 
     void validPassword(String password) {

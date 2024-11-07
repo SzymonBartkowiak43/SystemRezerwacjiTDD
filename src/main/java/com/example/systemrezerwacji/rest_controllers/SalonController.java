@@ -1,10 +1,14 @@
 package com.example.systemrezerwacji.rest_controllers;
 
 
+import com.example.systemrezerwacji.employee_module.dto.EmployeeDto;
 import com.example.systemrezerwacji.salon_module.SalonFacade;
+import com.example.systemrezerwacji.salon_module.dto.CreateEmployeeResponseDto;
 import com.example.systemrezerwacji.salon_module.dto.CreatedNewSalonDto;
-import com.example.systemrezerwacji.salon_module.dto.SalonFacadeDto;
+import com.example.systemrezerwacji.opening_hours_module.dto.OpeningHoursDto;
+import com.example.systemrezerwacji.salon_module.dto.SalonFacadeResponseDto;
 import com.example.systemrezerwacji.salon_module.dto.SalonWithIdDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -22,8 +26,8 @@ public class SalonController {
 
 
     @PostMapping("/salon")
-    public ResponseEntity<SalonFacadeDto> createSalon(@RequestBody CreatedNewSalonDto salon) {
-        SalonFacadeDto newSalon = salonFacade.createNewSalon(salon);
+    public ResponseEntity<SalonFacadeResponseDto> createSalon(@RequestBody CreatedNewSalonDto salon) {
+        SalonFacadeResponseDto newSalon = salonFacade.createNewSalon(salon);
 
         if(newSalon.salonId() == null) {
             return ResponseEntity.badRequest().body(newSalon);
@@ -36,6 +40,13 @@ public class SalonController {
 
         return ResponseEntity.created(location).body(newSalon);
     }
+
+    @PatchMapping("/add-opening-hours")
+    public ResponseEntity<SalonFacadeResponseDto> addOpeningHours(@RequestBody List<OpeningHoursDto> openingHoursDto) {
+        SalonFacadeResponseDto response = salonFacade.addOpeningHoursToSalon(openingHoursDto);
+        return ResponseEntity.ok(response);
+    }
+
 
     @GetMapping("/salons")
     public ResponseEntity<List<SalonWithIdDto>> getAllSalons() {
@@ -51,4 +62,16 @@ public class SalonController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PostMapping("/{id}/employee")
+    public ResponseEntity<CreateEmployeeResponseDto> addEmployeeToSalon(@PathVariable Long id, @RequestBody EmployeeDto employeeDto) {
+        EmployeeDto updatedEmployeeDto = new EmployeeDto(id, employeeDto.name(), employeeDto.email(), employeeDto.availability());
+
+        CreateEmployeeResponseDto response = salonFacade.addEmployeeToSalon(updatedEmployeeDto);
+
+        if(response.message().equals("success")) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
  }

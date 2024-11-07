@@ -1,4 +1,3 @@
-
 CREATE TABLE users (
                        id BIGINT AUTO_INCREMENT PRIMARY KEY,
                        email VARCHAR(100) UNIQUE,
@@ -35,10 +34,36 @@ CREATE TABLE salon (
 CREATE TABLE code (
                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
                       code VARCHAR(255) NOT NULL,
-                      is_active BOOLEAN DEFAULT TRUE,
+                      is_consumed BOOLEAN DEFAULT FALSE,
                       data_generated TIMESTAMP NOT NULL,
                       data_consumption TIMESTAMP,
                       user_id BIGINT,
                       CONSTRAINT fk_user
                           FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE opening_hours (
+                               id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                               day_of_week VARCHAR(20) NOT NULL,
+                               opening_time TIME,
+                               closing_time TIME,
+                               salon_id BIGINT,
+                               FOREIGN KEY (salon_id) REFERENCES salon(id) ON DELETE CASCADE
+);
+
+CREATE TABLE employee (
+                          id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                          user_id BIGINT NOT NULL,
+                          salon_id BIGINT,
+                          FOREIGN KEY (salon_id) REFERENCES salon(id),
+                          FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE employee_availability (
+                                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                       day_of_week VARCHAR(10) NOT NULL,
+                                       start_time TIME,
+                                       end_time TIME,
+                                       employee_id BIGINT,
+                                       FOREIGN KEY (employee_id) REFERENCES employee(id)
 );

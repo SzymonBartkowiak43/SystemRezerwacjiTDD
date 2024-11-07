@@ -80,14 +80,6 @@ class UserValidatorTest {
         assertThat(validator.errors).contains(ValidationError.INVALID_EMAIL);
     }
 
-    @Test
-    public void should_addNoNumberInEmailError_when_emailDoesNotContainNumbers() {
-        // When
-        validator.validEmail("email@test.com");
-
-        // Then
-        assertThat(validator.errors).contains(ValidationError.NO_NUMBER_IN_EMAIL);
-    }
 
     @Test
     public void should_addEmptyPasswordError_when_passwordIsNull() {

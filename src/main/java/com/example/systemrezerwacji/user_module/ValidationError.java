@@ -9,7 +9,6 @@ enum ValidationError {
     FORBIDDEN_CHARACTERS_IN_NAME("Name contains forbidden characters"),
     INVALID_EMAIL("Email format is invalid"),
     SHORT_PASSWORD("Password is too short"),
-    NO_NUMBER_IN_EMAIL("Email must contain at least one number"),
     NO_SPECIAL_CHARACTERS_IN_PASSWORD("Password must contain at least one special character");
 
     private final String message;
