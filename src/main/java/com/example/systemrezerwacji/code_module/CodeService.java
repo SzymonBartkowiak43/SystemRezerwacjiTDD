@@ -5,8 +5,8 @@ import com.example.systemrezerwacji.user_module.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.UUID;
+import static com.example.systemrezerwacji.code_module.CodeError.*;
 
 @Service
 class CodeService {
@@ -25,26 +25,19 @@ class CodeService {
         return CodeMapper.toDto(save);
     }
 
-    @Transactional
-    public ConsumeMessage consumeCode(String codeValue, User user) {
-        Optional<Code> codeOptional = codeRepository.findByCode(codeValue);
-
-        if (codeOptional.isEmpty()) {
-            return ConsumeMessage.failure("Code not found.");
-        }
-
-        Code code = codeOptional.get();
-
-        if(!code.getIsConsumed()) {
-            code.setConsumed();
-            code.setDataConsumption();
-            code.setUser(user);
-            codeRepository.save(code);
-            return ConsumeMessage.success();
-        } else {
-            return ConsumeMessage.failure("Code is already consumed!!!");
-        }
-
+    ConsumeMessage consumeCode(String codeValue, User user) {
+        return codeRepository.findByCode(codeValue)
+                .map(code -> {
+                    if(!code.getIsConsumed()) {
+                        code.setConsumed();
+                        code.setUser(user);
+                        codeRepository.save(code);
+                        return ConsumeMessage.success();
+                    } else {
+                        return ConsumeMessage.failure(CODE_ALREADY_CONSUMED.getMessage());
+                    }
+                })
+                .orElseGet(() -> ConsumeMessage.failure(CODE_NOT_FOUND.getMessage()));
     }
 
 }

@@ -29,18 +29,13 @@ public class Code {
 
     }
 
-    Boolean setConsumed() {
+    void setConsumed() {
         this.isConsumed = true;
-        return true;
-    }
-
-    LocalDateTime setDataConsumption() {
         this.dataConsumption = LocalDateTime.now();
-        return dataConsumption;
     }
 
-    User setUser(User user) {
+
+    void setUser(User user) {
         this.user = user;
-        return user;
     }
 }

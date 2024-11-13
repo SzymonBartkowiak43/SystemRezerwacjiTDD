@@ -3,6 +3,7 @@ package com.example.systemrezerwacji.salon_module;
 import com.example.systemrezerwacji.code_module.Code;
 import com.example.systemrezerwacji.salon_module.dto.CreatedNewSalonDto;
 import com.example.systemrezerwacji.salon_module.dto.SalonFacadeResponseDto;
+import com.example.systemrezerwacji.user_module.UserFacade;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,6 +22,9 @@ class SalonFacadeTest {
     @Mock
     private SalonService salonService;
 
+    @Mock
+    private UserFacade userFacade;
+
     @InjectMocks
     private SalonFacade salonFacade;
 
@@ -31,26 +35,26 @@ class SalonFacadeTest {
         code = new Code();
     }
 
-//    @Test
-//    public void should_create_salon() {
-//        //Given
-//        String name = "Cat massage";
-//        String category = "massage";
-//        String city = "Bialystok";
-//        String zipCode = "15-376";
-//        String street = "Kopernika";
-//        String number = "37a";
-//        String userId = "1";
-//
-//        SalonValidationResult validationResult = new SalonValidationResult(SUCCESS_MESSAGE);
-//        Mockito.when(validator.validate(Mockito.any(CreatedNewSalonDto.class))).thenReturn(validationResult);
-//
-//
-//        //When
-//        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId,code.getCode()));
-//        //Then
-//        assertThat(result.message()).isEqualTo(SUCCESS_MESSAGE);
-//    }
+    @Test
+    public void should_create_salon() {
+        //Given
+        String name = "Cat massage";
+        String category = "massage";
+        String city = "Bialystok";
+        String zipCode = "15-376";
+        String street = "Kopernika";
+        String number = "37a";
+        String userId = "1";
+
+        SalonValidationResult validationResult = new SalonValidationResult(SUCCESS_MESSAGE);
+        Mockito.when(validator.validate(Mockito.any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+
+
+        //When
+        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId,code.getCode()));
+        //Then
+        assertThat(result.message()).isEqualTo(SUCCESS_MESSAGE);
+    }
 
     @Test
     public void should_failed_test_name_is_null() {

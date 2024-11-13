@@ -1,19 +1,26 @@
 package com.example.systemrezerwacji.employee_module;
 
+import com.example.systemrezerwacji.employee_module.dto.AvailableTermDto;
 import com.example.systemrezerwacji.employee_module.dto.EmployeeAvailabilityDto;
 import com.example.systemrezerwacji.user_module.User;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
+import java.time.*;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 class EmployeeService {
-    private final EmployeeRepository employeeRepository;
+    public static final int MINUTES_IN_INTERVAL = 30;
 
-    EmployeeService(EmployeeRepository employeeRepository) {
+    private final EmployeeRepository employeeRepository;
+    private final EmployeeAvailabilityService employeeAvailabilityService;
+
+    EmployeeService(EmployeeRepository employeeRepository, EmployeeAvailabilityService employeeAvailabilityService) {
         this.employeeRepository = employeeRepository;
+        this.employeeAvailabilityService = employeeAvailabilityService;
     }
 
     Employee saveEmployee(Employee employee) {
@@ -51,9 +58,14 @@ class EmployeeService {
                 .toList();
     }
 
-    Long getUserIdByEmployeeId(Long employeeId) {
-        Optional<Employee> byId = employeeRepository.findById(employeeId);
-        return byId.get().getUser().getId();
+
+    List<AvailableTermDto> findAvailability(Long employeeId, LocalDate date, LocalTime duration, List<AvailableTermDto> employeeBusyTermsList) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+
+        EmployeeAvailability availability =  employeeAvailabilityService.findEmployeeAvability(employeeId, dayOfWeek);
+
+        return generateAvailableTerms(availability.getStartTime(), availability.getEndTime(), employeeBusyTermsList);
+
     }
 
 
@@ -61,7 +73,10 @@ class EmployeeService {
 
 
 
-
+    Long getUserIdByEmployeeId(Long employeeId) {
+        Optional<Employee> byId = employeeRepository.findById(employeeId);
+        return byId.get().getUser().getId();
+    }
 
     void addServiceToEmployee(Long employeeId, List<Long> servicesId ) {
         Employee employee = employeeRepository.findById(employeeId)
@@ -69,4 +84,26 @@ class EmployeeService {
     }
 
 
+    private List<AvailableTermDto> generateAvailableTerms(LocalTime start, LocalTime end,List<AvailableTermDto> employeeBusyTermsList ) {
+        List<AvailableTermDto> termsList = new ArrayList<>();
+
+        Duration interval = Duration.ofMinutes(MINUTES_IN_INTERVAL);
+
+        LocalTime currentStart = start;
+        while (currentStart.plus(interval).isBefore(end) || currentStart.plus(interval).equals(end)) {
+            LocalTime currentEnd = currentStart.plus(interval);
+            termsList.add(new AvailableTermDto(currentStart, currentEnd));
+            currentStart = currentStart.plusMinutes(MINUTES_IN_INTERVAL );
+        }
+
+
+        return termsList.stream()
+                .filter(term -> employeeBusyTermsList.stream()
+                        .noneMatch(busyTerm ->
+                                term.startServices().equals(busyTerm.startServices()) &&
+                                        term.endServices().equals(busyTerm.endServices())
+                        )
+                ).toList();
+
+    }
 }

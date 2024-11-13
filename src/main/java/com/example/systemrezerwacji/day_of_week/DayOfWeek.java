@@ -1,5 +1,8 @@
 package com.example.systemrezerwacji.day_of_week;
 
+import lombok.Getter;
+
+@Getter
 public enum DayOfWeek {
     MONDAY("Poniedziałek"),
     TUESDAY("Wtorek"),
@@ -15,7 +18,4 @@ public enum DayOfWeek {
         this.polishName = polishName;
     }
 
-    public String getPolishName() {
-        return polishName;
-    }
 }

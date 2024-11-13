@@ -1,11 +1,12 @@
 package com.example.systemrezerwacji.rest_controllers;
 
 import com.example.systemrezerwacji.employee_module.EmployeeFacade;
+import com.example.systemrezerwacji.employee_module.dto.AvailableTermDto;
 import com.example.systemrezerwacji.employee_module.dto.EmployeeToOfferDto;
+import com.example.systemrezerwacji.reservation_module.dto.AvailableDatesReservationDto;
+import com.example.systemrezerwacji.reservation_module.dto.AvailableHoursDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,10 +18,23 @@ public class EmployeeController {
         this.employeeFacade = employeeFacade;
     }
 
-    @GetMapping("/employee-to-offer/{id}")
-    public ResponseEntity<List<EmployeeToOfferDto>> getEmployeeToOffer(@PathVariable Integer id) {
-        List<EmployeeToOfferDto> employeesToOffer = employeeFacade.getEmployeesToOffer(id.longValue());
+    @GetMapping("/employee-to-offer/{offerId}")
+    public ResponseEntity<List<EmployeeToOfferDto>> getEmployeeToOffer(@PathVariable Integer offerId) {
+        List<EmployeeToOfferDto> employeesToOffer = employeeFacade.getEmployeesToOffer(offerId.longValue());
 
         return ResponseEntity.ok(employeesToOffer);
     }
+
+    @GetMapping("/available-dates")
+    public ResponseEntity<List<AvailableTermDto>> getAvailableHours(@RequestBody AvailableDatesReservationDto availableDate) {
+        List<AvailableTermDto> availableHours = employeeFacade.getAvailableHours(availableDate);
+
+        if (availableHours.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+          return ResponseEntity.ok(availableHours);
+        }
+
+    }
+
 }

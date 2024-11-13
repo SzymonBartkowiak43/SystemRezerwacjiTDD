@@ -1,6 +1,7 @@
 package com.example.systemrezerwacji.employee_module;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -11,10 +12,13 @@ public class EmployeeAvailability {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Getter
     @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
 
+    @Getter
     private LocalTime startTime;
+    @Getter
     private LocalTime endTime;
 
     @ManyToOne

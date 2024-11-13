@@ -3,17 +3,18 @@ package com.example.systemrezerwacji.offer_module;
 import com.example.systemrezerwacji.offer_module.dto.OfferDto;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
-public class OfferService {
+class OfferService {
     private final OfferRepository offerRepository;
 
-    public OfferService(OfferRepository offerRepository) {
+    OfferService(OfferRepository offerRepository) {
         this.offerRepository = offerRepository;
     }
 
-    public List<Offer> findOffers(List<Long> offersId) {
+    List<Offer> findOffers(List<Long> offersId) {
         return null;
     }
 
@@ -23,5 +24,11 @@ public class OfferService {
         return allOffers.stream()
                 .map(OfferMapper::toDto)
                 .toList();
+    }
+
+    public LocalTime getDurationByOfferId(Long offerId) {
+        Offer offerById = offerRepository.findOfferById(offerId);
+
+        return offerById.getDuration();
     }
 }

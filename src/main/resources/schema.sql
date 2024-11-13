@@ -85,3 +85,18 @@ CREATE TABLE employee_offers (
                                  FOREIGN KEY (employee_id) REFERENCES employee(id) ON DELETE CASCADE,
                                  FOREIGN KEY (offer_id) REFERENCES offer(id) ON DELETE CASCADE
 );
+
+CREATE TABLE reservation (
+                             id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                             salon_id BIGINT NOT NULL,
+                             employee_id BIGINT NOT NULL,
+                             user_id BIGINT NOT NULL,
+                             offer_id BIGINT NOT NULL,
+                             reservation_date_time TIMESTAMP,
+
+                             FOREIGN KEY (salon_id) REFERENCES salon(id),
+                             FOREIGN KEY (employee_id) REFERENCES employee(id),
+                             FOREIGN KEY (user_id) REFERENCES users(id),
+                             FOREIGN KEY (offer_id) REFERENCES offer(id)
+);
+

@@ -1,13 +1,18 @@
 package com.example.systemrezerwacji.employee_module;
 
+import com.example.systemrezerwacji.employee_module.dto.AvailableTermDto;
 import com.example.systemrezerwacji.employee_module.dto.EmployeeDto;
 import com.example.systemrezerwacji.employee_module.dto.EmployeeToOfferDto;
+import com.example.systemrezerwacji.offer_module.OfferFacade;
+import com.example.systemrezerwacji.reservation_module.ReservationFacade;
+import com.example.systemrezerwacji.reservation_module.dto.AvailableDatesReservationDto;
 import com.example.systemrezerwacji.salon_module.Salon;
 import com.example.systemrezerwacji.salon_module.dto.CreateEmployeeResponseDto;
 import com.example.systemrezerwacji.user_module.User;
 import com.example.systemrezerwacji.user_module.UserFacade;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,10 +22,14 @@ public class EmployeeFacade {
 
     private final UserFacade userFacade;
     private final EmployeeService employeeService;
+    private final OfferFacade offerFacade;
+    private final ReservationFacade reservationFacade;
 
-    public EmployeeFacade(UserFacade userFacade, EmployeeService employeeService) {
+    public EmployeeFacade(UserFacade userFacade, EmployeeService employeeService, OfferFacade offerFacade, ReservationFacade reservationFacade) {
         this.userFacade = userFacade;
         this.employeeService = employeeService;
+        this.offerFacade = offerFacade;
+        this.reservationFacade = reservationFacade;
     }
 
     public CreateEmployeeResponseDto addEmployeeToSalon(EmployeeDto employeeDto, Salon salon) {
@@ -32,6 +41,7 @@ public class EmployeeFacade {
 
         Employee employee = new Employee();
         employee.setSalonAndUser(salon,user);
+
 
         List<EmployeeAvailability> availabilityList = employeeService.createAvailabilityList(employeeDto.availability(), employee);
         employee.setAvailability(availabilityList);
@@ -55,5 +65,17 @@ public class EmployeeFacade {
                     return new EmployeeToOfferDto(employeeId, name);
                 })
                 .toList();
+    }
+
+    //musi zwracac cos lepszego
+    public List<AvailableTermDto> getAvailableHours(AvailableDatesReservationDto availableDate) {
+        LocalTime duration = offerFacade.getDurationToOffer(availableDate.offerId());
+
+        List<AvailableTermDto> employeeBusyTermsList = reservationFacade.getEmployeeBusyTerm(availableDate.employeeId(), availableDate.date());
+
+        List<AvailableTermDto> termsDto = employeeService.findAvailability(
+                availableDate.employeeId(), availableDate.date(),duration, employeeBusyTermsList);
+
+        return termsDto;
     }
 }

@@ -48,10 +48,14 @@ INSERT INTO offer (name, description, price, duration, salon_id)
 VALUES
     ('Haircut', 'Basic haircut service', 50.00, '00:30:00', 2),
     ('Massage', 'Full body massage', 120.00, '01:00:00', 1),
-    ('Manicure', 'Professional manicure service', 70.00, '00:45:00', 2);
+    ('Manicure', 'Professional manicure service', 70.00, '00:30:00', 2);
 
 INSERT INTO employee_offers (employee_id, offer_id)
 VALUES
     (1,1),
     (1,3);
 
+INSERT INTO reservation (salon_id, employee_id, user_id, offer_id, reservation_date_time) VALUES
+    (1, 1, 1, 1, '2024-11-18 14:30:00'),
+    (1, 1, 1, 1, '2024-11-18 15:00:00'),
+    (1, 1, 1, 1, '2024-11-18 15:30:00');
