@@ -73,7 +73,9 @@ class UserService {
         return userById.getName();
     }
 
-
+    User getUserByEmail(String email) {
+        return userRepository.getUserByEmail(email);
+    }
 
     private UserRole getDefaultRole() {
         return userRoleRepository.findByName(DEFAULT_USER_ROLE).orElseThrow();
@@ -88,4 +90,6 @@ class UserService {
 
         return userWithId;
     }
+
+
 }

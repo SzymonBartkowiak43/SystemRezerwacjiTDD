@@ -18,7 +18,7 @@ class OfferService {
         return null;
     }
 
-    public List<OfferDto> getAllOffers(Long salonId) {
+    List<OfferDto> getAllOffers(Long salonId) {
         List<Offer> allOffers= offerRepository.findAllBySalonId(salonId);
 
         return allOffers.stream()
@@ -26,9 +26,13 @@ class OfferService {
                 .toList();
     }
 
-    public LocalTime getDurationByOfferId(Long offerId) {
+    LocalTime getDurationByOfferId(Long offerId) {
         Offer offerById = offerRepository.findOfferById(offerId);
 
         return offerById.getDuration();
+    }
+
+    Offer getOffer(Long offerId) {
+        return offerRepository.findOfferById(offerId);
     }
 }

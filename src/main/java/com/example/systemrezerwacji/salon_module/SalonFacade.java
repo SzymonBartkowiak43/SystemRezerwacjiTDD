@@ -109,4 +109,8 @@ public class SalonFacade {
         return salonService.getSalonById(id);
     }
 
+    public Salon getSalon(Long id) {
+        return salonService.getSalon(id).get();
+    }
+
 }

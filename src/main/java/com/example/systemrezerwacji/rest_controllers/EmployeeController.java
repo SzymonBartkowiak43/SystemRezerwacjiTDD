@@ -24,7 +24,7 @@ public class EmployeeController {
         return ResponseEntity.ok(employeesToOffer);
     }
 
-    @RequestMapping(value = "/available-dates", method = RequestMethod.GET)
+    @GetMapping("/available-dates")
     public ResponseEntity<List<AvailableTermDto>> getAvailableHours(@RequestBody AvailableDatesReservationDto availableDate) {
         List<AvailableTermDto> availableHours = employeeFacade.getAvailableHours(availableDate);
 

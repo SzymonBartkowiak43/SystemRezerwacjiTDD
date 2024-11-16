@@ -37,6 +37,14 @@ public class Reservation {
     @Getter
     private LocalDateTime reservationDateTime;
 
+    Reservation(Salon salon, Employee employee, User user, Offer offer, LocalDateTime reservationDateTime) {
+        this.salon = salon;
+        this.employee = employee;
+        this.user = user;
+        this.offer = offer;
+        this.reservationDateTime = reservationDateTime;
+    }
+
     public Reservation() {
     }
 

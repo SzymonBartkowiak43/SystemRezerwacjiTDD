@@ -1,11 +1,16 @@
 package com.example.systemrezerwacji.reservation_module;
 
+import com.example.systemrezerwacji.employee_module.Employee;
 import com.example.systemrezerwacji.employee_module.dto.AvailableTermDto;
+import com.example.systemrezerwacji.offer_module.Offer;
+import com.example.systemrezerwacji.reservation_module.dto.CreateReservationDto;
+import com.example.systemrezerwacji.salon_module.Salon;
+import com.example.systemrezerwacji.user_module.User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,6 +34,11 @@ class ReservationService {
 
     }
 
+    void addNewReservation(Salon salon, Employee employee, User user, Offer offer, LocalDateTime reservationDateTime) {
+        Reservation reservation = new Reservation(salon,employee,user,offer,reservationDateTime);
+        reservationRepository.save(reservation);
+    }
+
     private List<Reservation> getReservations(Long employeeId, LocalDate date) {
         return  reservationRepository.findAll().stream()
                 .filter(employee -> employee.getEmployee().getId().equals(employeeId))
@@ -47,6 +57,7 @@ class ReservationService {
                 .toList();
         return list;
     }
+
 
 
 }

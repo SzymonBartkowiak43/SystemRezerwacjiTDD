@@ -11,7 +11,6 @@ import java.util.Set;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "users")
 public class User {
     @Id
@@ -30,8 +29,6 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     List<Salon> salons;
-
-
 
     private User(UserBuilder userBuilder){
         this.email = userBuilder.email;

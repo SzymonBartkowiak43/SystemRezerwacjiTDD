@@ -6,7 +6,6 @@ import com.example.systemrezerwacji.user_module.dto.UserFacadeDto;
 import com.example.systemrezerwacji.user_module.dto.UserRegisterDto;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -60,5 +59,9 @@ public class UserFacade {
                         id -> id,
                         userService::getNameByid
                 ));
+    }
+
+    public User getUserToOffer(String email) {
+        return userService.getUserByEmail(email);
     }
 }

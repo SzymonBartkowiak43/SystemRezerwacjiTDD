@@ -21,4 +21,5 @@ public class Offer {
     @ManyToOne
     @JoinColumn(name = "salon_id")
     private Salon salon;
+
 }

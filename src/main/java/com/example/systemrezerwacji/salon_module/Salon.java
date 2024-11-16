@@ -23,6 +23,7 @@ public class Salon {
     private String street;
     private String number;
 
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -45,6 +46,7 @@ public class Salon {
     public Salon() {
 
     }
+
     Long getUserid() {
         return user.getId();
     }

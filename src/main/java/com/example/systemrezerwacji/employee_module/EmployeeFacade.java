@@ -67,7 +67,6 @@ public class EmployeeFacade {
                 .toList();
     }
 
-    //musi zwracac cos lepszego
     public List<AvailableTermDto> getAvailableHours(AvailableDatesReservationDto availableDate) {
         LocalTime duration = offerFacade.getDurationToOffer(availableDate.offerId());
 
@@ -77,5 +76,9 @@ public class EmployeeFacade {
                 availableDate.employeeId(), availableDate.date(),duration, employeeBusyTermsList);
 
         return termsDto;
+    }
+
+    public Employee getEmployee(Long id) {
+        return employeeService.getEmployee(id);
     }
 }

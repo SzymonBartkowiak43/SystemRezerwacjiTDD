@@ -27,4 +27,8 @@ public class OfferFacade {
     public LocalTime getDurationToOffer(Long offerId) {
         return offerService.getDurationByOfferId(offerId);
     }
+
+    public Offer getOffer(Long offerId) {
+        return offerService.getOffer(offerId);
+    }
 }

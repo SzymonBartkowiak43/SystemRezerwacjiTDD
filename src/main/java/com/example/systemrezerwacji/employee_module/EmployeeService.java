@@ -68,11 +68,6 @@ class EmployeeService {
 
     }
 
-
-
-
-
-
     Long getUserIdByEmployeeId(Long employeeId) {
         Optional<Employee> byId = employeeRepository.findById(employeeId);
         return byId.get().getUser().getId();
@@ -81,6 +76,10 @@ class EmployeeService {
     void addServiceToEmployee(Long employeeId, List<Long> servicesId ) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
+    }
+
+    Employee getEmployee(Long id) {
+        return employeeRepository.findById(id).get();
     }
 
 
