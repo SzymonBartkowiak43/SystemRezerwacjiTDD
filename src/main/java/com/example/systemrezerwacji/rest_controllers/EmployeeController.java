@@ -4,7 +4,6 @@ import com.example.systemrezerwacji.employee_module.EmployeeFacade;
 import com.example.systemrezerwacji.employee_module.dto.AvailableTermDto;
 import com.example.systemrezerwacji.employee_module.dto.EmployeeToOfferDto;
 import com.example.systemrezerwacji.reservation_module.dto.AvailableDatesReservationDto;
-import com.example.systemrezerwacji.reservation_module.dto.AvailableHoursDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +24,7 @@ public class EmployeeController {
         return ResponseEntity.ok(employeesToOffer);
     }
 
-    @GetMapping("/available-dates")
+    @RequestMapping(value = "/available-dates", method = RequestMethod.GET)
     public ResponseEntity<List<AvailableTermDto>> getAvailableHours(@RequestBody AvailableDatesReservationDto availableDate) {
         List<AvailableTermDto> availableHours = employeeFacade.getAvailableHours(availableDate);
 

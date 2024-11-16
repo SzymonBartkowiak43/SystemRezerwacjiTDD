@@ -37,4 +37,7 @@ public class Reservation {
     @Getter
     private LocalDateTime reservationDateTime;
 
+    public Reservation() {
+    }
+
 }

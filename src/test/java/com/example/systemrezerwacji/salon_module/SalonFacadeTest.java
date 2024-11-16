@@ -1,8 +1,11 @@
 package com.example.systemrezerwacji.salon_module;
 
 import com.example.systemrezerwacji.code_module.Code;
+import com.example.systemrezerwacji.code_module.CodeFacade;
+import com.example.systemrezerwacji.code_module.ConsumeMessage;
 import com.example.systemrezerwacji.salon_module.dto.CreatedNewSalonDto;
 import com.example.systemrezerwacji.salon_module.dto.SalonFacadeResponseDto;
+import com.example.systemrezerwacji.user_module.User;
 import com.example.systemrezerwacji.user_module.UserFacade;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,9 +14,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Optional;
+
 import static com.example.systemrezerwacji.salon_module.SalonValidationResult.*;
 import static com.example.systemrezerwacji.salon_module.ValidationError.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class SalonFacadeTest {
     @Mock
@@ -25,10 +33,14 @@ class SalonFacadeTest {
     @Mock
     private UserFacade userFacade;
 
+    @Mock
+    private CodeFacade codeFacade;
+
     @InjectMocks
     private SalonFacade salonFacade;
 
-    Code code;
+    private Code code;
+
     @BeforeEach
     void init() {
         MockitoAnnotations.openMocks(this);
@@ -46,8 +58,14 @@ class SalonFacadeTest {
         String number = "37a";
         String userId = "1";
 
+
         SalonValidationResult validationResult = new SalonValidationResult(SUCCESS_MESSAGE);
-        Mockito.when(validator.validate(Mockito.any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        ConsumeMessage consumeMessage1 = mock(ConsumeMessage.class);
+        when(consumeMessage1.isSuccess()).thenReturn(true);
+
+        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(userFacade.getUserToCreateSalon(Long.valueOf(userId))).thenReturn(Optional.of(new User()));
+        when(codeFacade.consumeCode(eq(code.getCode()), any(User.class))).thenReturn(consumeMessage1);
 
 
         //When
@@ -69,7 +87,7 @@ class SalonFacadeTest {
 
 
         SalonValidationResult validationResult = new SalonValidationResult(EMPTY_NAME.message);
-        Mockito.when(validator.validate(Mockito.any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
 
         //When
         SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
@@ -90,7 +108,7 @@ class SalonFacadeTest {
 
 
         SalonValidationResult validationResult = new SalonValidationResult(EMPTY_CATEGORY.message);
-        Mockito.when(validator.validate(Mockito.any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
         //When
         SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
@@ -109,7 +127,7 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(EMPTY_CITY.message);
-        Mockito.when(validator.validate(Mockito.any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
         //When
         SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
@@ -128,7 +146,7 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(EMPTY_ZIP_CODE.message);
-        Mockito.when(validator.validate(Mockito.any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
 
         //When
         SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
@@ -148,7 +166,7 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(EMPTY_STREET.message);
-        Mockito.when(validator.validate(Mockito.any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
         //When
         SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
@@ -167,7 +185,7 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(EMPTY_NUMBER.message);
-        Mockito.when(validator.validate(Mockito.any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
         //When
         SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
@@ -186,7 +204,7 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(EMPTY_NAME.message + " " + EMPTY_NUMBER.message);
-        Mockito.when(validator.validate(Mockito.any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
         //When
         SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
@@ -206,7 +224,7 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(SHORT_NAME.message);
-        Mockito.when(validator.validate(Mockito.any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
         //When
         SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
@@ -225,7 +243,7 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(SHORT_CATEGORY.message);
-        Mockito.when(validator.validate(Mockito.any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
         //When
         SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
@@ -244,7 +262,7 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(FORBIDDEN_CHARACTERS_IN_CITY.message);
-        Mockito.when(validator.validate(Mockito.any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
         //When
         SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
@@ -263,7 +281,7 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(INCORRECT_ZIP_CODE.message);
-        Mockito.when(validator.validate(Mockito.any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
         //When
         SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
@@ -282,7 +300,7 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(FORBIDDEN_CHARACTERS_IN_STREET.message);
-        Mockito.when(validator.validate(Mockito.any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
         //When
         SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
