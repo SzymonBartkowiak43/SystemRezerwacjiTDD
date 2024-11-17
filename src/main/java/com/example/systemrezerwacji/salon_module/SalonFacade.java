@@ -30,7 +30,6 @@ public class SalonFacade {
     private final EmployeeFacade employeeFacade;
     private final OfferFacade offerFacade;
 
-
     public SalonFacade(SalonValidator validator, SalonService salonService, UserFacade userFacade,
                        CodeFacade codeFacade, OpeningHoursFacade openingHoursFacade, EmployeeFacade employeeFacade,
                        OfferFacade offerFacade) {
@@ -70,7 +69,6 @@ public class SalonFacade {
     }
 
     public SalonFacadeResponseDto addOpeningHoursToSalon(List<OpeningHoursDto> openingHours) {
-
         Long salonId = openingHours.get(0).salonId();
         Optional<Salon> salon = salonService.getSalon(salonId);
 
@@ -99,8 +97,6 @@ public class SalonFacade {
         return new SalonOffersListDto("success", allOffers);
     }
 
-
-
     public List<SalonWithIdDto> getAllSalons() {
         return salonService.getAllSalons();
     }
@@ -110,7 +106,7 @@ public class SalonFacade {
     }
 
     public Salon getSalon(Long id) {
-        return salonService.getSalon(id).get();
+        return salonService.getSalon(id);
     }
 
 }

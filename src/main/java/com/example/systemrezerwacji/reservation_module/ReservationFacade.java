@@ -7,13 +7,13 @@ import com.example.systemrezerwacji.offer_module.Offer;
 import com.example.systemrezerwacji.offer_module.OfferFacade;
 import com.example.systemrezerwacji.reservation_module.dto.CreateReservationDto;
 import com.example.systemrezerwacji.reservation_module.dto.ReservationFacadeResponse;
-import com.example.systemrezerwacji.reservation_module.dto.ReservationValidationResult;
 import com.example.systemrezerwacji.salon_module.Salon;
 import com.example.systemrezerwacji.salon_module.SalonFacade;
 import com.example.systemrezerwacji.user_module.User;
 import com.example.systemrezerwacji.user_module.UserFacade;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -46,6 +46,7 @@ public class ReservationFacade {
         return reservationService.getEmployeeBusyTerms(employeeId, date);
     }
 
+    @Transactional
     public ReservationFacadeResponse createNewReservation(CreateReservationDto reservationDto) {
         LocalTime duration = offerFacade.getDurationToOffer(reservationDto.offerId());
 
@@ -53,7 +54,6 @@ public class ReservationFacade {
 
         if (result.isValid()) {
             User user = userFacade.getUserToOffer(reservationDto.userEmail());
-
             Salon salon = salonFacade.getSalon(reservationDto.salonId());
             Employee employee = employeeFacade.getEmployee(reservationDto.employeeId());
             Offer offer = offerFacade.getOffer(reservationDto.offerId());
@@ -61,6 +61,6 @@ public class ReservationFacade {
             reservationService.addNewReservation(salon, employee, user, offer, reservationDto.reservationDateTime());
             return new ReservationFacadeResponse(true, "success");
         }
-        return new ReservationFacadeResponse(false, "someone error :?C");
+        return new ReservationFacadeResponse(false, result.message());
     }
 }

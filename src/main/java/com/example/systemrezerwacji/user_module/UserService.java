@@ -38,10 +38,7 @@ class UserService {
         Optional<User> optionalUser = userRepository.findById(id);
 
         return optionalUser.map(mapper::map);
-
     }
-
-
 
     Optional<User> getUserWithId(Long id) {
         return userRepository.findById(id);
@@ -58,7 +55,6 @@ class UserService {
     }
 
     Optional<User> createEmployee(EmployeeDto employeeDto) {
-
         String password = PasswordGenerator.generatePassword();
         UserRegisterDto userRegister = new UserRegisterDto(employeeDto.email(), employeeDto.name(), password);
 
@@ -68,13 +64,13 @@ class UserService {
         return employee;
     }
 
-    String getNameByid(Long id) {
+    String getNameById(Long id) {
         User userById = userRepository.getUserById(id);
         return userById.getName();
     }
 
     User getUserByEmail(String email) {
-        return userRepository.getUserByEmail(email);
+        return userRepository.getUserByEmail(email).get();
     }
 
     private UserRole getDefaultRole() {

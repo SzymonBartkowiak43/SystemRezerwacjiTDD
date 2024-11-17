@@ -56,7 +56,7 @@ public class EmployeeFacade {
 
         List<Long> employeesUserIdById = employeeService.findEmployeesUserIdById(employeesId);
 
-        Map<Long, String> userIdAndName = userFacade.getEmployeeNameByid(employeesUserIdById);
+        Map<Long, String> userIdAndName = userFacade.getEmployeeNameById(employeesUserIdById);
 
          return employeesId.stream()
                 .map(employeeId -> {

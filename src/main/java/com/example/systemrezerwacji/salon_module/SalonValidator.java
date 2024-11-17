@@ -4,6 +4,7 @@ import com.example.systemrezerwacji.salon_module.dto.CreatedNewSalonDto;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,7 @@ class SalonValidator {
 
     SalonValidationResult validate(CreatedNewSalonDto salonDto) {
 
-        errors = new ArrayList<>();
+        errors = new LinkedList<>();
 
         validateName(salonDto.salonName());
         validateCategory(salonDto.category());

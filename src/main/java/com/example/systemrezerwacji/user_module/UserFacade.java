@@ -53,11 +53,11 @@ public class UserFacade {
     }
 
 
-    public Map<Long, String> getEmployeeNameByid(List<Long> employessId) {
+    public Map<Long, String> getEmployeeNameById(List<Long> employessId) {
         return employessId.stream()
                 .collect(Collectors.toMap(
                         id -> id,
-                        userService::getNameByid
+                        userService::getNameById
                 ));
     }
 
