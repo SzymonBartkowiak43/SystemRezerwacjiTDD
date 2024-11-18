@@ -53,7 +53,7 @@ public class ReservationFacade {
         ReservationValidationResult result = validator.validate(reservationDto, duration);
 
         if (result.isValid()) {
-            User user = userFacade.getUserToOffer(reservationDto.userEmail());
+            User user = userFacade.getUserByEmail(reservationDto.userEmail());
             Salon salon = salonFacade.getSalon(reservationDto.salonId());
             Employee employee = employeeFacade.getEmployee(reservationDto.employeeId());
             Offer offer = offerFacade.getOffer(reservationDto.offerId());

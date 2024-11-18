@@ -2,7 +2,6 @@ package com.example.systemrezerwacji.rest_controllers;
 
 
 import com.example.systemrezerwacji.employee_module.dto.EmployeeDto;
-import com.example.systemrezerwacji.employee_module.dto.EmployeeToOfferDto;
 import com.example.systemrezerwacji.offer_module.dto.OfferDto;
 import com.example.systemrezerwacji.salon_module.SalonFacade;
 import com.example.systemrezerwacji.salon_module.dto.*;
@@ -56,7 +55,7 @@ public class SalonController {
 
     @GetMapping("/salon/{id}")
     public ResponseEntity<SalonWithIdDto> getSalon(@PathVariable Integer id) {
-        return salonFacade.getSalonByid(id.longValue())
+        return salonFacade.getSalonById(id.longValue())
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

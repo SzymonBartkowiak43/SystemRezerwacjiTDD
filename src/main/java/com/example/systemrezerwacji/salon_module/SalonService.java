@@ -1,5 +1,6 @@
 package com.example.systemrezerwacji.salon_module;
 
+import com.example.systemrezerwacji.salon_module.exception.SalonNotFoundException;
 import com.example.systemrezerwacji.salon_module.dto.CreatedNewSalonDto;
 import com.example.systemrezerwacji.salon_module.dto.SalonWithIdDto;
 import com.example.systemrezerwacji.user_module.User;
@@ -51,6 +52,6 @@ class SalonService {
 
     Salon getSalon(Long id) {
         return salonRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new SalonNotFoundException("Salon with id: " + id + " not found"));
     }
 }

@@ -23,15 +23,12 @@ class ReservationService {
     }
 
     List<AvailableTermDto> getEmployeeBusyTerms(Long employeeId, LocalDate date) {
-
         List<Reservation> allServicesOnSpecificDay = getReservations(employeeId, date);
 
-        if(allServicesOnSpecificDay.isEmpty()) {
+        if (allServicesOnSpecificDay.isEmpty()) {
             return Collections.emptyList();
         }
-
         return getAvailableTermDto(allServicesOnSpecificDay);
-
     }
 
     void addNewReservation(Salon salon, Employee employee, User user, Offer offer, LocalDateTime reservationDateTime) {

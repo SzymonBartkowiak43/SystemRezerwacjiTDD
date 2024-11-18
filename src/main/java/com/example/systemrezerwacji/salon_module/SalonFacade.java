@@ -70,25 +70,19 @@ public class SalonFacade {
 
     public SalonFacadeResponseDto addOpeningHoursToSalon(List<OpeningHoursDto> openingHours) {
         Long salonId = openingHours.get(0).salonId();
-        Optional<Salon> salon = salonService.getSalon(salonId);
+        Salon salon = salonService.getSalon(salonId);
 
-        AddHoursResponseDto response = openingHoursFacade.addOpeningHours(openingHours, salon.get());
+        AddHoursResponseDto response = openingHoursFacade.addOpeningHours(openingHours, salon);
 
-        salon.get().addOpeningHours(response.openingHours());
+        salon.addOpeningHours(response.openingHours());
 
         return new SalonFacadeResponseDto("success", salonId);
     }
 
     public CreateEmployeeResponseDto addEmployeeToSalon(EmployeeDto employeeDto) {
-        Optional<Salon> salonOptional = salonService.getSalon(employeeDto.salonId());
-        if (salonOptional.isEmpty()) {
-            return new CreateEmployeeResponseDto ("Salon not found", "", "");
-        }
-        Salon salon = salonOptional.get();
+        Salon salon= salonService.getSalon(employeeDto.salonId());
 
-        CreateEmployeeResponseDto employeeResponse = employeeFacade.addEmployeeToSalon(employeeDto, salon);
-
-        return employeeResponse;
+        return employeeFacade.addEmployeeToSalon(employeeDto, salon);
     }
 
     public SalonOffersListDto getAllOffersSalon(Long salonId) {
@@ -101,7 +95,7 @@ public class SalonFacade {
         return salonService.getAllSalons();
     }
 
-    public Optional<SalonWithIdDto> getSalonByid(Long id) {
+    public Optional<SalonWithIdDto> getSalonById(Long id) {
         return salonService.getSalonById(id);
     }
 

@@ -1,6 +1,7 @@
 package com.example.systemrezerwacji.offer_module;
 
 import com.example.systemrezerwacji.offer_module.dto.OfferDto;
+import com.example.systemrezerwacji.offer_module.exception.OfferNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -27,12 +28,14 @@ class OfferService {
     }
 
     LocalTime getDurationByOfferId(Long offerId) {
-        Offer offerById = offerRepository.findOfferById(offerId);
+        Offer offerById = offerRepository.findOfferById(offerId)
+                .orElseThrow(() -> new OfferNotFoundException("Not found offer with id: " + offerId));
 
         return offerById.getDuration();
     }
 
     Offer getOffer(Long offerId) {
-        return offerRepository.findOfferById(offerId);
+        return offerRepository.findOfferById(offerId)
+                .orElseThrow(() -> new OfferNotFoundException("Not found offer with id: " + offerId));
     }
 }

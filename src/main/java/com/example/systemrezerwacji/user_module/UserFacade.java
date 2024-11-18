@@ -61,7 +61,7 @@ public class UserFacade {
                 ));
     }
 
-    public User getUserToOffer(String email) {
+    public User getUserByEmail(String email) {
         return userService.getUserByEmail(email);
     }
 }
