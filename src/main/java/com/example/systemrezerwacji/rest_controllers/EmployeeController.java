@@ -1,9 +1,12 @@
 package com.example.systemrezerwacji.rest_controllers;
 
 import com.example.systemrezerwacji.employee_module.EmployeeFacade;
+import com.example.systemrezerwacji.employee_module.dto.AddOfferRequestDto;
 import com.example.systemrezerwacji.employee_module.dto.AvailableTermDto;
+import com.example.systemrezerwacji.employee_module.dto.EmployeeFacadeResponseDto;
 import com.example.systemrezerwacji.employee_module.dto.EmployeeToOfferDto;
 import com.example.systemrezerwacji.reservation_module.dto.AvailableDatesReservationDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,10 +33,22 @@ public class EmployeeController {
 
         if (availableHours.isEmpty()) {
             return ResponseEntity.notFound().build();
-        } else {
-          return ResponseEntity.ok(availableHours);
         }
 
+        return ResponseEntity.ok(availableHours);
     }
+
+    @PatchMapping("employees/{employeeId}/offers")
+    public ResponseEntity<EmployeeFacadeResponseDto> addOfferToEmployee(@PathVariable Long employeeId, @RequestBody AddOfferRequestDto offer) {
+        EmployeeFacadeResponseDto response = employeeFacade.addOfferToEmployee(employeeId, offer.offerId());
+
+        if (response.message().equals("success")) {
+            return ResponseEntity.ok(response);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+
 
 }

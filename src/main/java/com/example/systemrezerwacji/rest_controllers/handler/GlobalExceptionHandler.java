@@ -1,4 +1,4 @@
-package com.example.systemrezerwacji.rest_controllers;
+package com.example.systemrezerwacji.rest_controllers.handler;
 
 import com.example.systemrezerwacji.offer_module.exception.OfferNotFoundException;
 import com.example.systemrezerwacji.salon_module.exception.SalonNotFoundException;

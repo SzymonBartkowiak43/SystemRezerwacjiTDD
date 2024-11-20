@@ -44,4 +44,8 @@ public class Employee {
     void setAvailability(List<EmployeeAvailability> availability) {
         this.availability = availability;
     }
+
+    public void addOffer(Offer offer) {
+        this.offers.add(offer);
+    }
 }

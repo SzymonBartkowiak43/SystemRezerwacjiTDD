@@ -1,6 +1,6 @@
 package com.example.systemrezerwacji.user_module;
 
-import com.example.systemrezerwacji.user_module.dto.UserFacadeDto;
+import com.example.systemrezerwacji.user_module.dto.UserFacadeResponse;
 import com.example.systemrezerwacji.user_module.dto.UserRegisterDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ class UserFacadeTest {
         Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
 
         //When
-        UserFacadeDto result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
+        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
 
         //Then
         assertThat(result.message()).isEqualTo(SUCCESS_MESSAGE);
@@ -59,7 +59,7 @@ class UserFacadeTest {
         Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
 
         //When
-        UserFacadeDto result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
+        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
 
         //Then
         assertThat(result.message()).isEqualTo(EMPTY_NAME.getMessage());
@@ -76,7 +76,7 @@ class UserFacadeTest {
         Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
 
         //When
-        UserFacadeDto result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
+        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
 
         //Then
         assertThat(result.message()).isEqualTo(EMPTY_EMAIL.getMessage());
@@ -93,7 +93,7 @@ class UserFacadeTest {
         Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
 
         //When
-        UserFacadeDto result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
+        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
 
         //Then
         assertThat(result.message()).isEqualTo(EMPTY_PASSWORD.getMessage());
@@ -110,7 +110,7 @@ class UserFacadeTest {
         Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
 
         //When
-        UserFacadeDto result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
+        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
 
         //Then
         assertThat(result.message()).isEqualTo(SHORT_NAME.getMessage());
@@ -127,7 +127,7 @@ class UserFacadeTest {
         Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
 
         //When
-        UserFacadeDto result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
+        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
 
         //Then
         assertThat(result.message()).isEqualTo(FORBIDDEN_CHARACTERS_IN_NAME.getMessage());
@@ -144,7 +144,7 @@ class UserFacadeTest {
         Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
 
         //When
-        UserFacadeDto result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
+        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
 
         //Then
         assertThat(result.message()).isEqualTo(INVALID_EMAIL.getMessage());
@@ -161,7 +161,7 @@ class UserFacadeTest {
         Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
 
         //When
-        UserFacadeDto result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
+        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
 
         //Then
         assertThat(result.message()).isEqualTo(SHORT_PASSWORD.getMessage());
@@ -178,7 +178,7 @@ class UserFacadeTest {
         Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
 
         //When
-        UserFacadeDto result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
+        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
 
         //Then
         assertThat(result.message()).isEqualTo(NO_SPECIAL_CHARACTERS_IN_PASSWORD.getMessage());

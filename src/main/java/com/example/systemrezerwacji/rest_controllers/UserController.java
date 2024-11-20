@@ -2,7 +2,7 @@ package com.example.systemrezerwacji.rest_controllers;
 
 
 import com.example.systemrezerwacji.user_module.UserFacade;
-import com.example.systemrezerwacji.user_module.dto.UserFacadeDto;
+import com.example.systemrezerwacji.user_module.dto.UserFacadeResponse;
 import com.example.systemrezerwacji.user_module.dto.UserRegisterDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +19,8 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public ResponseEntity<UserFacadeDto> createUser(@RequestBody UserRegisterDto userDto) {
-        UserFacadeDto newUser = userFacade.createNewUser(userDto);
+    public ResponseEntity<UserFacadeResponse> createUser(@RequestBody UserRegisterDto userDto) {
+        UserFacadeResponse newUser = userFacade.createNewUser(userDto);
 
         if(newUser.userId() == null) {
             return ResponseEntity.badRequest().body(newUser);

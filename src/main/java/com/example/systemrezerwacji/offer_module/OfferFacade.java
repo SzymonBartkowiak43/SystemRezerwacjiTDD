@@ -1,6 +1,8 @@
 package com.example.systemrezerwacji.offer_module;
 
+import com.example.systemrezerwacji.offer_module.dto.CreateOfferDto;
 import com.example.systemrezerwacji.offer_module.dto.OfferDto;
+import com.example.systemrezerwacji.offer_module.response.OfferFacadeResponse;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
@@ -14,12 +16,6 @@ public class OfferFacade {
         this.offerService = serviceService;
     }
 
-    List<Offer> findAllOffersById(List<Long> OffersId) {
-        offerService.findOffers(OffersId);
-
-        return null;
-    }
-
     public List<OfferDto> getAllOffers(Long salonId) {
         return offerService.getAllOffers(salonId);
     }
@@ -30,5 +26,9 @@ public class OfferFacade {
 
     public Offer getOffer(Long offerId) {
         return offerService.getOffer(offerId);
+    }
+
+    public OfferFacadeResponse createOffer(CreateOfferDto createOfferDto) {
+        return null;
     }
 }

@@ -2,12 +2,12 @@ package com.example.systemrezerwacji.employee_module;
 
 import com.example.systemrezerwacji.employee_module.dto.AvailableTermDto;
 import com.example.systemrezerwacji.employee_module.dto.EmployeeAvailabilityDto;
+import com.example.systemrezerwacji.offer_module.Offer;
 import com.example.systemrezerwacji.user_module.User;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,9 +73,18 @@ class EmployeeService {
         return byId.get().getUser().getId();
     }
 
-    void addServiceToEmployee(Long employeeId, List<Long> servicesId ) {
+    void addOfferToEmployee(Long employeeId, Offer offer) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
+
+        if(employee.getOffers().contains(offer)) {
+            return;
+        }
+
+        employee.addOffer(offer);
+
+        employeeRepository.save(employee);
+
     }
 
     Employee getEmployee(Long id) {

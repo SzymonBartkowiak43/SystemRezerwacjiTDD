@@ -11,7 +11,6 @@ import org.mockito.MockitoAnnotations;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,20 +68,17 @@ class ReservationServiceTest {
         //given
         Long employeeId = 1L;
         LocalDate date = LocalDate.of(2024, 11, 13);
-
         List<Reservation> reservations = prepareListWithTwoReservation();
+
         when(reservationRepository.findAll()).thenReturn(reservations);
 
         //when
-
         List<AvailableTermDto> employeeBusyTerms = reservationService.getEmployeeBusyTerms(employeeId, date);
 
         //then
         assertThat(employeeBusyTerms).isNotEmpty();
         assertThat(employeeBusyTerms.size()).isEqualTo(2);
-
     }
-
 
     private List<Reservation> prepareListWithTwoReservation() {
         Employee mockEmployee = createMockEmployee(1L);

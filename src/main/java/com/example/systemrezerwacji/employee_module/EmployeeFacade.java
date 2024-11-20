@@ -2,7 +2,9 @@ package com.example.systemrezerwacji.employee_module;
 
 import com.example.systemrezerwacji.employee_module.dto.AvailableTermDto;
 import com.example.systemrezerwacji.employee_module.dto.EmployeeDto;
+import com.example.systemrezerwacji.employee_module.dto.EmployeeFacadeResponseDto;
 import com.example.systemrezerwacji.employee_module.dto.EmployeeToOfferDto;
+import com.example.systemrezerwacji.offer_module.Offer;
 import com.example.systemrezerwacji.offer_module.OfferFacade;
 import com.example.systemrezerwacji.reservation_module.ReservationFacade;
 import com.example.systemrezerwacji.reservation_module.dto.AvailableDatesReservationDto;
@@ -11,6 +13,7 @@ import com.example.systemrezerwacji.salon_module.dto.CreateEmployeeResponseDto;
 import com.example.systemrezerwacji.user_module.User;
 import com.example.systemrezerwacji.user_module.UserFacade;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -80,5 +83,14 @@ public class EmployeeFacade {
 
     public Employee getEmployee(Long id) {
         return employeeService.getEmployee(id);
+    }
+
+    @Transactional
+    public EmployeeFacadeResponseDto addOfferToEmployee(Long employeeId, Long offerId) {
+        Offer offer = offerFacade.getOffer(offerId);
+
+        employeeService.addOfferToEmployee(employeeId, offer);
+
+        return new EmployeeFacadeResponseDto("success", employeeId);
     }
 }

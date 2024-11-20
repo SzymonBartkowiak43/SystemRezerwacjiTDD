@@ -2,8 +2,8 @@ package com.example.systemrezerwacji.reservation_module;
 
 import com.example.systemrezerwacji.employee_module.Employee;
 import com.example.systemrezerwacji.employee_module.dto.AvailableTermDto;
+import com.example.systemrezerwacji.notification_mode.EmailService;
 import com.example.systemrezerwacji.offer_module.Offer;
-import com.example.systemrezerwacji.reservation_module.dto.CreateReservationDto;
 import com.example.systemrezerwacji.salon_module.Salon;
 import com.example.systemrezerwacji.user_module.User;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,7 @@ import java.util.List;
 @Service
 class ReservationService {
     private final ReservationRepository reservationRepository;
+
 
     ReservationService(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
@@ -33,6 +34,7 @@ class ReservationService {
 
     void addNewReservation(Salon salon, Employee employee, User user, Offer offer, LocalDateTime reservationDateTime) {
         Reservation reservation = new Reservation(salon,employee,user,offer,reservationDateTime);
+
         reservationRepository.save(reservation);
     }
 

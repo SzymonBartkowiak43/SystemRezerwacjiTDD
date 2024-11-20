@@ -3,7 +3,6 @@ package com.example.systemrezerwacji.salon_module;
 import com.example.systemrezerwacji.salon_module.dto.CreatedNewSalonDto;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +29,7 @@ class SalonValidator {
         validateNumber(salonDto.number());
 
 
-        if(errors.isEmpty()) {
+        if (errors.isEmpty()) {
             return success();
         }
 
@@ -42,53 +41,58 @@ class SalonValidator {
     }
 
     void validateName(String name) {
-        if(name == null) {
+        if (name == null) {
             errors.add(EMPTY_NAME);
             return;
         }
-        if(name.length() <= 3) {
+        if (name.length() <= 3) {
             errors.add(SHORT_NAME);
         }
 
     }
+
     void validateCategory(String category) {
-        if(category == null) {
+        if (category == null) {
             errors.add(EMPTY_CATEGORY);
             return;
         }
-        if(category.length() <= 3) {
+        if (category.length() <= 3) {
             errors.add(SHORT_CATEGORY);
         }
     }
+
     void validateCity(String city) {
-        if(city == null) {
+        if (city == null) {
             errors.add(EMPTY_CITY);
             return;
         }
-        if(!city.matches("^[a-zA-Z\\s]+$")) {
+        if (!city.matches("^[a-zA-Z\\s]+$")) {
             errors.add(FORBIDDEN_CHARACTERS_IN_CITY);
         }
     }
+
     void validateZipCode(String zipCode) {
-        if(zipCode == null) {
+        if (zipCode == null) {
             errors.add(EMPTY_ZIP_CODE);
             return;
         }
-        if(!zipCode.matches("\\d{2}-\\d{3}")) {
+        if (!zipCode.matches("\\d{2}-\\d{3}")) {
             errors.add(INCORRECT_ZIP_CODE);
         }
     }
+
     void validateStreet(String street) {
-        if(street == null) {
+        if (street == null) {
             errors.add(EMPTY_STREET);
             return;
         }
-        if(!street.matches("^[a-zA-Z\\s]+$")) {
+        if (!street.matches("^[a-zA-Z\\s]+$")) {
             errors.add(FORBIDDEN_CHARACTERS_IN_STREET);
         }
     }
+
     void validateNumber(String number) {
-        if(number == null) {
+        if (number == null) {
             errors.add(EMPTY_NUMBER);
             return;
         }

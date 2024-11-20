@@ -2,7 +2,7 @@ package com.example.systemrezerwacji.user_module;
 
 
 import com.example.systemrezerwacji.employee_module.dto.EmployeeDto;
-import com.example.systemrezerwacji.user_module.dto.UserFacadeDto;
+import com.example.systemrezerwacji.user_module.dto.UserFacadeResponse;
 import com.example.systemrezerwacji.user_module.dto.UserRegisterDto;
 import org.springframework.stereotype.Component;
 
@@ -23,17 +23,17 @@ public class UserFacade {
         this.validator = validator;
     }
 
-    public UserFacadeDto createNewUser(UserRegisterDto userDto) {
+    public UserFacadeResponse createNewUser(UserRegisterDto userDto) {
         UserValidationResult validate = validator.validate(userDto);
         String message = validate.validationMessage();
 
         if(!message.equals(SUCCESS_MESSAGE)) {
-            return new UserFacadeDto(message, null);
+            return new UserFacadeResponse(message, null);
         }
 
         Long newUserId = userService.createNewUser(userDto);
 
-        return new UserFacadeDto(message,newUserId);
+        return new UserFacadeResponse(message,newUserId);
     }
 
     public Optional<UserRegisterDto> getUserByid(Long id) {
