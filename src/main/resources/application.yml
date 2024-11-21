@@ -30,9 +30,13 @@ spring:
       mail:
         smtp:
           auth: true
+          starttls.enable: true
         starttls:
           enable: true
+          required: true
 
+server:
+  port: 8080
 
 springdoc:
   api-docs:

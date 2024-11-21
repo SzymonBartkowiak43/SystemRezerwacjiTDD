@@ -2,7 +2,6 @@ package com.example.systemrezerwacji.reservation_module;
 
 import com.example.systemrezerwacji.employee_module.Employee;
 import com.example.systemrezerwacji.employee_module.dto.AvailableTermDto;
-import com.example.systemrezerwacji.notification_mode.EmailService;
 import com.example.systemrezerwacji.offer_module.Offer;
 import com.example.systemrezerwacji.salon_module.Salon;
 import com.example.systemrezerwacji.user_module.User;

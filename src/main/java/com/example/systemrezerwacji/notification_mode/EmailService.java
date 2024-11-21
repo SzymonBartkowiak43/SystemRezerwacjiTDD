@@ -23,20 +23,26 @@ class EmailService {
         this.templateEngine = templateEngine;
     }
 
-    public void sendHtmlEmail(String to, String subject, String message) throws MessagingException {
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+    public Boolean sendHtmlEmail(String to, String subject, String message)  {
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-        Context context = new Context();
-        context.setVariable("subject", subject);
-        context.setVariable("message", message);
+            Context context = new Context();
+            context.setVariable("subject", subject);
+            context.setVariable("message", message);
 
-        String htmlBody = templateEngine.process("emailTemplate", context);
+            String htmlBody = templateEngine.process("emailTemplate", context);
 
-        helper.setTo(to);
-        helper.setSubject(subject);
-        helper.setText(htmlBody, true);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(htmlBody, true);
 
-        mailSender.send(mimeMessage);
+            mailSender.send(mimeMessage);
+            return true;
+        } catch (Exception e ) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
