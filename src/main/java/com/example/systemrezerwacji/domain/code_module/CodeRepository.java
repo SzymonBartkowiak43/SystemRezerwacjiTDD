@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface CodeRepository extends CrudRepository<Code,Long> {
+interface CodeRepository extends CrudRepository<Code,Long> {
     Optional<Code> findByCode(String code);
 }

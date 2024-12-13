@@ -3,6 +3,7 @@ package com.example.systemrezerwacji.domain.salon_module;
 import com.example.systemrezerwacji.domain.code_module.CodeFacade;
 import com.example.systemrezerwacji.domain.code_module.message.ConsumeMessage;
 import com.example.systemrezerwacji.domain.employee_module.EmployeeFacade;
+import com.example.systemrezerwacji.domain.employee_module.response.CreateEmployeeResponseDto;
 import com.example.systemrezerwacji.domain.employee_module.dto.EmployeeDto;
 import com.example.systemrezerwacji.domain.offer_module.OfferFacade;
 import com.example.systemrezerwacji.domain.offer_module.dto.OfferDto;
@@ -80,7 +81,7 @@ public class SalonFacade {
     public CreateEmployeeResponseDto addEmployeeToSalon(EmployeeDto employeeDto) {
         Salon salon= salonService.getSalon(employeeDto.salonId());
 
-        return employeeFacade.addEmployeeToSalon(employeeDto, salon);
+        return employeeFacade.createEmployeeAndAddToSalon(employeeDto, salon);
     }
 
     public SalonOffersListDto getAllOffersSalon(Long salonId) {

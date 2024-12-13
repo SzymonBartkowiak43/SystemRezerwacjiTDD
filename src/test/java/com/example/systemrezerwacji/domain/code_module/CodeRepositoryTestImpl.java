@@ -8,13 +8,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CodeRepositoryTestImpl implements CodeRepository {
 
-    Map<Long,Code> codeDataBase = new ConcurrentHashMap<>();
-    private Long i = 1L;
+    private Map<Long,Code> codeDataBase = new ConcurrentHashMap<>();
+    private Long id = 1L;
 
     @Override
     public <S extends Code> S save(S entity) {
-        codeDataBase.put(i,  entity);
-        i++;
+        codeDataBase.put(id,  entity);
+        id++;
         return entity;
     }
 

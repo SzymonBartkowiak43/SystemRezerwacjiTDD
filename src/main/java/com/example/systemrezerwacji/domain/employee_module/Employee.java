@@ -49,7 +49,7 @@ public class Employee {
         this.availability = availability;
     }
 
-    public void addOffer(Offer offer) {
+    void addOffer(Offer offer) {
         this.offers.add(offer);
     }
 }

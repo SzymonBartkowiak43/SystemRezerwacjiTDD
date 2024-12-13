@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static com.example.systemrezerwacji.domain.code_module.CodeError.CODE_ALREADY_CONSUMED;
+import static com.example.systemrezerwacji.domain.code_module.CodeError.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -66,19 +66,18 @@ class CodeFacadeTest {
                 () -> assertThat(byCode.get().getIsConsumed()).isTrue()
         );
     }
-//
-//    @Test
-//    void should_not_consume_code_when_not_found_code() {
-//        //given
-//        User user = new User();
-//        when(codeRepository.findByCode(any())).thenReturn(Optional.empty());
-//
-//        //when
-//        ConsumeMessage consumeMessage = codeService.consumeCode("notCorrectCode", user);
-//
-//        //then
-//        assertThat(consumeMessage.isSuccess()).isFalse();
-//        assertThat(consumeMessage.message()).isEqualTo(CODE_NOT_FOUND.message);
-//    }
+
+    @Test
+    void should_not_consume_code_when_not_found_code() {
+        //given
+        User user = new User();
+
+        //when
+        ConsumeMessage consumeMessage = codeFacade.consumeCode("notCorrectCode", user);
+
+        //then
+        assertThat(consumeMessage.isSuccess()).isFalse();
+        assertThat(consumeMessage.message()).isEqualTo(CODE_NOT_FOUND.message);
+    }
 
 }
