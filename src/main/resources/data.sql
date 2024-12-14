@@ -5,12 +5,12 @@ SELECT * FROM "users"
 --     ('employee@wp.com', 'employee', 'employee'),
 --     ('szymon.b4310spam@gmail.com', 'janek', 'janek');
 --
-INSERT INTO "user_role" (name, description)
-VALUES
-    ('USER', 'People who would like to make reservations'),
-    ('EMPLOYEE', 'Staff members who manage reservations and services'),
-    ('ADMIN', 'Administrators with full system access and management capabilities'),
-    ('OWNER', 'Salon owners with management access to their respective salons');
+-- INSERT INTO "user_role" (name, description)
+-- VALUES
+--     ('USER', 'People who would like to make reservations'),
+--     ('EMPLOYEE', 'Staff members who manage reservations and services'),
+--     ('ADMIN', 'Administrators with full system access and management capabilities'),
+--     ('OWNER', 'Salon owners with management access to their respective salons');
 --
 -- INSERT INTO "user_roles" (user_id, role_id)
 -- VALUES
