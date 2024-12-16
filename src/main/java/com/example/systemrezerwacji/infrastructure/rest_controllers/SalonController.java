@@ -40,12 +40,11 @@ public class SalonController {
         return ResponseEntity.created(location).body(newSalon);
     }
 
-    @PatchMapping("/add-opening-hours")
+    @PatchMapping("/salon/add-opening-hours")
     public ResponseEntity<SalonFacadeResponseDto> addOpeningHours(@RequestBody List<OpeningHoursDto> openingHoursDto) {
         SalonFacadeResponseDto response = salonFacade.addOpeningHoursToSalon(openingHoursDto);
         return ResponseEntity.ok(response);
     }
-
 
     @GetMapping("/salons")
     public ResponseEntity<List<SalonWithIdDto>> getAllSalons() {
@@ -61,7 +60,7 @@ public class SalonController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/{id}/employee")
+    @PostMapping("/salon/{id}/employee")
     public ResponseEntity<CreateEmployeeResponseDto> addEmployeeToSalon(@PathVariable Long id, @RequestBody EmployeeDto employeeDto) {
         EmployeeDto updatedEmployeeDto = new EmployeeDto(id, employeeDto.name(), employeeDto.email(), employeeDto.availability());
 

@@ -51,6 +51,7 @@ public class SecurityConfig {
                                 .requestMatchers("/token/**").permitAll()
                                 .requestMatchers("/register/**").permitAll()
                                 .requestMatchers("/swagger-resources/**").permitAll()
+                                .requestMatchers("/salons").permitAll()
 //                                .requestMatchers("/user/**").permitAll()
                                 .anyRequest().authenticated()
                         )
