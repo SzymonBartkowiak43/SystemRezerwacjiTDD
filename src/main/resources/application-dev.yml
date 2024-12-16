@@ -3,7 +3,7 @@ spring:
 #    name: SystemRezerwacji_TDD
 #  datasource:
 #    url: jdbc:h2:mem:test
-#    username: sa
+#    email: sa
 #  jpa:
 #    hibernate:
 #      ddl-auto: validate

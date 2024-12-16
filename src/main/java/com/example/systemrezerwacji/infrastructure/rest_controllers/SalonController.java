@@ -25,7 +25,7 @@ public class SalonController {
 
 
     @PostMapping("/salon")
-    public ResponseEntity<SalonFacadeResponseDto> createSalon(@RequestBody CreatedNewSalonDto salon) {
+    public ResponseEntity<SalonFacadeResponseDto> createSalon(@RequestBody CreateNewSalonDto salon) {
         SalonFacadeResponseDto newSalon = salonFacade.createNewSalon(salon);
 
         if(newSalon.salonId() == null) {

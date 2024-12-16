@@ -43,6 +43,7 @@ public class UserFacade {
         return UserDto.builder()
                 .userId(user.getId())
                 .name(user.getName())
+                .email(user.getEmail())
                 .password(user.getPassword())
                 .roles(userRoleDtos)
                 .build();
@@ -53,12 +54,12 @@ public class UserFacade {
         String message = validate.validationMessage();
 
         if(!message.equals(SUCCESS_MESSAGE)) {
-            return new UserFacadeResponse(message, null);
+            return new UserFacadeResponse(message, null, null);
         }
 
-        Long newUserId = userService.createNewUser(userDto);
+        User user = userService.createNewUser(userDto);
 
-        return new UserFacadeResponse(message,newUserId);
+        return new UserFacadeResponse(message,user.getId(), user.getName());
     }
 
     public Optional<UserRegisterDto> getUserByid(Long id) {

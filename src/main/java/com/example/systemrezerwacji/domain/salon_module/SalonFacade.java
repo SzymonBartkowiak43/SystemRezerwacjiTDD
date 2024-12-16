@@ -42,7 +42,7 @@ public class SalonFacade {
     }
 
 
-    public SalonFacadeResponseDto createNewSalon(CreatedNewSalonDto salonDto) {
+    public SalonFacadeResponseDto createNewSalon(CreateNewSalonDto salonDto) {
         SalonValidationResult validate = validator.validate(salonDto);
         String message = validate.validationMessage();
 
