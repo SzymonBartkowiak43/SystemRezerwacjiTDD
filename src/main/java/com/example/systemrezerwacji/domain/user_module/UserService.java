@@ -27,9 +27,9 @@ class UserService {
         this.mapper = mapper;
     }
 
-    Long createNewUser(UserRegisterDto userDto) {
+    User createNewUser(UserRegisterDto userDto) {
         User user = createUser(userDto);
-        return user.getId();
+        return user;
     }
 
     Optional<UserRegisterDto> getUser(Long id) {
@@ -56,8 +56,8 @@ class UserService {
         String password = PasswordGenerator.generatePassword();
         UserRegisterDto userRegister = new UserRegisterDto(employeeDto.email(), employeeDto.name(), password);
 
-        Long newUser = createNewUser(userRegister);
-        Optional<User> employee = addRoleEmployee(newUser);
+        User newUser = createNewUser(userRegister);
+        Optional<User> employee = addRoleEmployee(newUser.getId());
 
         return employee;
     }

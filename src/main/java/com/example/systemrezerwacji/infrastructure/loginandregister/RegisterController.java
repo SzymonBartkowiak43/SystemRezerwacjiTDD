@@ -21,8 +21,10 @@ public class RegisterController {
     @PostMapping("/register")
     public ResponseEntity<UserFacadeResponse> register(@RequestBody UserRegisterDto registerUserDto) {
         String encodedPassword = bCryptPasswordEncoder.encode(registerUserDto.password());
+
         UserFacadeResponse registerResult = userFacade.createNewUser(
                 new UserRegisterDto(registerUserDto.email(), registerUserDto.name(), encodedPassword));
+
         return ResponseEntity.status(HttpStatus.CREATED).body(registerResult);
     }
 }

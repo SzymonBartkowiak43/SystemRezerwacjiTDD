@@ -1,4 +1,4 @@
-package com.example.systemrezerwacji.infrastructure.notification_mode;
+package com.example.systemrezerwacji.infrastructure.loginandregister.notification_mode;
 
 
 import jakarta.mail.internet.MimeMessage;

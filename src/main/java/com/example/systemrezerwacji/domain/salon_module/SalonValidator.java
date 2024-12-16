@@ -1,6 +1,6 @@
 package com.example.systemrezerwacji.domain.salon_module;
 
-import com.example.systemrezerwacji.domain.salon_module.dto.CreatedNewSalonDto;
+import com.example.systemrezerwacji.domain.salon_module.dto.CreateNewSalonDto;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
@@ -14,7 +14,7 @@ class SalonValidator {
     List<ValidationError> errors;
 
 
-    SalonValidationResult validate(CreatedNewSalonDto salonDto) {
+    SalonValidationResult validate(CreateNewSalonDto salonDto) {
 
         errors = new LinkedList<>();
 

@@ -1,6 +1,6 @@
-package com.example.systemrezerwacji.infrastructure.notification_mode;
+package com.example.systemrezerwacji.infrastructure.loginandregister.notification_mode;
 
-import com.example.systemrezerwacji.infrastructure.notification_mode.response.NotificationFacadeResponse;
+import com.example.systemrezerwacji.infrastructure.loginandregister.notification_mode.response.NotificationFacadeResponse;
 import org.springframework.stereotype.Component;
 
 @Component

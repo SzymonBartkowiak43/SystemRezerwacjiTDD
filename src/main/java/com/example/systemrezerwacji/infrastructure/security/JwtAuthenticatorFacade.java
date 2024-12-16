@@ -23,14 +23,16 @@ public class JwtAuthenticatorFacade {
     private final Clock clock;
 
     public JwtResponseDto authenticateAndGenerateToken(TokenRequestDto tokenRequest) {
+
         Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(tokenRequest.email(), tokenRequest.password()));
+
         User user = (User) authenticate.getPrincipal();
         String token = createToken(user);
-        String username = user.getUsername();
+        String email = user.getUsername();
         return JwtResponseDto.builder()
                 .token(token)
-                .username(username)
+                .email(email)
                 .build();
     }
 
