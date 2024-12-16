@@ -59,7 +59,7 @@ class UserValidator {
             errors.add(ValidationError.EMPTY_PASSWORD);
             return;
         }
-        if (password.length() < 8) {
+        if (password.length() < 4) {
             errors.add(ValidationError.SHORT_PASSWORD);
         }
         if (!password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*")) {

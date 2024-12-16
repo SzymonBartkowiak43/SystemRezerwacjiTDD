@@ -3,12 +3,14 @@ package com.example.systemrezerwacji.domain.user_module;
 import com.example.systemrezerwacji.domain.employee_module.dto.EmployeeDto;
 import com.example.systemrezerwacji.domain.user_module.dto.UserRegisterDto;
 import com.example.systemrezerwacji.domain.user_module.dto.UserCreatedWhenRegisteredDto;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 class UserService {
+
     private static final String DEFAULT_USER_ROLE = "USER";
     private static final String OWNER_ROLE = "OWNER";
     private static final String EMPLOYEE_ROLE = "EMPLOYEE";
@@ -29,8 +31,6 @@ class UserService {
         User user = createUser(userDto);
         return user.getId();
     }
-
-
 
     Optional<UserRegisterDto> getUser(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
@@ -67,6 +67,10 @@ class UserService {
         return userById.getName();
     }
 
+    Optional<User> getUserByEmail(String email) {
+        return userRepository.getUserByEmail(email);
+    }
+
     UserCreatedWhenRegisteredDto getUserByEmailOrCreateNewAccount(String email) {
         Optional<User> userByEmail = userRepository.getUserByEmail(email);
 
@@ -91,7 +95,9 @@ class UserService {
     }
 
     private UserRole getDefaultRole() {
-        return userRoleRepository.findByName(DEFAULT_USER_ROLE).orElseThrow();
+        return userRoleRepository
+                .findByName(DEFAULT_USER_ROLE)
+                .orElseThrow(() -> new BadCredentialsException("User Role not Exists!"));
     }
 
     private Optional<User> addRoleEmployee(Long id) {
