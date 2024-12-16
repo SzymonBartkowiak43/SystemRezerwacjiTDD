@@ -3,12 +3,14 @@ package com.example.systemrezerwacji.domain.user_module;
 import com.example.systemrezerwacji.domain.employee_module.dto.EmployeeDto;
 import com.example.systemrezerwacji.domain.user_module.dto.UserRegisterDto;
 import com.example.systemrezerwacji.domain.user_module.dto.UserCreatedWhenRegisteredDto;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 class UserService {
+
     private static final String DEFAULT_USER_ROLE = "USER";
     private static final String OWNER_ROLE = "OWNER";
     private static final String EMPLOYEE_ROLE = "EMPLOYEE";
@@ -25,12 +27,10 @@ class UserService {
         this.mapper = mapper;
     }
 
-    Long createNewUser(UserRegisterDto userDto) {
+    User createNewUser(UserRegisterDto userDto) {
         User user = createUser(userDto);
-        return user.getId();
+        return user;
     }
-
-
 
     Optional<UserRegisterDto> getUser(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
@@ -56,8 +56,8 @@ class UserService {
         String password = PasswordGenerator.generatePassword();
         UserRegisterDto userRegister = new UserRegisterDto(employeeDto.email(), employeeDto.name(), password);
 
-        Long newUser = createNewUser(userRegister);
-        Optional<User> employee = addRoleEmployee(newUser);
+        User newUser = createNewUser(userRegister);
+        Optional<User> employee = addRoleEmployee(newUser.getId());
 
         return employee;
     }
@@ -65,6 +65,10 @@ class UserService {
     String getNameById(Long id) {
         User userById = userRepository.getUserById(id);
         return userById.getName();
+    }
+
+    Optional<User> getUserByEmail(String email) {
+        return userRepository.getUserByEmail(email);
     }
 
     UserCreatedWhenRegisteredDto getUserByEmailOrCreateNewAccount(String email) {
@@ -91,7 +95,9 @@ class UserService {
     }
 
     private UserRole getDefaultRole() {
-        return userRoleRepository.findByName(DEFAULT_USER_ROLE).orElseThrow();
+        return userRoleRepository
+                .findByName(DEFAULT_USER_ROLE)
+                .orElseThrow(() -> new BadCredentialsException("User Role not Exists!"));
     }
 
     private Optional<User> addRoleEmployee(Long id) {

@@ -3,7 +3,7 @@ package com.example.systemrezerwacji.domain.salon_module;
 import com.example.systemrezerwacji.domain.code_module.Code;
 import com.example.systemrezerwacji.domain.code_module.CodeFacade;
 import com.example.systemrezerwacji.domain.code_module.message.ConsumeMessage;
-import com.example.systemrezerwacji.domain.salon_module.dto.CreatedNewSalonDto;
+import com.example.systemrezerwacji.domain.salon_module.dto.CreateNewSalonDto;
 import com.example.systemrezerwacji.domain.salon_module.dto.SalonFacadeResponseDto;
 import com.example.systemrezerwacji.domain.user_module.User;
 import com.example.systemrezerwacji.domain.user_module.UserFacade;
@@ -62,13 +62,13 @@ class SalonFacadeTest {
         ConsumeMessage consumeMessage1 = mock(ConsumeMessage.class);
         when(consumeMessage1.isSuccess()).thenReturn(true);
 
-        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
         when(userFacade.getUserToCreateSalon(Long.valueOf(userId))).thenReturn(Optional.of(new User()));
         when(codeFacade.consumeCode(eq(code.getCode()), any(User.class))).thenReturn(consumeMessage1);
 
 
         //When
-        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId,code.getCode()));
+        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId,code.getCode()));
         //Then
         assertThat(result.message()).isEqualTo(SUCCESS_MESSAGE);
     }
@@ -86,10 +86,10 @@ class SalonFacadeTest {
 
 
         SalonValidationResult validationResult = new SalonValidationResult(EMPTY_NAME.message);
-        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
 
         //When
-        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
+        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
         assertThat(result.message()).isEqualTo(EMPTY_NAME.message);
     }
@@ -107,9 +107,9 @@ class SalonFacadeTest {
 
 
         SalonValidationResult validationResult = new SalonValidationResult(EMPTY_CATEGORY.message);
-        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
+        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
         assertThat(result.message()).isEqualTo(EMPTY_CATEGORY.message);
 
@@ -126,9 +126,9 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(EMPTY_CITY.message);
-        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
+        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
         assertThat(result.message()).isEqualTo(EMPTY_CITY.message);
 
@@ -145,10 +145,10 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(EMPTY_ZIP_CODE.message);
-        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
 
         //When
-        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
+        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
         assertThat(result.message()).isEqualTo(EMPTY_ZIP_CODE.message);
 
@@ -165,9 +165,9 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(EMPTY_STREET.message);
-        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
+        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
         assertThat(result.message()).isEqualTo(EMPTY_STREET.message);
 
@@ -184,9 +184,9 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(EMPTY_NUMBER.message);
-        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
+        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
         assertThat(result.message()).isEqualTo(EMPTY_NUMBER.message);
     }
@@ -203,9 +203,9 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(EMPTY_NAME.message + " " + EMPTY_NUMBER.message);
-        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
+        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
         assertThat(result.message()).contains(EMPTY_NAME.message);
         assertThat(result.message()).contains(EMPTY_NUMBER.message);
@@ -223,9 +223,9 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(SHORT_NAME.message);
-        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
+        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
         assertThat(result.message()).isEqualTo(SHORT_NAME.message);
     }
@@ -242,9 +242,9 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(SHORT_CATEGORY.message);
-        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
+        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
         assertThat(result.message()).isEqualTo(SHORT_CATEGORY.message);
     }
@@ -261,9 +261,9 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(FORBIDDEN_CHARACTERS_IN_CITY.message);
-        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
+        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
         assertThat(result.message()).isEqualTo(FORBIDDEN_CHARACTERS_IN_CITY.message);
     }
@@ -280,9 +280,9 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(INCORRECT_ZIP_CODE.message);
-        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
+        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
         assertThat(result.message()).isEqualTo(INCORRECT_ZIP_CODE.message);
     }
@@ -299,9 +299,9 @@ class SalonFacadeTest {
         String userId = "1";
 
         SalonValidationResult validationResult = new SalonValidationResult(FORBIDDEN_CHARACTERS_IN_STREET.message);
-        when(validator.validate(any(CreatedNewSalonDto.class))).thenReturn(validationResult);
+        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
         //When
-        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreatedNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
+        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
         //Then
         assertThat(result.message()).isEqualTo(FORBIDDEN_CHARACTERS_IN_STREET.message);
     }

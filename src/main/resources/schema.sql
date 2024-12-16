@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 CREATE TABLE IF NOT EXISTS "user_role" (
                                            id SERIAL PRIMARY KEY,
                                            name VARCHAR(100) UNIQUE,
-    description VARCHAR(100)
+    description VARCHAR(250)
     );
 
 CREATE TABLE IF NOT EXISTS "user_roles" (

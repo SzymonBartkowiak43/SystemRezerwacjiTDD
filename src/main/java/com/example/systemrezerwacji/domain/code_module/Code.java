@@ -1,6 +1,7 @@
 package com.example.systemrezerwacji.domain.code_module;
 
 import com.example.systemrezerwacji.domain.user_module.User;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 

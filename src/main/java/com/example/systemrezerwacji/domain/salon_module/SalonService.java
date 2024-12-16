@@ -1,6 +1,6 @@
 package com.example.systemrezerwacji.domain.salon_module;
 
-import com.example.systemrezerwacji.domain.salon_module.dto.CreatedNewSalonDto;
+import com.example.systemrezerwacji.domain.salon_module.dto.CreateNewSalonDto;
 import com.example.systemrezerwacji.domain.salon_module.dto.SalonWithIdDto;
 import com.example.systemrezerwacji.domain.salon_module.exception.SalonNotFoundException;
 import com.example.systemrezerwacji.domain.user_module.User;
@@ -21,7 +21,7 @@ class SalonService {
         this.mapper = mapper;
     }
 
-    Long createNewSalon(CreatedNewSalonDto salonDto, Optional<User> user) {
+    Long createNewSalon(CreateNewSalonDto salonDto, Optional<User> user) {
         Salon salon = new Salon.SalonBuilder()
                 .addName(salonDto.salonName())
                 .addCity(salonDto.city())
