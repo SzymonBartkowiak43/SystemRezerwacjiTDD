@@ -4,6 +4,7 @@ import com.example.systemrezerwacji.domain.employee_module.dto.EmployeeDto;
 import com.example.systemrezerwacji.domain.user_module.dto.UserRegisterDto;
 import com.example.systemrezerwacji.domain.user_module.dto.UserCreatedWhenRegisteredDto;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,11 +21,13 @@ class UserService {
     private final UserRepository userRepository;
     private final UserRoleRepository userRoleRepository;
     private final MaperUserToUserRegisterDto mapper;
+    private final PasswordEncoder passwordEncoder;
 
-    UserService(UserRepository userRepository, UserRoleRepository userRoleRepository, MaperUserToUserRegisterDto mapper) {
+    UserService(UserRepository userRepository, UserRoleRepository userRoleRepository, MaperUserToUserRegisterDto mapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userRoleRepository = userRoleRepository;
         this.mapper = mapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     User createNewUser(UserRegisterDto userDto) {
@@ -75,11 +78,12 @@ class UserService {
         Optional<User> userByEmail = userRepository.getUserByEmail(email);
 
         if(userByEmail.isPresent()) {
-            return new UserCreatedWhenRegisteredDto(userByEmail.get(),false);
+            return new UserCreatedWhenRegisteredDto(userByEmail.get(),false, null);
         }
-        User newUser = createNewUserByEmail(email);
+        String password = PasswordGenerator.generatePassword();
+        User newUser = createNewUserByEmail(email, password);
 
-        return new UserCreatedWhenRegisteredDto(newUser, true);
+        return new UserCreatedWhenRegisteredDto(newUser, true, password);
     }
 
     private User createUser(UserRegisterDto userDto) {
@@ -110,9 +114,10 @@ class UserService {
         return userWithId;
     }
 
-    private User createNewUserByEmail(String email) {
-        String password = PasswordGenerator.generatePassword();
-        UserRegisterDto userRegisterDto = new UserRegisterDto(email, GUEST, password);
+    private User createNewUserByEmail(String email, String password) {
+        String hashedPassword = passwordEncoder.encode(password);
+
+        UserRegisterDto userRegisterDto = new UserRegisterDto(email, GUEST, hashedPassword);
         User user = createUser(userRegisterDto);
         return user;
     }

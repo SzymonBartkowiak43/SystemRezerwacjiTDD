@@ -5,6 +5,7 @@ import com.example.systemrezerwacji.domain.reservation_module.ReservationFacade;
 import com.example.systemrezerwacji.domain.reservation_module.dto.CreateReservationDto;
 import com.example.systemrezerwacji.domain.reservation_module.dto.UserReservationDto;
 import com.example.systemrezerwacji.domain.reservation_module.response.ReservationFacadeResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,15 +26,15 @@ public class ReservationController {
         ReservationFacadeResponse response =  reservationFacade.createNewReservation(reservationDto);
 
         if(response.isSuccess()) {
-            return ResponseEntity.ok(response);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } else {
             return ResponseEntity.badRequest().body(response);
         }
     }
 
-    @GetMapping("/reservation/user/{userId}")
-    public ResponseEntity<List<UserReservationDto>> showReservationToCurrentUser(@PathVariable Long userId) {
-         List<UserReservationDto> userReservationList =  reservationFacade.getUserReservation(userId);
+    @GetMapping("/reservation/user")
+    public ResponseEntity<List<UserReservationDto>> showReservationToCurrentUser(@RequestParam String email) {
+         List<UserReservationDto> userReservationList =  reservationFacade.getUserReservation(email);
 
          return ResponseEntity.ok(userReservationList);
     }

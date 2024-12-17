@@ -4,7 +4,15 @@ import com.example.systemrezerwacji.BaseIntegrationTest;
 
 import com.example.systemrezerwacji.domain.code_module.CodeFacade;
 import com.example.systemrezerwacji.domain.code_module.dto.CodeDto;
-import com.example.systemrezerwacji.domain.user_module.dto.UserRegisterDto;
+import com.example.systemrezerwacji.domain.employee_module.dto.AvailableTermDto;
+import com.example.systemrezerwacji.domain.employee_module.dto.EmployeeFacadeResponseDto;
+import com.example.systemrezerwacji.domain.employee_module.response.CreateEmployeeResponseDto;
+import com.example.systemrezerwacji.domain.offer_module.response.OfferFacadeResponse;
+import com.example.systemrezerwacji.domain.reservation_module.dto.UserReservationDto;
+import com.example.systemrezerwacji.domain.reservation_module.response.ReservationFacadeResponse;
+import com.example.systemrezerwacji.domain.salon_module.dto.SalonFacadeResponseDto;
+import com.example.systemrezerwacji.domain.salon_module.dto.SalonWithIdDto;
+
 import com.example.systemrezerwacji.domain.user_module.response.UserFacadeResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +21,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import com.example.systemrezerwacji.infrastructure.loginandregister.dto.*;
-import org.springframework.transaction.annotation.Transactional;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -26,9 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseIntegrationTest {
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private CodeFacade codeFacade;
@@ -114,54 +120,403 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
 //        step 5: user made POST /salon with valid salon details and system created the salon, returning OK(200) with salonId=1
         // given
         CodeDto codeDto = codeFacade.generateNewCode();
+        String salonRequestJson = String.format("""
+        {
+            "salonName": "Amazing Barber",
+            "category": "Hair and Beauty",
+            "city": "Bialystok",
+            "zipCode": "00-001",
+            "street": "Main Street",
+            "number": "123",
+            "userId": 1,
+            "code": "%s"
+        }
+        """.trim(), codeDto.code());
         // when
-        ResultActions preformCreateSalon = mockMvc.perform(post("/salon")
+        ResultActions performCreateSalon = mockMvc.perform(post("/salon")
                 .header("Authorization", "Bearer " + token)
-                .content("""
-                        {
-                            "salonName": "LAMBADZIARA",
-                            "category": "Hair and Beauty",
-                            "city": "XXXXXXXXXX",
-                            "zipCode": "00-001",
-                            "street": "Main Street",
-                            "number": "123",
-                            "userId": 1,
-                            "code": "123e4567-e89b-12d3-a456-426614174000"
-                        }
-                        """.trim())
+                .content(salonRequestJson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        // then
+        String createdSalonJson = performCreateSalon.andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        SalonFacadeResponseDto salonCreatedResponseDto = objectMapper.readValue(createdSalonJson, SalonFacadeResponseDto.class);
+        assertAll(
+                () -> assertThat(salonCreatedResponseDto.message()).isEqualTo("success"),
+                () -> assertThat(salonCreatedResponseDto.salonId()).isEqualTo(1)
         );
 
+
+//      step 6: owner made Patch /salon/add-opening-hours with valid hours and system returned OK(200)
+        // given
+        String salonOpeningHours = getSalonOpeningHours();
+        // when
+        ResultActions performAddOpeningHours = mockMvc.perform(patch("/salon/add-opening-hours")
+                .header("Authorization", "Bearer " + token)
+                .content(salonOpeningHours)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
         // then
+        String addOpeningHoursJson = performAddOpeningHours.andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        SalonFacadeResponseDto salonAddHoursResponseDto = objectMapper.readValue(addOpeningHoursJson, SalonFacadeResponseDto.class);
+        assertThat(salonAddHoursResponseDto.message()).isEqualTo("success");
 
 
-//        step 6: user made POST /salon/1/opening-hours with valid hours and system returned OK(200)
-//        step 7: user made POST /salon/1/employees with employee details and system added the employee, returning OK(200) with employeeId=1
-//        step 8: user made POST /salon/1/offers with offer details and system created the offer, returning OK(200) with offerId=1
-//        step 9: user made POST /employee/1/assign-offer with offerId=1 and system assigned the offer to the employee, returning OK(200)
+//      step 7: owner made POST /salon/1/employee with employee details and system added the employee, returning OK(200)
+        // given
+        String employeeDateAndAvailability = getEmployeeDate();
+        // when
+        ResultActions performAddEmployee = mockMvc.perform(post("/salon/1/employee")
+                .header("Authorization", "Bearer " + token)
+                .content(employeeDateAndAvailability)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        // then
+        String addEmployeeJson = performAddEmployee.andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        CreateEmployeeResponseDto salonEmployeeResponse = objectMapper.readValue(addEmployeeJson, CreateEmployeeResponseDto.class);
+        assertAll(
+                () -> assertThat(salonEmployeeResponse.employeePassword()).isNotNull(),
+                () -> assertThat(salonEmployeeResponse.employeeEmail()).isEqualTo("Kot@example.com"),
+                () -> assertThat(salonEmployeeResponse.message()).isEqualTo("success")
+        );
 
-//
-//        String jsonSalons = mockMvc.perform(get("/salons")
-//                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-//                .andExpect(status().isOk()).andReturn()
-//                .getResponse()
-//                .getContentAsString();
-//
-//        List<SalonWithIdDto> salons = objectMapper.readValue(jsonSalons, new TypeReference<>() {
-//        });
-//
-//        assertThat(salons).isEmpty();
-//
+    //  step 8: owner made POST /offers with offer details and system created the offer, returning Created(201) with offerId=1
+        // given
+        String createOffer = """
+                {
+                    "name": "Haircut",
+                    "description": "A stylish haircut and grooming session.",
+                    "price": 49.99,
+                    "duration": "00:30:00",
+                    "salonId": 1
+                }
+                """.trim();
+        // when
+        ResultActions performAddOffer = mockMvc.perform(post("/offer")
+                .header("Authorization", "Bearer " + token)
+                .content(createOffer)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        // then
+        String offerJson = performAddOffer.andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        OfferFacadeResponse offerFacadeResponse = objectMapper.readValue(offerJson, OfferFacadeResponse.class);
+        assertAll(
+                () -> assertThat(offerFacadeResponse.OfferId()).isEqualTo(1),
+                () -> assertThat(offerFacadeResponse.message()).isEqualTo("success")
+        );
+
+        //  step 9: owner made POST /offers with offer details and system created the offer, returning Created(201) with offerId=1
+        // given
+        String createOffer2 = """
+                {
+                    "name": "Haircut && Beard",
+                    "description": "A stylish haircut and grooming session.",
+                    "price": 99.99,
+                    "duration": "01:00:00",
+                    "salonId": 1
+                }
+                """.trim();
+        // when
+        ResultActions performAddOffer2 = mockMvc.perform(post("/offer")
+                .header("Authorization", "Bearer " + token)
+                .content(createOffer2)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        // then
+        String offerJson2 = performAddOffer2.andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        OfferFacadeResponse offerFacadeResponse2 = objectMapper.readValue(offerJson2, OfferFacadeResponse.class);
+        assertAll(
+                () -> assertThat(offerFacadeResponse2.OfferId()).isEqualTo(2),
+                () -> assertThat(offerFacadeResponse2.message()).isEqualTo("success")
+        );
+
+
+//      step 9: owner assign offer 1 to employee with id 1 make PATCH to /employees/add-offer, returning OK(200)
+        // given
+        String assignOffer = """
+                {
+                  "offerId": 1,
+                  "employeeId": 1
+                }
+                """.trim();
+        // when
+        ResultActions performAssignOffer = mockMvc.perform(patch("/employees/add-offer")
+                .header("Authorization", "Bearer " + token)
+                .content(assignOffer)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        // then
+        String assignOfferJson = performAssignOffer.andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        EmployeeFacadeResponseDto employeeFacadeResponse = objectMapper.readValue(assignOfferJson, EmployeeFacadeResponseDto.class);
+        assertAll(
+                () -> assertThat(employeeFacadeResponse.employeeId()).isEqualTo(1),
+                () -> assertThat(employeeFacadeResponse.message()).isEqualTo("success")
+        );
+
+
+//      step 10: owner assign offer 1 to employee with id 1 make PATCH to /employees/add-offer, returning OK(200)
+        // given
+        String assignOffer2 = """
+                {
+                  "offerId": 2,
+                  "employeeId": 1
+                }
+                """.trim();
+        // when
+        ResultActions performAssignOffer2 = mockMvc.perform(patch("/employees/add-offer")
+                .header("Authorization", "Bearer " + token)
+                .content(assignOffer2)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        // then
+        String assignOfferJson2 = performAssignOffer2.andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        EmployeeFacadeResponseDto employeeFacadeResponse2 = objectMapper.readValue(assignOfferJson2, EmployeeFacadeResponseDto.class);
+        assertAll(
+                () -> assertThat(employeeFacadeResponse2.employeeId()).isEqualTo(1),
+                () -> assertThat(employeeFacadeResponse2.message()).isEqualTo("success")
+        );
+
+//###########################################################USER#########################################################################//
+//      step 11: user made GET /salons and see 1 salon with name Amazing Barber with status OK(200)
+        // given && when
+        String jsonSalons = mockMvc.perform(get("/salons")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk()).andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        List<SalonWithIdDto> salons = objectMapper.readValue(jsonSalons, new TypeReference<>() {
+        });
+        //  then
+        assertAll(
+                () -> assertThat(salons.get(0).salonName()).isEqualTo("Amazing Barber"),
+                () -> assertThat(salons.get(0).category()).isEqualTo("Hair and Beauty")
+        );
+
+//      step 12: user made GET /salons/1 and get allInformation about salon
+        // given && when
+        String jsonSalonWithId1 = mockMvc.perform(get("/salons/1")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk()).andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        SalonWithIdDto salon1 = objectMapper.readValue(jsonSalonWithId1, SalonWithIdDto.class);
+        //  then
+        assertAll(
+                () -> assertThat(salon1.salonName()).isEqualTo("Amazing Barber"),
+                () -> assertThat(salon1.category()).isEqualTo("Hair and Beauty")
+       );
+//     step 13: user choose offer and employee GET /employee/available-dates on 2024-12-31 with employee id 1 and offer 1, returning OK(200)
+        // given
+        String availableDate = """
+                {
+                  "date": "2024-12-31",
+                  "employeeId": 1,
+                  "offerId": 1
+                }
+                """.trim();
+        // when
+        ResultActions performGetAvailableDate = mockMvc.perform(get("/employee/available-dates")
+                .content(availableDate)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        // then
+        String availableTermJson = performGetAvailableDate.andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        List<AvailableTermDto> availableTermDtos =  objectMapper.readValue(availableTermJson, new TypeReference<>() {
+        });
+
+        assertAll(
+                () -> assertThat(availableTermDtos.size()).isGreaterThan(2)
+        );
+
+
+//     step 14: user make reservation POST /reservation 2024-12-31, returning CREATED(201)
+        // given
+        String reservationDate = """
+                {
+                    "employeeId": 1,
+                    "offerId": 1,
+                    "salonId": 1,
+                    "reservationDateTime": "2024-12-31T13:00:00",
+                    "userEmail": "szymon.b4310xxxxx@gmail.com"
+                }
+                """.trim();
+        // when
+        ResultActions performReservation = mockMvc.perform(post("/reservation")
+                .content(reservationDate)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        // then
+        String reservationJson = performReservation.andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        ReservationFacadeResponse reservationFacadeResponse = objectMapper.readValue(reservationJson, ReservationFacadeResponse.class);
+        String password = reservationFacadeResponse.password();
+        assertAll(
+                () -> assertTrue(reservationFacadeResponse.isSuccess()),
+                () -> assertThat(reservationFacadeResponse.message()).isEqualTo("success"),
+                () -> assertThat(password).isNotNull()
+        );
+//     step 15: user tried to get JWT token by requesting POST /token with email=szymon.b4310xxxxxx@gmail.com", password=?? and system returned OK(200)
+        // given
+        String userAndPassword = String.format("""
+                {
+                    "email": "szymon.b4310xxxxx@gmail.com",
+                    "password": "%s"
+                }
+                """, password).trim();
+        // when
+
+        ResultActions performGetToken = mockMvc.perform(post("/token")
+                .content(userAndPassword)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        );
+        // then
+        String tokenJson = performGetToken.andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        JwtResponseDto userJwtResponse = objectMapper.readValue(tokenJson, JwtResponseDto.class);
+        String userToken = userJwtResponse.token();
+        assertThat(userToken).isNotNull();
+//      step 16: user make GET /reservation/user with body email, returning OK(200)
+        // given && when
+        ResultActions performUserReservation = mockMvc.perform(get("/reservation/user")
+                .header("Authorization", "Bearer " + userToken)
+                .param("email", "szymon.b4310xxxxx@gmail.com")
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        //then
+        String userReservationJson = performUserReservation.andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        List<UserReservationDto> userReservationDtoList= objectMapper.readValue(userReservationJson, new TypeReference<>() {
+        });
+        UserReservationDto userReservationDto = userReservationDtoList.get(0);
+
+        assertAll(
+                () -> assertThat(userReservationDto .userId()).isEqualTo(3),
+                () -> assertThat(userReservationDto .salonId()).isEqualTo(1),
+                () -> assertThat(userReservationDto.offerId()).isEqualTo(1)
+        );
+
     }
-//    @Transactional
-//    public void insertRoles() {
-//        jdbcTemplate.execute("""
-//        INSERT INTO user_role (name, description)
-//        VALUES
-//            ('USER', 'People who would like to make reservations'),
-//            ('EMPLOYEE', 'Staff members who manage reservations and services'),
-//            ('ADMIN', 'Administrators with full system access and management capabilities'),
-//            ('OWNER', 'Salon owners with management access to their respective salons');
-//    """);
-//    }
 
+    private String getSalonOpeningHours() {
+        return """
+                [
+                     {
+                        "salonId": 1,
+                        "dayOfWeek": "MONDAY",
+                        "openingTime": "09:00",
+                        "closingTime": "19:00"
+                    },
+                    {
+                        "salonId": 1,
+                        "dayOfWeek": "TUESDAY",
+                        "openingTime": "09:00",
+                        "closingTime": "19:00"
+                    },
+                    {
+                        "salonId": 1,
+                        "dayOfWeek": "WEDNESDAY",
+                        "openingTime": "09:00",
+                        "closingTime": "19:00"
+                    },
+                    {
+                        "salonId": 1,
+                        "dayOfWeek": "THURSDAY",
+                        "openingTime": "09:00",
+                        "closingTime": "19:00"
+                    },
+                    {
+                        "salonId": 1,
+                        "dayOfWeek": "FRIDAY",
+                        "openingTime": "09:00",
+                        "closingTime": "19:00"
+                    },
+                    {
+                        "salonId": 1,
+                        "dayOfWeek": "SATURDAY",
+                        "openingTime": "10:00",
+                        "closingTime": "14:00"
+                    },
+                    {
+                        "salonId": 1,
+                        "dayOfWeek": "SUNDAY",
+                        "openingTime": "10:00",
+                        "closingTime": "14:00"
+                    }
+                ]
+                                
+                """.trim();
+    }
+
+    private String getEmployeeDate() {
+        return """
+                {
+                  "name": "Seba",
+                  "email": "Kot@example.com",
+                  "availability": [
+                    {
+                      "dayOfWeek": "MONDAY",
+                      "startTime": "09:00",
+                      "endTime": "14:00"
+                    },
+                    {
+                      "dayOfWeek": "TUESDAY",
+                      "startTime": "09:00",
+                      "endTime": "14:00"
+                    },
+                    {
+                      "dayOfWeek": "WEDNESDAY",
+                      "startTime": "09:00",
+                      "endTime": "14:00"
+                    },
+                    {
+                      "dayOfWeek": "THURSDAY",
+                      "startTime": "09:00",
+                      "endTime": "14:00"
+                    },
+                    {
+                      "dayOfWeek": "FRIDAY",
+                      "startTime": "09:00",
+                      "endTime": "14:00"
+                    },
+                    {
+                      "dayOfWeek": "SATURDAY",
+                      "startTime": "10:00",
+                      "endTime": "12:00"
+                    },
+                    {
+                      "dayOfWeek": "SUNDAY",
+                      "startTime": "10:00",
+                      "endTime": "12:00"
+                    }
+                  ]
+                }
+                                
+                """.trim();
+    }
 }

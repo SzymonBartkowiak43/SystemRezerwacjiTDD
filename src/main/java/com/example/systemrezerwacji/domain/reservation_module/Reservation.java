@@ -16,6 +16,7 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Getter
     @ManyToOne
     @JoinColumn(name = "salon_id", nullable = false)
     private Salon salon;
@@ -25,6 +26,7 @@ public class Reservation {
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
+    @Getter
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

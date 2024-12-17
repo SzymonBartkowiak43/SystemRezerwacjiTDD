@@ -1,7 +1,9 @@
 package com.example.systemrezerwacji.domain.offer_module;
 
+import com.example.systemrezerwacji.domain.offer_module.dto.CreateOfferDto;
 import com.example.systemrezerwacji.domain.offer_module.dto.OfferDto;
 import com.example.systemrezerwacji.domain.offer_module.exception.OfferNotFoundException;
+import com.example.systemrezerwacji.domain.salon_module.Salon;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -37,5 +39,11 @@ class OfferService {
     Offer getOffer(Long offerId) {
         return offerRepository.findOfferById(offerId)
                 .orElseThrow(() -> new OfferNotFoundException("Not found offer with id: " + offerId));
+    }
+
+    public Offer createOffer(CreateOfferDto offerDto, Salon salon) {
+        Offer offer = new Offer(offerDto.name(),offerDto.description(),offerDto.price(),offerDto.duration(),salon);
+        Offer saved = offerRepository.save(offer);
+        return saved;
     }
 }
