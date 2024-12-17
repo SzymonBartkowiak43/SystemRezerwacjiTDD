@@ -4,6 +4,7 @@ import com.example.systemrezerwacji.domain.offer_module.OfferFacade;
 import com.example.systemrezerwacji.domain.employee_module.Employee;
 import com.example.systemrezerwacji.domain.employee_module.EmployeeFacade;
 import com.example.systemrezerwacji.domain.employee_module.dto.AvailableTermDto;
+import com.example.systemrezerwacji.domain.reservation_module.dto.ReservationToTomorrow;
 import com.example.systemrezerwacji.infrastructure.notification_mode.NotificationFacade;
 import com.example.systemrezerwacji.infrastructure.notification_mode.response.NotificationFacadeResponse;
 import com.example.systemrezerwacji.domain.offer_module.Offer;
@@ -37,12 +38,11 @@ public class ReservationFacade {
 
     private final ReservationService reservationService;
     private final ReservationValidator validator;
-    private final PasswordEncoder passwordEncoder;
 
 
     public ReservationFacade(@Lazy OfferFacade offerFacade, @Lazy UserFacade userFacade,
                              @Lazy SalonFacade salonFacade, @Lazy  EmployeeFacade employeeFacade,
-                             NotificationFacade notificationFacade, ReservationService reservationService, ReservationValidator validator, PasswordEncoder passwordEncoder) {
+                             @Lazy NotificationFacade notificationFacade, ReservationService reservationService, ReservationValidator validator) {
         this.offerFacade = offerFacade;
         this.userFacade = userFacade;
         this.salonFacade = salonFacade;
@@ -50,16 +50,15 @@ public class ReservationFacade {
         this.notificationFacade = notificationFacade;
         this.reservationService = reservationService;
         this.validator = validator;
-        this.passwordEncoder = passwordEncoder;
     }
 
 
     public List<AvailableTermDto> getEmployeeBusyTerm(Long employeeId, LocalDate date) {
         return reservationService.getEmployeeBusyTerms(employeeId, date);
     }
-
     @Transactional
     public ReservationFacadeResponse createNewReservation(CreateReservationDto reservationDto) {
+
         LocalTime duration = offerFacade.getDurationToOffer(reservationDto.offerId());
 
         ReservationValidationResult result = validator.validate(reservationDto, duration);
@@ -96,4 +95,19 @@ public class ReservationFacade {
 
         return userReservationDtoList;
     }
+
+    public List<ReservationToTomorrow> getAllReservationToTomorrow() {
+        List<Reservation> allReservationToTomorrow = reservationService.getAllReservationToTomorrow();
+
+        return allReservationToTomorrow.stream()
+                .map(reservation -> new ReservationToTomorrow(
+                        reservation.getSalon().getId(),
+                        reservation.getUser().getId(),
+                        reservation.getOffer().getId(),
+                        reservation.getReservationDateTime()
+                ))
+                .toList();
+    }
+
+
 }

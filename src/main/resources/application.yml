@@ -35,6 +35,9 @@ springdoc:
   swagger-ui:
     path: /swagger-ui
 
+reservation:
+  send-remind: "0 0 9 * * *"
+
 
 auth:
   jwt:
