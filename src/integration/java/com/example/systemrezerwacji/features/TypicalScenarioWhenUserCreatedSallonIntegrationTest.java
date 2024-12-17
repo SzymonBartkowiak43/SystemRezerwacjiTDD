@@ -356,7 +356,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
                     "offerId": 1,
                     "salonId": 1,
                     "reservationDateTime": "2024-12-31T13:00:00",
-                    "userEmail": "szymon.b4310xxxxx@gmail.com"
+                    "userEmail": "szymon.b4310@gmail.com"
                 }
                 """.trim();
         // when
@@ -380,7 +380,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
         // given
         String userAndPassword = String.format("""
                 {
-                    "email": "szymon.b4310xxxxx@gmail.com",
+                    "email": "szymon.b4310@gmail.com",
                     "password": "%s"
                 }
                 """, password).trim();
@@ -403,7 +403,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
         // given && when
         ResultActions performUserReservation = mockMvc.perform(get("/reservation/user")
                 .header("Authorization", "Bearer " + userToken)
-                .param("email", "szymon.b4310xxxxx@gmail.com")
+                .param("email", "szymon.b4310@gmail.com")
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
         //then
         String userReservationJson = performUserReservation.andExpect(status().isOk())

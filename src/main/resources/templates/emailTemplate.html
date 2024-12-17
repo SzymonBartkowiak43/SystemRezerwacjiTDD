@@ -2,10 +2,52 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Potwierdzenie usługi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #555;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
 </head>
 <body>
-<h1 th:text="${subject}"></h1>
-<p th:text="${message}"></p>
+<div class="container">
+    <h1 th:text="${subject}"></h1>
+    <p>
+        Dziękujemy za wybranie naszej usługi: <strong th:text="${offerName}"></strong>.
+    </p>
+    <p>
+        Prosimy o stawienie się o godzinie: <strong th:text="${time}"></strong>.
+    </p>
+    <p>
+        Życzymy miłego dnia!<br>
+        Zespół naszej firmy.
+    </p>
+    <div class="footer">
+        <p>To jest automatyczna wiadomość, prosimy na nią nie odpowiadać.</p>
+    </div>
+</div>
 </body>
 </html>

@@ -1,4 +1,4 @@
-package com.example.systemrezerwacji.infrastructure.loginandregister.notification_mode;
+package com.example.systemrezerwacji.infrastructure.notification_mode;
 
 
 import jakarta.mail.internet.MimeMessage;
@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @Service
@@ -24,19 +26,31 @@ class EmailService {
         this.templateEngine = templateEngine;
     }
 
-    public Boolean sendHtmlEmail(String to, String subject, String message) {
-        return sendEmail(to, subject, createHtmlBody("emailTemplate", Map.of(
-                "subject", subject,
-                "message", message
-        )));
+    public Boolean sendHtmlEmail(String to, String offerName, LocalDateTime time) {
+        String formattedTime = time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+        Map<String, Object> templateParams = Map.of(
+                "subject", "Potwierdzenie usługi",
+                "offerName", offerName,
+                "time", formattedTime
+        );
+
+        String body = createHtmlBody("emailTemplate", templateParams);
+        return sendEmail(to, "Potwierdzenie rezerwacji", body);
     }
 
-    public Boolean sendHtmlEmailWithPassword(String to, String subject, String message, String password) {
-        return sendEmail(to, subject, createHtmlBody("emailTemplateWithPassword", Map.of(
-                "subject", subject,
-                "message", message,
-                "password", password
-        )));
+    public Boolean sendHtmlEmailWithPassword(String to, String offerName, String password, LocalDateTime time) {
+        String formattedTime = time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+        Map<String, Object> templateParams = Map.of(
+                "subject", "Potwierdzenie usługi",
+                "offerName", offerName,
+                "password", password,
+                "time", formattedTime
+        );
+
+        String body = createHtmlBody("emailTemplateWithPassword", templateParams);
+        return sendEmail(to, offerName, body);
     }
 
     private Boolean sendEmail(String to, String subject, String htmlBody) {

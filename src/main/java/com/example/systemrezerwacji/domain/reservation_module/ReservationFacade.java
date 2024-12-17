@@ -4,8 +4,8 @@ import com.example.systemrezerwacji.domain.offer_module.OfferFacade;
 import com.example.systemrezerwacji.domain.employee_module.Employee;
 import com.example.systemrezerwacji.domain.employee_module.EmployeeFacade;
 import com.example.systemrezerwacji.domain.employee_module.dto.AvailableTermDto;
-import com.example.systemrezerwacji.infrastructure.loginandregister.notification_mode.NotificationFacade;
-import com.example.systemrezerwacji.infrastructure.loginandregister.notification_mode.response.NotificationFacadeResponse;
+import com.example.systemrezerwacji.infrastructure.notification_mode.NotificationFacade;
+import com.example.systemrezerwacji.infrastructure.notification_mode.response.NotificationFacadeResponse;
 import com.example.systemrezerwacji.domain.offer_module.Offer;
 import com.example.systemrezerwacji.domain.reservation_module.dto.CreateReservationDto;
 import com.example.systemrezerwacji.domain.reservation_module.dto.UserReservationDto;
@@ -73,9 +73,10 @@ public class ReservationFacade {
             User user = userByEmailOrCreateNewAccount.user();
             NotificationFacadeResponse emailRespond;
             if(!userByEmailOrCreateNewAccount.isNewUser()) {
-                emailRespond = notificationFacade.sendAnEmailWhenClientHasAccount(reservationDto.userEmail(), offer.getName());
+                emailRespond = notificationFacade.sendAnEmailWhenClientHasAccount(reservationDto.userEmail(), offer.getName(), reservationDto.reservationDateTime());
             } else {
-                emailRespond = notificationFacade.sendAnEmailWhenClientDoNotHasAccount(reservationDto.userEmail(), offer.getName(), userByEmailOrCreateNewAccount.unHashedPassword());
+                emailRespond = notificationFacade.sendAnEmailWhenClientDoNotHasAccount(reservationDto.userEmail(), offer.getName(),
+                        userByEmailOrCreateNewAccount.unHashedPassword(),reservationDto.reservationDateTime());
             }
 
             if(emailRespond.isSuccess()) {
