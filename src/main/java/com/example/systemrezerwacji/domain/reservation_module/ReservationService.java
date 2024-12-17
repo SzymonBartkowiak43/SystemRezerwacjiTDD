@@ -64,4 +64,11 @@ class ReservationService {
         List<Reservation> allByUser = reservationRepository.findAllByUser(user);
         return mapperReservationDto.mapToUserReservationDtoList(allByUser);
     }
+
+    public List<Reservation> getAllReservationToTomorrow() {
+        LocalDateTime startOfTomorrow = LocalDate.now().plusDays(1).atStartOfDay();
+        LocalDateTime endOfTomorrow = startOfTomorrow.plusDays(1).minusSeconds(1);
+
+        return reservationRepository.findAllByReservationDateTimeBetween(startOfTomorrow, endOfTomorrow);
+    }
 }
