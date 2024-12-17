@@ -1,5 +1,6 @@
 package com.example.systemrezerwacji.infrastructure.notification_mode;
 
+import com.example.systemrezerwacji.domain.salon_module.dto.SalonWithIdDto;
 import com.example.systemrezerwacji.infrastructure.notification_mode.response.NotificationFacadeResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,4 +22,11 @@ public class NotificationFacade {
         Boolean isSuccess = emailService.sendHtmlEmailWithPassword(to, offerName, password,time);
         return new NotificationFacadeResponse(isSuccess);
     }
+
+    public NotificationFacadeResponse remindUserToReservation(String to, String offerName, SalonWithIdDto salon, LocalDateTime time ) {
+        Boolean isSuccess = emailService.sendHtmlEmailToRemindAboutReservation(to,offerName,salon.salonName(),salon.city(),
+                salon.street(),salon.number(),time);
+        return new NotificationFacadeResponse(isSuccess);
+    }
+
 }

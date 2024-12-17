@@ -104,7 +104,7 @@ class UserValidatorTest {
     @Test
     public void should_addShortPasswordError_when_passwordIsTooShort() {
         // When
-        validator.validPassword("short");
+        validator.validPassword("s");
 
         // Then
         assertThat(validator.errors).contains(ValidationError.SHORT_PASSWORD);

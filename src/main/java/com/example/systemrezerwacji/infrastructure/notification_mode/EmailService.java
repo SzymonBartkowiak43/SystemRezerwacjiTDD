@@ -53,6 +53,26 @@ class EmailService {
         return sendEmail(to, offerName, body);
     }
 
+    public Boolean sendHtmlEmailToRemindAboutReservation(String to, String offerName, String salonName, String city,
+                                                         String street, String number, LocalDateTime time) {
+        String formattedTime = time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+        Map<String, Object> templateParams = Map.of(
+                "subject", "Przypomnienie o rezerwacji",
+                "offerName", offerName,
+                "salonName", salonName,
+                "city", city,
+                "street", street,
+                "number", number,
+                "time", formattedTime
+        );
+
+        String body = createHtmlBody("emailTemplateReservationReminder", templateParams);
+
+        return sendEmail(to, "Przypomnienie o rezerwacji", body);
+    }
+
+
     private Boolean sendEmail(String to, String subject, String htmlBody) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
