@@ -16,6 +16,7 @@ import com.example.systemrezerwacji.domain.user_module.User;
 import com.example.systemrezerwacji.domain.user_module.UserFacade;
 import com.example.systemrezerwacji.domain.user_module.dto.UserCreatedWhenRegisteredDto;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,10 +37,12 @@ public class ReservationFacade {
 
     private final ReservationService reservationService;
     private final ReservationValidator validator;
+    private final PasswordEncoder passwordEncoder;
+
 
     public ReservationFacade(@Lazy OfferFacade offerFacade, @Lazy UserFacade userFacade,
                              @Lazy SalonFacade salonFacade, @Lazy  EmployeeFacade employeeFacade,
-                             NotificationFacade notificationFacade, ReservationService reservationService, ReservationValidator validator) {
+                             NotificationFacade notificationFacade, ReservationService reservationService, ReservationValidator validator, PasswordEncoder passwordEncoder) {
         this.offerFacade = offerFacade;
         this.userFacade = userFacade;
         this.salonFacade = salonFacade;
@@ -47,6 +50,7 @@ public class ReservationFacade {
         this.notificationFacade = notificationFacade;
         this.reservationService = reservationService;
         this.validator = validator;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -71,22 +75,23 @@ public class ReservationFacade {
             if(!userByEmailOrCreateNewAccount.isNewUser()) {
                 emailRespond = notificationFacade.sendAnEmailWhenClientHasAccount(reservationDto.userEmail(), offer.getName());
             } else {
-                emailRespond = notificationFacade.sendAnEmailWhenClientDoNotHasAccount(reservationDto.userEmail(), offer.getName(), user.getPassword());
+                emailRespond = notificationFacade.sendAnEmailWhenClientDoNotHasAccount(reservationDto.userEmail(), offer.getName(), userByEmailOrCreateNewAccount.unHashedPassword());
             }
 
             if(emailRespond.isSuccess()) {
                 reservationService.addNewReservation(salon, employee, user, offer, reservationDto.reservationDateTime());
-                return new ReservationFacadeResponse(true, "success");
+                return new ReservationFacadeResponse(true, "success", userByEmailOrCreateNewAccount.unHashedPassword());
             }
 
-            return new ReservationFacadeResponse(false, PROBLEM_WITH_SENDING_NOTIFICATION);
+            return new ReservationFacadeResponse(false, PROBLEM_WITH_SENDING_NOTIFICATION, null);
         }
-        return new ReservationFacadeResponse(false, result.message());
+        return new ReservationFacadeResponse(false, result.message(),null);
     }
 
-    public List<UserReservationDto> getUserReservation(Long userId) {
+    public List<UserReservationDto> getUserReservation(String email) {
+        User user = userFacade.getUserByEmail(email);
 
-        List<UserReservationDto> userReservationDtoList = reservationService.getReservationToCurrentUser(userId);
+        List<UserReservationDto> userReservationDtoList = reservationService.getReservationToCurrentUser(user);
 
         return userReservationDtoList;
     }

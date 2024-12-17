@@ -2,6 +2,7 @@ package com.example.systemrezerwacji.domain.employee_module;
 
 import com.example.systemrezerwacji.domain.employee_module.dto.AvailableTermDto;
 import com.example.systemrezerwacji.domain.employee_module.dto.EmployeeAvailabilityDto;
+import com.example.systemrezerwacji.domain.employee_module.exception.EmployeeDuplicateOfferException;
 import com.example.systemrezerwacji.domain.offer_module.Offer;
 import com.example.systemrezerwacji.domain.user_module.User;
 import org.springframework.stereotype.Service;
@@ -73,17 +74,17 @@ class EmployeeService {
         return byId.get().getUser().getId();
     }
 
-    void addOfferToEmployee(Long employeeId, Offer offer) {
+    Employee addOfferToEmployee(Long employeeId, Offer offer) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
 
         if(employee.getOffers().contains(offer)) {
-            return;
+            throw new EmployeeDuplicateOfferException();
         }
 
         employee.addOffer(offer);
-
-        employeeRepository.save(employee);
+        Employee save = employeeRepository.save(employee);
+        return save;
 
     }
 

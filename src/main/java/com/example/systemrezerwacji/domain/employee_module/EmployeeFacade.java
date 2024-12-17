@@ -85,9 +85,9 @@ public class EmployeeFacade {
     public EmployeeFacadeResponseDto addOfferToEmployee(Long employeeId, Long offerId) {
         Offer offer = offerFacade.getOffer(offerId);
 
-        employeeService.addOfferToEmployee(employeeId, offer);
+        Employee employee = employeeService.addOfferToEmployee(employeeId, offer);
 
-        return new EmployeeFacadeResponseDto("success", employeeId);
+        return new EmployeeFacadeResponseDto("success", employee.getId());
     }
 
     public Employee getEmployee(Long id) {

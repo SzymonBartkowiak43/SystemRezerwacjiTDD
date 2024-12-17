@@ -27,7 +27,7 @@ public class EmployeeController {
         return ResponseEntity.ok(employeesToOffer);
     }
 
-    @GetMapping("/available-dates")
+    @GetMapping("/employee/available-dates")
     public ResponseEntity<List<AvailableTermDto>> getAvailableHours(@RequestBody AvailableDatesReservationDto availableDate) {
         List<AvailableTermDto> availableHours = employeeFacade.getAvailableHours(availableDate);
 
@@ -38,9 +38,9 @@ public class EmployeeController {
         return ResponseEntity.ok(availableHours);
     }
 
-    @PatchMapping("employees/{employeeId}/offers")
-    public ResponseEntity<EmployeeFacadeResponseDto> addOfferToEmployee(@PathVariable Long employeeId, @RequestBody AddOfferRequestDto offer) {
-        EmployeeFacadeResponseDto response = employeeFacade.addOfferToEmployee(employeeId, offer.offerId());
+    @PatchMapping("/employees/add-offer")
+    public ResponseEntity<EmployeeFacadeResponseDto> addOfferToEmployee(@RequestBody AddOfferRequestDto offerRequest) {
+        EmployeeFacadeResponseDto response = employeeFacade.addOfferToEmployee(offerRequest.employeeId(), offerRequest.offerId());
 
         if (response.message().equals("success")) {
             return ResponseEntity.ok(response);

@@ -53,7 +53,7 @@ public class SalonController {
         return ResponseEntity.ok(allSalons);
     }
 
-    @GetMapping("/salon/{id}")
+    @GetMapping("/salons/{id}")
     public ResponseEntity<SalonWithIdDto> getSalon(@PathVariable Integer id) {
         return salonFacade.getSalonById(id.longValue())
                 .map(ResponseEntity::ok)

@@ -17,10 +17,12 @@ import java.util.List;
 @Service
 class ReservationService {
     private final ReservationRepository reservationRepository;
+    private final MapperReservationDto mapperReservationDto;
 
 
-    ReservationService(ReservationRepository reservationRepository) {
+    ReservationService(ReservationRepository reservationRepository, MapperReservationDto mapperReservationDto) {
         this.reservationRepository = reservationRepository;
+        this.mapperReservationDto = mapperReservationDto;
     }
 
     List<AvailableTermDto> getEmployeeBusyTerms(Long employeeId, LocalDate date) {
@@ -58,11 +60,8 @@ class ReservationService {
     }
 
 
-    public List<UserReservationDto> getReservationToCurrentUser(Long userId) {
-
-//        List<Reservation>
-        return null;
-
-
+    public List<UserReservationDto> getReservationToCurrentUser(User user) {
+        List<Reservation> allByUser = reservationRepository.findAllByUser(user);
+        return mapperReservationDto.mapToUserReservationDtoList(allByUser);
     }
 }

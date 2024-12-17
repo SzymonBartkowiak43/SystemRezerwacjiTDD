@@ -90,4 +90,10 @@ public class UserFacade {
     public UserCreatedWhenRegisteredDto getUserByEmailOrCreateNewAccount(String email) {
         return userService.getUserByEmailOrCreateNewAccount(email);
     }
+
+    public User getUserByEmail(String email) {
+        User userByEmail = userService.getUserByEmail(email)
+                .orElseThrow(() -> new RuntimeException("user not found!!"));
+        return userByEmail;
+    }
 }
