@@ -14,6 +14,12 @@ spring:
     init:
       mode: always
 
+
+  cache:
+    type: redis
+    redis:
+      time-to-live: PT30M
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -27,6 +33,10 @@ spring:
         starttls:
           enable: true
           required: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:63792}
 
 
 springdoc:
@@ -42,7 +52,7 @@ reservation:
 auth:
   jwt:
     expirationDays: 30
-    secret: safjkasghjkgsadhjklghjklsdhjkldgshjkldgsahjk
+    secret: ${JWT_SECRET:ababababbbsadfweawgehrth}
     issuer: sb-reservation-system-backend
 
 
