@@ -7,3 +7,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
+  cache:
+    type: none
+    redis:
+      time-to-live: PT10S

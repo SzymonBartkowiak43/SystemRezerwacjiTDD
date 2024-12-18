@@ -17,7 +17,6 @@ import com.example.systemrezerwacji.domain.user_module.response.UserFacadeRespon
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -356,7 +355,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
                     "offerId": 1,
                     "salonId": 1,
                     "reservationDateTime": "2024-12-31T13:00:00",
-                    "userEmail": "szymon.b4310@gmail.com"
+                    "userEmail": "szymon.b4310xxx@gmail.com"
                 }
                 """.trim();
         // when
@@ -380,7 +379,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
         // given
         String userAndPassword = String.format("""
                 {
-                    "email": "szymon.b4310@gmail.com",
+                    "email": "szymon.b4310xxx@gmail.com",
                     "password": "%s"
                 }
                 """, password).trim();
@@ -403,7 +402,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
         // given && when
         ResultActions performUserReservation = mockMvc.perform(get("/reservation/user")
                 .header("Authorization", "Bearer " + userToken)
-                .param("email", "szymon.b4310@gmail.com")
+                .param("email", "szymon.b4310xxx@gmail.com")
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
         //then
         String userReservationJson = performUserReservation.andExpect(status().isOk())

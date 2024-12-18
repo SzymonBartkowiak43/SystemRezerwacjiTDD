@@ -13,6 +13,7 @@ import com.example.systemrezerwacji.domain.user_module.User;
 import com.example.systemrezerwacji.domain.user_module.UserFacade;
 import com.example.systemrezerwacji.domain.opening_hours_module.OpeningHoursFacade;
 import com.example.systemrezerwacji.domain.salon_module.dto.AddHoursResponseDto;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -90,6 +91,7 @@ public class SalonFacade {
         return new SalonOffersListDto("success", allOffers);
     }
 
+    @Cacheable("salons")
     public List<SalonWithIdDto> getAllSalons() {
         return salonService.getAllSalons();
     }
