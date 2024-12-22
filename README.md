@@ -1,28 +1,12 @@
 # Reservation System - Your personal booking assistant 💼
 
-The **Reservation System** is a cutting-edge platform designed to simplify appointment scheduling and salon management. It allows users to create salons, add employees and services, set up opening hours, and define employee work schedules. Once a salon is fully configured, clients can browse available services, choose an employee, and book appointments effortlessly. The system ensures smooth communication by sending email confirmations after booking and reminders a day before the scheduled visit.
+The **Reservation System** is an advanced and intuitive platform designed to revolutionize appointment scheduling and salon management. Tailored to meet the needs of both salon owners and clients, this system offers a seamless experience for organizing salon operations and booking appointments. Salon owners can create and fully configure their salons by providing detailed information, adding employees, and defining each team member's work schedule. The system also allows the specification of available services, including their descriptions and pricing, making it easy for clients to explore what is offered. 
 
-With extensive unit and integration tests, this system is reliable, secure, and ready for production.
+Clients benefit from a user-friendly interface that enables them to browse salons, search for services, and select specific employees for their appointments. Booking is a smooth process, enhanced by instant email confirmations that ensure clients have all the necessary details. To further enhance the client experience and minimize no-shows, the system automatically sends email reminders one day before the scheduled appointment. 
 
-## Key Features:
+The Reservation System supports dedicated user accounts for both salon owners and clients, ensuring a personalized and secure experience. Security is a top priority, implemented through robust JWT-based Spring Security authentication. Notifications are seamlessly integrated, with email-based updates keeping users informed about bookings and reminders.
 
--   **Salon Management**:
-    
-    -   Create and configure salons with detailed information.
-    -   Add employees and define their working hours.
-    -   Specify available services and pricing.
--   **Client Booking**:
-    
-    -   Search and browse salons by services and employees.
-    -   Schedule appointments with instant email confirmations.
-    -   Automatic email reminders a day before the appointment.
--   **User Accounts**:
-    
-    -   Dedicated accounts for both salon owners and clients.
-    -   Secure authentication using JWT-based Spring Security.
--   **Notifications**:
-    
-    -   Email-based notifications for bookings and reminders.
+Built with extensive unit and integration tests, this platform guarantees reliability and security, making it a production-ready solution that streamlines operations and enhances client satisfaction in the salon industry.
 
 ## Technologies Used:
 
@@ -40,7 +24,6 @@ With extensive unit and integration tests, this system is reliable, secure, and 
 12.  **Thymeleaf, HTML, CSS**: Responsive and user-friendly frontend.
 13.  **RestTemplate & HTTP**: Handling REST API calls and integrations.
 14.  **Mail Sender**: Email-based notifications.
-15.  **Git, GitHub/GitLab**: Version control and project collaboration.
 
 -   **Swagger Interface**:  
     Explore and test the REST API endpoints using Swagger.  
