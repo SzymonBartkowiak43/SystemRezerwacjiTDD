@@ -1,15 +1,13 @@
 package com.example.systemrezerwacji.infrastructure.security;
 
 
-import com.example.systemrezerwacji.domain.user_module.UserFacade;
-import com.example.systemrezerwacji.domain.user_module.dto.UserDto;
+import com.example.systemrezerwacji.domain.userModule.UserFacade;
+import com.example.systemrezerwacji.domain.userModule.dto.UserDto;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import java.util.Collections;
 
 @AllArgsConstructor
 public class LoginUserDetailsService implements UserDetailsService {

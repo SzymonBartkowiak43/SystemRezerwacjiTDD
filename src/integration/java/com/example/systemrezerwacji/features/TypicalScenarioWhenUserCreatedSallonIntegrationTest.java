@@ -2,20 +2,19 @@ package com.example.systemrezerwacji.features;
 
 import com.example.systemrezerwacji.BaseIntegrationTest;
 
-import com.example.systemrezerwacji.domain.code_module.CodeFacade;
-import com.example.systemrezerwacji.domain.code_module.dto.CodeDto;
-import com.example.systemrezerwacji.domain.employee_module.dto.AvailableTermDto;
-import com.example.systemrezerwacji.domain.employee_module.dto.EmployeeFacadeResponseDto;
-import com.example.systemrezerwacji.domain.employee_module.response.CreateEmployeeResponseDto;
-import com.example.systemrezerwacji.domain.offer_module.response.OfferFacadeResponse;
-import com.example.systemrezerwacji.domain.reservation_module.dto.UserReservationDto;
-import com.example.systemrezerwacji.domain.reservation_module.response.ReservationFacadeResponse;
-import com.example.systemrezerwacji.domain.salon_module.dto.SalonFacadeResponseDto;
-import com.example.systemrezerwacji.domain.salon_module.dto.SalonWithIdDto;
+import com.example.systemrezerwacji.domain.codeModule.dto.CodeDto;
+import com.example.systemrezerwacji.domain.employeeModule.dto.AvailableTermDto;
+import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeFacadeResponseDto;
+import com.example.systemrezerwacji.domain.employeeModule.response.CreateEmployeeResponseDto;
+import com.example.systemrezerwacji.domain.offerModule.response.OfferFacadeResponse;
+import com.example.systemrezerwacji.domain.reservationModule.dto.UserReservationDto;
+import com.example.systemrezerwacji.domain.reservationModule.response.ReservationFacadeResponse;
+import com.example.systemrezerwacji.domain.salonModule.dto.SalonFacadeResponseDto;
+import com.example.systemrezerwacji.domain.salonModule.dto.SalonWithIdDto;
 
-import com.example.systemrezerwacji.domain.user_module.response.UserFacadeResponse;
+import com.example.systemrezerwacji.domain.userModule.response.UserFacadeResponse;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -34,9 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseIntegrationTest {
-
-    @Autowired
-    private CodeFacade codeFacade;
 
     @Test
     void user_patch_to_create_a_salon() throws Exception {
@@ -96,6 +92,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
 
 
 //        step 4: user tried to get JWT token by requesting POST /token with email=someUser, password=somePassword and system returned OK(200) and jwttoken=AAAA.BBBB.CCC
+        // given && when
         ResultActions successLoginRequest = mockMvc.perform(post("/token")
                 .content("""
                         {
@@ -107,18 +104,29 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
         );
         // then
         MvcResult mvcResultSuccess = successLoginRequest.andExpect(status().isOk()).andReturn();
-        String SuccessJson = mvcResultSuccess.getResponse().getContentAsString();
-        JwtResponseDto jwtResponse = objectMapper.readValue(SuccessJson, JwtResponseDto.class);
+        String successJson = mvcResultSuccess.getResponse().getContentAsString();
+        JwtResponseDto jwtResponse = objectMapper.readValue(successJson, JwtResponseDto.class);
         String token = jwtResponse.token();
         assertAll(
                 () -> assertThat(jwtResponse.email()).isEqualTo("someEmail@some.pl"),
                 () -> assertThat(token).matches(Pattern.compile("^([A-Za-z0-9-_=]+\\.)+([A-Za-z0-9-_=])+\\.?$"))
         );
 
+//        step 5: generate Code to create Salon.
+        // given && when
+        ResultActions generateCode = mockMvc.perform(get("/generateCode")
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        // then
+        MvcResult mvcCodeCreated = generateCode.andExpect(status().isCreated()).andReturn();
+        String codeJson = mvcCodeCreated.getResponse().getContentAsString();
+        CodeDto codeDto = objectMapper.readValue(codeJson, CodeDto.class);
 
-//        step 5: user made POST /salon with valid salon details and system created the salon, returning OK(200) with salonId=1
+        assertThat(codeDto.code()).isNotNull();
+        assertThat(codeDto.isConsumed()).isFalse();
+
+
+//        step 5.5: user made POST /salon with valid salon details and system created the salon, returning OK(200) with salonId=1
         // given
-        CodeDto codeDto = codeFacade.generateNewCode();
         String salonRequestJson = String.format("""
         {
             "salonName": "Amazing Barber",
@@ -132,10 +140,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
         }
         """.trim(), codeDto.code());
         // when
-        ResultActions performCreateSalon = mockMvc.perform(post("/salon")
-                .header("Authorization", "Bearer " + token)
-                .content(salonRequestJson)
-                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        ResultActions performCreateSalon = addSalon(token, salonRequestJson);
         // then
         String createdSalonJson = performCreateSalon.andExpect(status().isCreated())
                 .andReturn()
@@ -150,12 +155,9 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
 
 //      step 6: owner made Patch /salon/add-opening-hours with valid hours and system returned OK(200)
         // given
-        String salonOpeningHours = getSalonOpeningHours();
+        String salonOpeningHours = readJsonFromFile("salonOpeningHours.json");
         // when
-        ResultActions performAddOpeningHours = mockMvc.perform(patch("/salon/add-opening-hours")
-                .header("Authorization", "Bearer " + token)
-                .content(salonOpeningHours)
-                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        ResultActions performAddOpeningHours = addOpeningHours(token, salonOpeningHours);
         // then
         String addOpeningHoursJson = performAddOpeningHours.andExpect(status().isOk())
                 .andReturn()
@@ -167,12 +169,9 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
 
 //      step 7: owner made POST /salon/1/employee with employee details and system added the employee, returning OK(200)
         // given
-        String employeeDateAndAvailability = getEmployeeDate();
+        String employeeDateAndAvailability = readJsonFromFile("employeeData.json");
         // when
-        ResultActions performAddEmployee = mockMvc.perform(post("/salon/1/employee")
-                .header("Authorization", "Bearer " + token)
-                .content(employeeDateAndAvailability)
-                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        ResultActions performAddEmployee = addEmployee(token, employeeDateAndAvailability);
         // then
         String addEmployeeJson = performAddEmployee.andExpect(status().isOk())
                 .andReturn()
@@ -187,7 +186,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
 
     //  step 8: owner made POST /offers with offer details and system created the offer, returning Created(201) with offerId=1
         // given
-        String createOffer = """
+        String offer = """
                 {
                     "name": "Haircut",
                     "description": "A stylish haircut and grooming session.",
@@ -197,10 +196,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
                 }
                 """.trim();
         // when
-        ResultActions performAddOffer = mockMvc.perform(post("/offer")
-                .header("Authorization", "Bearer " + token)
-                .content(createOffer)
-                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        ResultActions performAddOffer = addOffer(token, offer);
         // then
         String offerJson = performAddOffer.andExpect(status().isCreated())
                 .andReturn()
@@ -214,7 +210,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
 
         //  step 9: owner made POST /offers with offer details and system created the offer, returning Created(201) with offerId=1
         // given
-        String createOffer2 = """
+        String offer2 = """
                 {
                     "name": "Haircut && Beard",
                     "description": "A stylish haircut and grooming session.",
@@ -224,10 +220,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
                 }
                 """.trim();
         // when
-        ResultActions performAddOffer2 = mockMvc.perform(post("/offer")
-                .header("Authorization", "Bearer " + token)
-                .content(createOffer2)
-                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        ResultActions performAddOffer2 = addOffer(token, offer2);
         // then
         String offerJson2 = performAddOffer2.andExpect(status().isCreated())
                 .andReturn()
@@ -249,10 +242,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
                 }
                 """.trim();
         // when
-        ResultActions performAssignOffer = mockMvc.perform(patch("/employees/add-offer")
-                .header("Authorization", "Bearer " + token)
-                .content(assignOffer)
-                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        ResultActions performAssignOffer = addOfferToEmployee(token, assignOffer);
         // then
         String assignOfferJson = performAssignOffer.andExpect(status().isOk())
                 .andReturn()
@@ -274,10 +264,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
                 }
                 """.trim();
         // when
-        ResultActions performAssignOffer2 = mockMvc.perform(patch("/employees/add-offer")
-                .header("Authorization", "Bearer " + token)
-                .content(assignOffer2)
-                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        ResultActions performAssignOffer2 = addOfferToEmployee(token, assignOffer2);
         // then
         String assignOfferJson2 = performAssignOffer2.andExpect(status().isOk())
                 .andReturn()
@@ -422,100 +409,44 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
 
     }
 
-    private String getSalonOpeningHours() {
-        return """
-                [
-                     {
-                        "salonId": 1,
-                        "dayOfWeek": "MONDAY",
-                        "openingTime": "09:00",
-                        "closingTime": "19:00"
-                    },
-                    {
-                        "salonId": 1,
-                        "dayOfWeek": "TUESDAY",
-                        "openingTime": "09:00",
-                        "closingTime": "19:00"
-                    },
-                    {
-                        "salonId": 1,
-                        "dayOfWeek": "WEDNESDAY",
-                        "openingTime": "09:00",
-                        "closingTime": "19:00"
-                    },
-                    {
-                        "salonId": 1,
-                        "dayOfWeek": "THURSDAY",
-                        "openingTime": "09:00",
-                        "closingTime": "19:00"
-                    },
-                    {
-                        "salonId": 1,
-                        "dayOfWeek": "FRIDAY",
-                        "openingTime": "09:00",
-                        "closingTime": "19:00"
-                    },
-                    {
-                        "salonId": 1,
-                        "dayOfWeek": "SATURDAY",
-                        "openingTime": "10:00",
-                        "closingTime": "14:00"
-                    },
-                    {
-                        "salonId": 1,
-                        "dayOfWeek": "SUNDAY",
-                        "openingTime": "10:00",
-                        "closingTime": "14:00"
-                    }
-                ]
-                                
-                """.trim();
+    @NotNull
+    private ResultActions addOfferToEmployee(String token, String assignOffer) throws Exception {
+        return mockMvc.perform(patch("/employees/add-offer")
+                .header("Authorization", "Bearer " + token)
+                .content(assignOffer)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
     }
 
-    private String getEmployeeDate() {
-        return """
-                {
-                  "name": "Seba",
-                  "email": "Kot@example.com",
-                  "availability": [
-                    {
-                      "dayOfWeek": "MONDAY",
-                      "startTime": "09:00",
-                      "endTime": "14:00"
-                    },
-                    {
-                      "dayOfWeek": "TUESDAY",
-                      "startTime": "09:00",
-                      "endTime": "14:00"
-                    },
-                    {
-                      "dayOfWeek": "WEDNESDAY",
-                      "startTime": "09:00",
-                      "endTime": "14:00"
-                    },
-                    {
-                      "dayOfWeek": "THURSDAY",
-                      "startTime": "09:00",
-                      "endTime": "14:00"
-                    },
-                    {
-                      "dayOfWeek": "FRIDAY",
-                      "startTime": "09:00",
-                      "endTime": "14:00"
-                    },
-                    {
-                      "dayOfWeek": "SATURDAY",
-                      "startTime": "10:00",
-                      "endTime": "12:00"
-                    },
-                    {
-                      "dayOfWeek": "SUNDAY",
-                      "startTime": "10:00",
-                      "endTime": "12:00"
-                    }
-                  ]
-                }
-                                
-                """.trim();
+    @NotNull
+    private ResultActions addEmployee(String token, String employeeDateAndAvailability) throws Exception {
+        return mockMvc.perform(post("/salon/1/employee")
+                .header("Authorization", "Bearer " + token)
+                .content(employeeDateAndAvailability)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
     }
+
+    @NotNull
+    private ResultActions addOpeningHours(String token, String salonOpeningHours) throws Exception {
+        return mockMvc.perform(patch("/salon/add-opening-hours")
+                .header("Authorization", "Bearer " + token)
+                .content(salonOpeningHours)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+    }
+
+    @NotNull
+    private ResultActions addSalon(String token, String salonRequestJson) throws Exception {
+        return mockMvc.perform(post("/salon")
+                .header("Authorization", "Bearer " + token)
+                .content(salonRequestJson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+    }
+
+    @NotNull
+    private ResultActions addOffer(String token, String createOffer) throws Exception {
+        return mockMvc.perform(post("/offer")
+                .header("Authorization", "Bearer " + token)
+                .content(createOffer)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+    }
+
 }

@@ -1,7 +1,7 @@
 package com.example.systemrezerwacji.casche.redis;
 
 import com.example.systemrezerwacji.BaseIntegrationTest;
-import com.example.systemrezerwacji.domain.salon_module.SalonFacade;
+import com.example.systemrezerwacji.domain.salonModule.SalonFacade;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import java.time.Duration;

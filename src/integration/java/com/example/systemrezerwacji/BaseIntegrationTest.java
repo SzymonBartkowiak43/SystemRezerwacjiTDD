@@ -15,6 +15,10 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
 @SpringBootTest(classes = SystemRezerwacjiTddApplication.class)
@@ -52,5 +56,8 @@ public class BaseIntegrationTest {
         registry.add("jobOffer.offer-fetchable.http.client.config.uri", () -> WIRE_MOCK_HOST);
     }
 
+    public static String readJsonFromFile(String fileName) throws IOException {
+        return new String(Files.readAllBytes(Paths.get("src/integration/resources/json/" + fileName)));
+    }
 
 }

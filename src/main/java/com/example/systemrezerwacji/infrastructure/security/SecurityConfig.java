@@ -1,7 +1,7 @@
 package com.example.systemrezerwacji.infrastructure.security;
 
 
-import com.example.systemrezerwacji.domain.user_module.UserFacade;
+import com.example.systemrezerwacji.domain.userModule.UserFacade;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,6 +54,7 @@ public class SecurityConfig {
                                 .requestMatchers("/salons/**").permitAll()
                                 .requestMatchers("/employee/available-dates").permitAll()
                                 .requestMatchers("/reservation").permitAll()
+                                .requestMatchers("/generateCode").permitAll()
 //                                .requestMatchers("/user/**").permitAll()
                                 .anyRequest().authenticated()
                         )
