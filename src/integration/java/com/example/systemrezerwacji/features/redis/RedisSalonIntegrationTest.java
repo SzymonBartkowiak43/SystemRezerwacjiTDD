@@ -1,4 +1,4 @@
-package com.example.systemrezerwacji.casche.redis;
+package com.example.systemrezerwacji.features.redis;
 
 import com.example.systemrezerwacji.BaseIntegrationTest;
 import com.example.systemrezerwacji.domain.salonModule.SalonFacade;

@@ -4,7 +4,7 @@ spring:
   application:
     name: SystemRezerwacji_TDD
   datasource:
-    url: jdbc:postgresql://localhost:5432/reservations
+    url: jdbc:postgresql://postgres:5432/reservations #jesli chce uruchomic bez dockera to zmien na localhost zamiast postgress
     username: postgres
     password: postgres
   jpa:
@@ -20,22 +20,9 @@ spring:
     redis:
       time-to-live: PT30M
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: rezerwacje.bialystok3@gmail.com
-    password: arqd kyql ouvh qqtk
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls.enable: true
-        starttls:
-          enable: true
-          required: true
   data:
     redis:
-      host: ${REDIS_HOST:localhost}
+      host: ${REDIS_HOST:redis}
       port: ${REDIS_PORT:63792}
 
 
@@ -48,14 +35,21 @@ springdoc:
 reservation:
   send-remind: "0 0 9 * * *"
 
-
 auth:
   jwt:
     expirationDays: 30
     secret: ${JWT_SECRET:ababababbbsadfweawgehrth}
     issuer: sb-reservation-system-backend
 
-
+mail:
+  sender:
+    http:
+      client:
+        config:
+          connectionTimeout: 1000
+          port: 8080
+          readTimeout: 1000
+          uri: http://ec2-52-28-34-183.eu-central-1.compute.amazonaws.com
 
 
 
