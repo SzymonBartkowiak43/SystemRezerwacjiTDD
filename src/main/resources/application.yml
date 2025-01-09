@@ -51,5 +51,6 @@ mail:
           readTimeout: 1000
           uri: http://ec2-52-28-34-183.eu-central-1.compute.amazonaws.com
 
-
+server:
+  port: 8000
 

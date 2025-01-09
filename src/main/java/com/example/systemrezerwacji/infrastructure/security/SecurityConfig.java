@@ -52,6 +52,7 @@ public class SecurityConfig {
                                 .requestMatchers("/register/**").permitAll()
                                 .requestMatchers("/swagger-resources/**").permitAll()
                                 .requestMatchers("/salons/**").permitAll()
+                                .requestMatchers("/salons").permitAll()
                                 .requestMatchers("/employee/available-dates").permitAll()
                                 .requestMatchers("/reservation").permitAll()
                                 .requestMatchers("/generateCode").permitAll()
