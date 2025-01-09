@@ -8,6 +8,7 @@ import com.example.systemrezerwacji.domain.salonModule.SalonFacade;
 import com.example.systemrezerwacji.domain.salonModule.dto.SalonWithIdDto;
 import com.example.systemrezerwacji.domain.userModule.UserFacade;
 import com.example.systemrezerwacji.domain.userModule.dto.UserRegisterDto;
+import com.example.systemrezerwacji.infrastructure.emailSender.http.SendMailHttpClient;
 import com.example.systemrezerwacji.infrastructure.notificationMode.response.NotificationFacadeResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,13 +26,13 @@ public class NotificationFacade {
     private final UserFacade userFacade;
     private final OfferFacade offerFacade;
 
-    public NotificationFacadeResponse sendAnEmailWhenClientHasAccount(String to, String offerName, LocalDateTime time) {
-        Boolean isSuccess = emailService.sendHtmlEmail(to, offerName, time);
+    public NotificationFacadeResponse sendAnEmailWhenClientHasAccount(String to, String offerName, LocalDateTime time,String companyName) {
+        Boolean isSuccess = emailService.sendHtmlEmail(to, offerName, time,companyName);
         return new NotificationFacadeResponse(isSuccess);
     }
 
-    public NotificationFacadeResponse sendAnEmailWhenClientDoNotHasAccount(String to, String offerName, String password,LocalDateTime time) {
-        Boolean isSuccess = emailService.sendHtmlEmailWithPassword(to, offerName, password,time);
+    public NotificationFacadeResponse sendAnEmailWhenClientDoNotHasAccount(String to, String offerName, String password,LocalDateTime time, String companyName) {
+        Boolean isSuccess = emailService.sendHtmlEmailWithPassword(to, offerName, password,time,companyName);
         return new NotificationFacadeResponse(isSuccess);
     }
 
@@ -60,9 +61,6 @@ public class NotificationFacade {
                 })
                 .toList();
     }
-
-
-
 
     private NotificationFacadeResponse remindUserToReservation(String to, String offerName, SalonWithIdDto salon, LocalDateTime time ) {
         Boolean isSuccess = emailService.sendHtmlEmailToRemindAboutReservation(to,offerName,salon.salonName(),salon.city(),

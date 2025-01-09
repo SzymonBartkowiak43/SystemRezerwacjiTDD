@@ -71,10 +71,10 @@ public class ReservationFacade {
             User user = userByEmailOrCreateNewAccount.user();
             NotificationFacadeResponse emailRespond;
             if(!userByEmailOrCreateNewAccount.isNewUser()) {
-                emailRespond = notificationFacade.sendAnEmailWhenClientHasAccount(reservationDto.userEmail(), offer.getName(), reservationDto.reservationDateTime());
+                emailRespond = notificationFacade.sendAnEmailWhenClientHasAccount(reservationDto.userEmail(), offer.getName(), reservationDto.reservationDateTime(),salon.getSalonName());
             } else {
                 emailRespond = notificationFacade.sendAnEmailWhenClientDoNotHasAccount(reservationDto.userEmail(), offer.getName(),
-                        userByEmailOrCreateNewAccount.unHashedPassword(),reservationDto.reservationDateTime());
+                        userByEmailOrCreateNewAccount.unHashedPassword(),reservationDto.reservationDateTime(),salon.getSalonName());
             }
 
             if(emailRespond.isSuccess()) {
@@ -107,6 +107,4 @@ public class ReservationFacade {
                 ))
                 .toList();
     }
-
-
 }
