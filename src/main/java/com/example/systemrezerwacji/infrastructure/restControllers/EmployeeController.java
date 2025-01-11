@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,13 @@ public class EmployeeController {
     }
 
     @GetMapping("/employee/available-dates")
-    public ResponseEntity<List<AvailableTermDto>> getAvailableHours(@RequestBody AvailableDatesReservationDto availableDate) {
+    public ResponseEntity<List<AvailableTermDto>> getAvailableHours(
+            @RequestParam("date") String date,
+            @RequestParam("employeeId") Long employeeId,
+            @RequestParam("offerId") Long offerId
+    ) {
+        AvailableDatesReservationDto availableDate = new AvailableDatesReservationDto(LocalDate.parse(date), employeeId, offerId);
+
         List<AvailableTermDto> availableHours = employeeFacade.getAvailableHours(availableDate);
 
         if (availableHours.isEmpty()) {
@@ -48,7 +55,5 @@ public class EmployeeController {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
-
-
 
 }

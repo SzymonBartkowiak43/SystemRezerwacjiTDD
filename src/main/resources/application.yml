@@ -4,7 +4,7 @@ spring:
   application:
     name: SystemRezerwacji_TDD
   datasource:
-    url: jdbc:postgresql://postgres:5432/reservations #jesli chce uruchomic bez dockera to zmien na localhost zamiast postgress
+    url: jdbc:postgresql://localhost:5432/reservations #jesli chce uruchomic bez dockera to zmien na localhost zamiast postgress
     username: postgres
     password: postgres
   jpa:
@@ -16,14 +16,14 @@ spring:
 
 
   cache:
-    type: redis
+    type: none
     redis:
-      time-to-live: PT30M
+      time-to-live: PT5S
 
   data:
     redis:
-      host: ${REDIS_HOST:redis}
-      port: ${REDIS_PORT:63792}
+      host: localhost # tu tez jak odpalasz z maszynki musisz zmieniac na localhost zamiast redis
+      port: 63792
 
 
 springdoc:
@@ -34,6 +34,9 @@ springdoc:
 
 reservation:
   send-remind: "0 0 9 * * *"
+
+scheduling:
+  enabled: true
 
 auth:
   jwt:

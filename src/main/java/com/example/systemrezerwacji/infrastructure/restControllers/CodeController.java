@@ -19,4 +19,5 @@ public class CodeController {
         CodeDto codeDto = codeFacade.generateNewCode();
         return ResponseEntity.status(HttpStatus.CREATED).body(codeDto);
     }
+
 }

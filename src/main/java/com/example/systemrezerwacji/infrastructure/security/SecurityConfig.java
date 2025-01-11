@@ -56,7 +56,7 @@ public class SecurityConfig {
                                 .requestMatchers("/employee/available-dates").permitAll()
                                 .requestMatchers("/reservation").permitAll()
                                 .requestMatchers("/generateCode").permitAll()
-//                                .requestMatchers("/user/**").permitAll()
+                                .requestMatchers("/**").permitAll()
                                 .anyRequest().authenticated()
                         )
                         .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
