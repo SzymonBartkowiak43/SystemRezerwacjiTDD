@@ -4,12 +4,10 @@ import com.example.systemrezerwacji.domain.offerModule.OfferFacade;
 import com.example.systemrezerwacji.domain.employeeModule.Employee;
 import com.example.systemrezerwacji.domain.employeeModule.EmployeeFacade;
 import com.example.systemrezerwacji.domain.employeeModule.dto.AvailableTermDto;
-import com.example.systemrezerwacji.domain.reservationModule.dto.ReservationToTomorrow;
+import com.example.systemrezerwacji.domain.reservationModule.dto.*;
 import com.example.systemrezerwacji.infrastructure.notificationMode.NotificationFacade;
 import com.example.systemrezerwacji.infrastructure.notificationMode.response.NotificationFacadeResponse;
 import com.example.systemrezerwacji.domain.offerModule.Offer;
-import com.example.systemrezerwacji.domain.reservationModule.dto.CreateReservationDto;
-import com.example.systemrezerwacji.domain.reservationModule.dto.UserReservationDto;
 import com.example.systemrezerwacji.domain.reservationModule.response.ReservationFacadeResponse;
 import com.example.systemrezerwacji.domain.salonModule.Salon;
 import com.example.systemrezerwacji.domain.salonModule.SalonFacade;
@@ -55,6 +53,7 @@ public class ReservationFacade {
     public List<AvailableTermDto> getEmployeeBusyTerm(Long employeeId, LocalDate date) {
         return reservationService.getEmployeeBusyTerms(employeeId, date);
     }
+
     @Transactional
     public ReservationFacadeResponse createNewReservation(CreateReservationDto reservationDto) {
 
@@ -106,5 +105,22 @@ public class ReservationFacade {
                         reservation.getReservationDateTime()
                 ))
                 .toList();
+    }
+
+    public ReservationFacadeResponse deleteReservation(DeleteReservationDto deleteReservationDto) {
+        User userByEmail = userFacade.getUserByEmail(deleteReservationDto.userEmail());
+        Boolean isDeleted =  reservationService.deleteReservation(deleteReservationDto.reservationId(), userByEmail);
+
+        if(isDeleted) {
+            return new ReservationFacadeResponse(true, "success",null);
+        }
+        return new ReservationFacadeResponse(false, "failure", null);
+    }
+
+    public UserReservationDto updateReservationDate(UpdateReservationDto updateReservationDto) {
+        User userByEmail = userFacade.getUserByEmail(updateReservationDto.userEmail());
+        UserReservationDto reservation =  reservationService.updateReservationDate(updateReservationDto.reservationId(), userByEmail, updateReservationDto.newReservationDate());
+
+        return reservation;
     }
 }

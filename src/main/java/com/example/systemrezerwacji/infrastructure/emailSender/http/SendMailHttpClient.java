@@ -2,6 +2,7 @@ package com.example.systemrezerwacji.infrastructure.emailSender.http;
 
 import com.example.systemrezerwacji.infrastructure.emailSender.http.dto.EmailRequestDto;
 import com.example.systemrezerwacji.infrastructure.emailSender.http.dto.EmailRequestWithPasswordDto;
+import com.example.systemrezerwacji.infrastructure.emailSender.http.dto.EmailResponseDto;
 import com.example.systemrezerwacji.infrastructure.notificationMode.SendMail;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -30,15 +31,15 @@ public class SendMailHttpClient implements SendMail {
             EmailRequestDto emailRequest = new EmailRequestDto(to, offerName, time, company);
             HttpEntity<EmailRequestDto> requestEntity = new HttpEntity<>(emailRequest, getDefaultHeaders());
 
-            ResponseEntity<Boolean> response = restTemplate.exchange(
+            ResponseEntity<EmailResponseDto> response = restTemplate.exchange(
                     url,
                     HttpMethod.POST,
                     requestEntity,
-                    Boolean.class
+                    EmailResponseDto.class
             );
 
             log.info("Response from service: " + response.getBody());
-            return response.getBody() != null && response.getBody();
+            return response.getBody() != null && response.getBody().getIsSuccess();
         } catch (ResourceAccessException e) {
             log.error("Error while sending email: " + e.getMessage());
             return false;
@@ -55,15 +56,15 @@ public class SendMailHttpClient implements SendMail {
             EmailRequestWithPasswordDto emailRequest = new EmailRequestWithPasswordDto(to, offerName, time, company,password);
             HttpEntity<EmailRequestWithPasswordDto> requestEntity = new HttpEntity<>(emailRequest, getDefaultHeaders());
 
-            ResponseEntity<Boolean> response = restTemplate.exchange(
+            ResponseEntity<EmailResponseDto> response = restTemplate.exchange(
                     url,
                     HttpMethod.POST,
                     requestEntity,
-                    Boolean.class
+                    EmailResponseDto.class
             );
 
             log.info("Response from service: " + response.getBody());
-            return response.getBody() != null && response.getBody();
+            return response.getBody() != null && response.getBody().getIsSuccess();
         } catch (ResourceAccessException e) {
             log.error("Error while sending email: " + e.getMessage());
             return false;

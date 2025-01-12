@@ -56,11 +56,13 @@ public class SecurityConfig {
                                 .requestMatchers("/employee/available-dates").permitAll()
                                 .requestMatchers("/reservation").permitAll()
                                 .requestMatchers("/generateCode").permitAll()
-                                .requestMatchers("/**").permitAll()
+                                        .requestMatchers("/reservation/user").authenticated()
+//                                .requestMatchers("/**").permitAll()
                                 .anyRequest().authenticated()
                         )
                         .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                         .httpBasic(Customizer.withDefaults())
+                        .addFilterBefore(new ConditionalJwtAuthTokenFilter(jwtAuthTokenFilter, "/reservation"), UsernamePasswordAuthenticationFilter.class)
                         .addFilterBefore(jwtAuthTokenFilter, UsernamePasswordAuthenticationFilter.class)
                         .build();
     }

@@ -11,6 +11,7 @@ class MapperReservationDto {
 
     UserReservationDto mapToUserReservationDto(Reservation reservation) {
         return new UserReservationDto(
+                reservation.getId(),
                 reservation.getSalon().getId(),
                 reservation.getEmployee().getId(),
                 reservation.getUser().getId(),
