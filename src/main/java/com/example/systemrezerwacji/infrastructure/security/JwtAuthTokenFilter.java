@@ -10,6 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 @Component
+@Log4j2
 @AllArgsConstructor
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
@@ -26,13 +28,19 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         String authorization = request.getHeader("Authorization");
+        log.info("Authorization Header: {}", authorization);
         if (authorization == null) {
             filterChain.doFilter(request, response);
             return;
         }
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = getUsernamePasswordAuthenticationToken(authorization);
-        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+        try {
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = getUsernamePasswordAuthenticationToken(authorization);
+            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+        }catch (Exception e) {
+            log.error("Error processing JWT token: {}", e.getMessage());
+        }
         filterChain.doFilter(request, response);
     }
 

@@ -6,9 +6,11 @@ import com.example.systemrezerwacji.domain.salonModule.Salon;
 import com.example.systemrezerwacji.domain.userModule.User;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Getter
 @Entity
 public class Reservation {
 
@@ -16,27 +18,23 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Getter
     @ManyToOne
     @JoinColumn(name = "salon_id", nullable = false)
     private Salon salon;
 
-    @Getter
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
-    @Getter
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Getter
     @ManyToOne
     @JoinColumn(name = "offer_id", nullable = false)
     private Offer offer;
 
-    @Getter
+    @Setter
     private LocalDateTime reservationDateTime;
 
     Reservation(Salon salon, Employee employee, User user, Offer offer, LocalDateTime reservationDateTime) {

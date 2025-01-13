@@ -3,6 +3,7 @@ package com.example.systemrezerwacji.domain.reservationModule;
 import com.example.systemrezerwacji.domain.employeeModule.Employee;
 import com.example.systemrezerwacji.domain.employeeModule.dto.AvailableTermDto;
 import com.example.systemrezerwacji.domain.offerModule.Offer;
+import com.example.systemrezerwacji.domain.reservationModule.exception.ReservationDeleteException;
 import com.example.systemrezerwacji.domain.userModule.User;
 import com.example.systemrezerwacji.domain.reservationModule.dto.UserReservationDto;
 import com.example.systemrezerwacji.domain.salonModule.Salon;
@@ -70,5 +71,28 @@ class ReservationService {
         LocalDateTime endOfTomorrow = startOfTomorrow.plusDays(1).minusSeconds(1);
 
         return reservationRepository.findAllByReservationDateTimeBetween(startOfTomorrow, endOfTomorrow);
+    }
+
+    public Boolean deleteReservation(Long reservationId, User userByEmail) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new ReservationDeleteException("Reservation not found"));
+
+        if(userByEmail == reservation.getUser()) {
+            reservationRepository.delete(reservation);
+            return true;
+        }
+        throw new ReservationDeleteException("This is not a reservation for this user");
+    }
+
+    public UserReservationDto updateReservationDate(Long reservationId, User userByEmail, LocalDateTime reservationDataTime) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new ReservationDeleteException("Reservation not found"));
+
+        if(userByEmail == reservation.getUser()) {
+            reservation.setReservationDateTime(reservationDataTime);
+            Reservation savedReservation = reservationRepository.save(reservation);
+            return mapperReservationDto.mapToUserReservationDto(savedReservation);
+        }
+        throw new ReservationDeleteException("This is not a reservation for this user");
     }
 }

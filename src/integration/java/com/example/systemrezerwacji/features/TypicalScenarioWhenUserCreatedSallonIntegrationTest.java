@@ -309,17 +309,17 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
        );
 //     step 13: user choose offer and employee GET /employee/available-dates on 2024-12-31 with employee id 1 and offer 1, returning OK(200)
         // given
-        String availableDate = """
-                {
-                  "date": "2024-12-31",
-                  "employeeId": 1,
-                  "offerId": 1
-                }
-                """.trim();
+        String date = "2024-12-31";
+        String employeeId = "1";
+        String offerId = "1";
+
         // when
         ResultActions performGetAvailableDate = mockMvc.perform(get("/employee/available-dates")
-                .content(availableDate)
+                .param("date", date)
+                .param("employeeId", employeeId)
+                .param("offerId", offerId)
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
+
         // then
         String availableTermJson = performGetAvailableDate.andExpect(status().isOk())
                 .andReturn()
@@ -385,9 +385,9 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
         JwtResponseDto userJwtResponse = objectMapper.readValue(tokenJson, JwtResponseDto.class);
         String userToken = userJwtResponse.token();
         assertThat(userToken).isNotNull();
-//      step 16: user make GET /reservation/user with body email, returning OK(200)
+//      step 16: user make GET /reservation with body email, returning OK(200)
         // given && when
-        ResultActions performUserReservation = mockMvc.perform(get("/reservation/user")
+        ResultActions performUserReservation = mockMvc.perform(get("/reservation")
                 .header("Authorization", "Bearer " + userToken)
                 .param("email", "szymon.b4310xxx@gmail.com")
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
@@ -402,11 +402,65 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
         UserReservationDto userReservationDto = userReservationDtoList.get(0);
 
         assertAll(
-                () -> assertThat(userReservationDto .userId()).isEqualTo(3),
-                () -> assertThat(userReservationDto .salonId()).isEqualTo(1),
+                () -> assertThat(userReservationDto.userId()).isEqualTo(3),
+                () -> assertThat(userReservationDto.salonId()).isEqualTo(1),
                 () -> assertThat(userReservationDto.offerId()).isEqualTo(1)
         );
 
+//      step 17: user make PATCH /reservation and change the date of reservation to 2024-12-31T14:00:00
+        // given
+        String reservationChange = """
+                {
+                  "reservationId": 1,
+                  "userEmail": "szymon.b4310xxx@gmail.com",
+                  "newReservationDate": "2024-12-31T14:00:00"
+                }
+                """.trim();
+
+        // when
+        ResultActions performChangeReservationTime = mockMvc.perform(patch("/reservation")
+                .header("Authorization", "Bearer " + userToken)
+                .content(reservationChange)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+
+        // then
+        String changeReservationJson = performChangeReservationTime.andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        UserReservationDto reservationWithChangedData = objectMapper.readValue(changeReservationJson, UserReservationDto.class);
+
+        assertThat(reservationWithChangedData.reservationDateTime()).isEqualTo("2024-12-31T14:00:00");
+
+
+//      step 18: user make DELETE /reservation and delete to reservation
+        // given
+        String reservationDelete = """
+                {
+                  "reservationId": 1,
+                  "userEmail": "szymon.b4310xxx@gmail.com"
+                }
+                """.trim();
+
+        // when
+        ResultActions performDeleteReservation = mockMvc.perform(delete("/reservation")
+                .header("Authorization", "Bearer " + userToken)
+                .content(reservationDelete)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+
+        // then
+        String deleteReservationJson = performDeleteReservation.andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        ReservationFacadeResponse deleteReservation = objectMapper.readValue(deleteReservationJson, ReservationFacadeResponse.class);
+
+        assertAll(
+                () -> assertThat(deleteReservation.message()).isEqualTo("success"),
+                () -> assertTrue(deleteReservation.isSuccess())
+        );
     }
 
     @NotNull
