@@ -72,12 +72,4 @@ public class SalonController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
-
-    @GetMapping("/offers/{id}")
-    public ResponseEntity<List<OfferDto>> getOffers(@PathVariable Integer id) {
-        SalonOffersListDto allOffers = salonFacade.getAllOffersSalon(id.longValue());
-
-        return ResponseEntity.ok(allOffers.offers());
-    }
-
  }
