@@ -7,6 +7,7 @@ import com.example.systemrezerwacji.domain.offerModule.dto.OfferDto;
 import com.example.systemrezerwacji.domain.salonModule.SalonFacade;
 import com.example.systemrezerwacji.domain.salonModule.dto.*;
 import com.example.systemrezerwacji.domain.openingHoursModule.dto.OpeningHoursDto;
+import com.example.systemrezerwacji.infrastructure.claudinary.CloudinaryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +16,23 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import com.example.systemrezerwacji.domain.salonModule.Image;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Map;
+
 @RestController
 public class SalonController {
     private final SalonFacade salonFacade;
+    private final CloudinaryService cloudinaryService;
 
-    public SalonController(SalonFacade salonFacade) {
+    public SalonController(SalonFacade salonFacade, CloudinaryService cloudinaryService) {
         this.salonFacade = salonFacade;
+        this.cloudinaryService = cloudinaryService;
     }
 
 
@@ -80,4 +92,33 @@ public class SalonController {
         return ResponseEntity.ok(allOffers.offers());
     }
 
- }
+    @PostMapping("/salons/image/{salonId}")
+    @ResponseBody
+    public ResponseEntity<String> upload(
+            @PathVariable Integer salonId,
+            @RequestParam MultipartFile multipartFile) throws IOException {
+
+        BufferedImage bi = ImageIO.read(multipartFile.getInputStream());
+        if (bi == null) {
+            return new ResponseEntity<>("Image not validate!", HttpStatus.BAD_REQUEST);
+        }
+        Map result = cloudinaryService.upload(multipartFile);
+        Image image = new Image((String) result.get("original_filename"),
+                (String) result.get("url"),
+                (String) result.get("public_id"));
+
+        salonFacade.addImageToSalon(Long.valueOf(salonId),image);
+        return new ResponseEntity<>("Uploading successful", HttpStatus.OK);
+    }
+
+    @GetMapping("/salons/image/{salonId}")
+    public ResponseEntity<List<ImageDto>> getImagesForSalon(@PathVariable Long salonId) {
+        List<ImageDto> images = salonFacade.findImagesBySalonId(salonId);
+        if (images.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(images, HttpStatus.OK);
+    }
+
+
+}
