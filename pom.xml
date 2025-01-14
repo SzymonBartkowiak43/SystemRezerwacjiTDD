@@ -140,6 +140,12 @@
             <artifactId>jedis</artifactId>
             <version>${jedis.version}</version>
         </dependency>
+        <!-- Cloudinary        -->
+        <dependency>
+            <groupId>com.cloudinary</groupId>
+            <artifactId>cloudinary-http45</artifactId>
+            <version>1.34.0</version>
+        </dependency>
 
     </dependencies>
 

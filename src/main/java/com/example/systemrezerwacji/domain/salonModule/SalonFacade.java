@@ -16,6 +16,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -88,4 +89,12 @@ public class SalonFacade {
         return salonService.getSalon(id);
     }
 
+    public Map addImageToSalon(Long salonId, Image image) {
+        salonService.addImageToSalon(salonId,image);
+        return null;
+    }
+
+    public List<ImageDto> findImagesBySalonId(Long salonId) {
+        return salonService.findImagesBySalonId(salonId);
+    }
 }

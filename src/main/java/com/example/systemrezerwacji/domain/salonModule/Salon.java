@@ -32,6 +32,9 @@ public class Salon {
     @OneToMany(mappedBy = "salon", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OpeningHours> openingHours;
 
+    @OneToMany(mappedBy = "salon", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Image> images;
+
 
     private Salon(SalonBuilder salonServiceBuilder) {
         this.salonName = salonServiceBuilder.name;

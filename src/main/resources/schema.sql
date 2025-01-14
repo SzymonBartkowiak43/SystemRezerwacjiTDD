@@ -32,6 +32,15 @@ CREATE TABLE IF NOT EXISTS "salon" (
     FOREIGN KEY (user_id) REFERENCES "users"(id)
     );
 
+CREATE TABLE IF NOT EXISTS "image" (
+                                       id SERIAL PRIMARY KEY,
+                                       name VARCHAR(255) NOT NULL,
+    image_url VARCHAR(500) NOT NULL,
+    image_id VARCHAR(255) NOT NULL,
+    salon_id BIGINT,
+    FOREIGN KEY (salon_id) REFERENCES "salon"(id) ON DELETE CASCADE
+    );
+
 CREATE TABLE IF NOT EXISTS "code" (
                                       id SERIAL PRIMARY KEY,
                                       code VARCHAR(255) NOT NULL,
