@@ -9,9 +9,11 @@ import com.example.systemrezerwacji.domain.offerModule.dto.OfferDto;
 import com.example.systemrezerwacji.domain.openingHoursModule.dto.OpeningHoursDto;
 import com.example.systemrezerwacji.domain.salonModule.dto.*;
 import com.example.systemrezerwacji.domain.salonModule.exception.SalonCreationException;
+import com.example.systemrezerwacji.domain.userModule.User;
 import com.example.systemrezerwacji.domain.userModule.UserFacade;
 import com.example.systemrezerwacji.domain.openingHoursModule.OpeningHoursFacade;
 import com.example.systemrezerwacji.domain.salonModule.dto.AddHoursResponseDto;
+import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
+@AllArgsConstructor
 public class SalonFacade {
     private final SalonValidator validator;
     private final SalonService salonService;
@@ -31,18 +34,6 @@ public class SalonFacade {
     private final OfferFacade offerFacade;
     private final SalonCreator salonCreator;
 
-    public SalonFacade(SalonValidator validator, SalonService salonService, UserFacade userFacade,
-                       CodeFacade codeFacade, OpeningHoursFacade openingHoursFacade, EmployeeFacade employeeFacade,
-                       OfferFacade offerFacade, SalonCreator salonCreator) {
-        this.validator = validator;
-        this.salonService = salonService;
-        this.userFacade = userFacade;
-        this.codeFacade = codeFacade;
-        this.openingHoursFacade = openingHoursFacade;
-        this.employeeFacade = employeeFacade;
-        this.offerFacade = offerFacade;
-        this.salonCreator = salonCreator;
-    }
 
     public SalonFacadeResponseDto createNewSalon(CreateNewSalonDto salonDto) {
         try {
@@ -89,12 +80,19 @@ public class SalonFacade {
         return salonService.getSalon(id);
     }
 
-    public Map addImageToSalon(Long salonId, Image image) {
-        salonService.addImageToSalon(salonId,image);
-        return null;
+    public String addImageToSalon(Long salonId, Image image) {
+        Salon salon = salonService.addImageToSalon(salonId, image);
+        return "success";
     }
 
     public List<ImageDto> findImagesBySalonId(Long salonId) {
         return salonService.findImagesBySalonId(salonId);
+    }
+
+    public List<SalonWithIdDto> getAllSalonsToOwner(Integer ownerId) {
+        User user = userFacade.getUser(ownerId.longValue()).orElseThrow(
+                () -> new RuntimeException("User not Found"));
+        List<SalonWithIdDto> allSalons =  salonService.getAllSalons(user);
+        return allSalons;
     }
 }

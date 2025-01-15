@@ -58,7 +58,8 @@ public class SecurityConfig {
                                 .requestMatchers("employee-to-offer/**").permitAll()
                                 .requestMatchers("/offers/**").permitAll()
                                 .requestMatchers("/employee/available-dates/**").permitAll()
-                                        .requestMatchers("/reservation/user").authenticated()
+//                                .requestMatchers("/owner/**").permitAll()
+                                .requestMatchers("/reservation/user").authenticated()
 //                                .requestMatchers("/**").permitAll()
                                 .anyRequest().authenticated()
                         )
@@ -66,6 +67,7 @@ public class SecurityConfig {
                         .httpBasic(Customizer.withDefaults())
                         .addFilterBefore(new ConditionalJwtAuthTokenFilter(jwtAuthTokenFilter, "/reservation"), UsernamePasswordAuthenticationFilter.class)
                         .addFilterBefore(jwtAuthTokenFilter, UsernamePasswordAuthenticationFilter.class)
+
                         .build();
     }
 

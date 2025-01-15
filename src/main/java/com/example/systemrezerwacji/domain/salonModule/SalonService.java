@@ -76,4 +76,11 @@ class SalonService {
     }
 
 
+    public List<SalonWithIdDto> getAllSalons(User user) {
+        List<Salon> salonsByUser = salonRepository.getSalonsByUser(user);
+
+        return salonsByUser.stream()
+                .map(mapper::map)
+                .collect(Collectors.toList());
+    }
 }
