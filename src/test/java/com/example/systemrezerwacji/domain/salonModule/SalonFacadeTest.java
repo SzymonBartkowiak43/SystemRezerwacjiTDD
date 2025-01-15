@@ -16,7 +16,6 @@ import org.mockito.MockitoAnnotations;
 import java.util.Optional;
 
 import static com.example.systemrezerwacji.domain.salonModule.SalonValidationResult.*;
-import static com.example.systemrezerwacji.domain.salonModule.ValidationError.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
@@ -66,7 +65,7 @@ class SalonFacadeTest {
         when(consumeMessage1.isSuccess()).thenReturn(true);
 
         when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
-        when(userFacade.getUserToCreateSalon(Long.valueOf(userId))).thenReturn(Optional.of(new User()));
+        when(userFacade.getUser(Long.valueOf(userId))).thenReturn(Optional.of(new User()));
         when(codeFacade.consumeCode(eq(code.getCode()), any(User.class))).thenReturn(consumeMessage1);
 
 

@@ -65,7 +65,7 @@ public class UserFacade {
         return userService.getUser(id);
     }
 
-    public Optional<User> getUserToCreateSalon(Long id) {
+    public Optional<User> getUser(Long id) {
         return userService.getUserWithId(id);
     }
 

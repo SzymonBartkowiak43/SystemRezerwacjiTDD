@@ -3,7 +3,6 @@ package com.example.systemrezerwacji.infrastructure.restControllers;
 
 import com.example.systemrezerwacji.domain.employeeModule.response.CreateEmployeeResponseDto;
 import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeDto;
-import com.example.systemrezerwacji.domain.offerModule.dto.OfferDto;
 import com.example.systemrezerwacji.domain.salonModule.SalonFacade;
 import com.example.systemrezerwacji.domain.salonModule.dto.*;
 import com.example.systemrezerwacji.domain.openingHoursModule.dto.OpeningHoursDto;
@@ -12,12 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
 import java.util.List;
-
 import org.springframework.web.multipart.MultipartFile;
-
 import com.example.systemrezerwacji.domain.salonModule.Image;
 
 import javax.imageio.ImageIO;
@@ -85,13 +81,6 @@ public class SalonController {
         }
     }
 
-    @GetMapping("/offers/{id}")
-    public ResponseEntity<List<OfferDto>> getOffers(@PathVariable Integer id) {
-        SalonOffersListDto allOffers = salonFacade.getAllOffersSalon(id.longValue());
-
-        return ResponseEntity.ok(allOffers.offers());
-    }
-
     @PostMapping("/salons/image/{salonId}")
     @ResponseBody
     public ResponseEntity<String> upload(
@@ -102,6 +91,7 @@ public class SalonController {
         if (bi == null) {
             return new ResponseEntity<>("Image not validate!", HttpStatus.BAD_REQUEST);
         }
+
         Map result = cloudinaryService.upload(multipartFile);
         Image image = new Image((String) result.get("original_filename"),
                 (String) result.get("url"),
@@ -119,6 +109,5 @@ public class SalonController {
         }
         return new ResponseEntity<>(images, HttpStatus.OK);
     }
-
 
 }

@@ -16,5 +16,4 @@ public class SystemRezerwacjiTddApplication {
         SpringApplication.run(SystemRezerwacjiTddApplication.class, args);
     }
 
-
 }
