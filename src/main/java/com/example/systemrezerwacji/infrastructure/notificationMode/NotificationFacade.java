@@ -11,6 +11,7 @@ import com.example.systemrezerwacji.domain.userModule.dto.UserRegisterDto;
 import com.example.systemrezerwacji.infrastructure.emailSender.http.SendMailHttpClient;
 import com.example.systemrezerwacji.infrastructure.notificationMode.response.NotificationFacadeResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 @Component
 @AllArgsConstructor
+@Log4j2
 public class NotificationFacade {
     private final EmailService emailService;
     private final ReservationFacade reservationFacade;
@@ -38,6 +40,7 @@ public class NotificationFacade {
 
     public List<NotificationFacadeResponse> sendRemind() {
         List<ReservationToTomorrow> allReservations = reservationFacade.getAllReservationToTomorrow();
+        log.info(allReservations.size() + " reservations to remind about");
 
         return allReservations.stream()
                 .map(reservation -> {

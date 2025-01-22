@@ -20,6 +20,7 @@ public class User  implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String email;
     private String name;
     private String password;
@@ -46,6 +47,18 @@ public class User  implements UserDetails {
     User addUserRole(UserRole userRole) {
         roles.add(userRole);
         return this;
+    }
+
+    void setEmail(String email) {
+        this.email = email;
+    }
+
+    void setName(String name) {
+        this.name = name;
+    }
+
+    void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

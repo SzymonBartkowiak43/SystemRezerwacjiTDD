@@ -123,4 +123,15 @@ class UserService {
     }
 
 
+    public User updateUser(UserRegisterDto userDto) {
+        User user = userRepository.getUserByEmail(userDto.email())
+                .orElseThrow(() -> new RuntimeException("user not found!!"));
+
+        user.setName(userDto.name());
+        user.setEmail(userDto.email());
+        user.setPassword(userDto.password());
+
+        userRepository.save(user);
+        return user;
+    }
 }

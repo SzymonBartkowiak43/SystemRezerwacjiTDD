@@ -95,4 +95,17 @@ public class UserFacade {
                 .orElseThrow(() -> new RuntimeException("user not found!!"));
         return userByEmail;
     }
+
+    public UserFacadeResponse updateUser(UserRegisterDto userDto) {
+        UserValidationResult validate = validator.validate(userDto);
+        String message = validate.validationMessage();
+
+        if(!message.equals(SUCCESS_MESSAGE)) {
+            return new UserFacadeResponse(message, null, null);
+        }
+
+        User user = userService.updateUser(userDto);
+
+        return new UserFacadeResponse(message,user.getId(), user.getName());
+    }
 }
