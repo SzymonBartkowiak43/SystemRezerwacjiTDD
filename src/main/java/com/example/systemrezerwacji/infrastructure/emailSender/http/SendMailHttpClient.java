@@ -83,15 +83,12 @@ public class SendMailHttpClient implements SendMail {
             String urlForService = getUrlForService("/api/mail/send-reminders");
             final String url = UriComponentsBuilder.fromHttpUrl(urlForService).toUriString();
 
-            // Tworzenie listy z jednym obiektem EmailRemindDto
             EmailRemindDto emailRequest = new EmailRemindDto(to, reservationName, salonName, street, number, city, time);
             List<EmailRemindDto> requestBody = Collections.singletonList(emailRequest);
 
-            // Konfiguracja nagłówków i zapytania
             HttpHeaders headers = getDefaultHeaders();
             HttpEntity<List<EmailRemindDto>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-            // Wykonanie żądania
             ResponseEntity<EmailResponseDto> response = restTemplate.exchange(
                     url,
                     HttpMethod.POST,

@@ -8,5 +8,5 @@ public record EmailRemindDto(String to,
                              String street,
                              String number,
                              String city,
-                             LocalDateTime reservationDateTime) {
+                             LocalDateTime reservationDataTime) {
 }

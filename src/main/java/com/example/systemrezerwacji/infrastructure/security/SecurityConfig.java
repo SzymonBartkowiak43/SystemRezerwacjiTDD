@@ -59,7 +59,7 @@ public class SecurityConfig {
                                 .requestMatchers("/employee/available-dates/**").permitAll()
                                 .requestMatchers("/owner/**").permitAll()
                                // .requestMatchers("/reservation").authenticated()
-//                                .requestMatchers("/**").permitAll()
+                                .requestMatchers("/**").permitAll()
                                  .requestMatchers("/generateCode").authenticated()
                                  .anyRequest().authenticated()
                         )
