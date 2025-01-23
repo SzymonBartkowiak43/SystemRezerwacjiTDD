@@ -3,6 +3,7 @@ package com.example.systemrezerwacji.domain.reservationModule;
 import com.example.systemrezerwacji.domain.employeeModule.Employee;
 import com.example.systemrezerwacji.domain.employeeModule.dto.AvailableTermDto;
 import com.example.systemrezerwacji.domain.offerModule.Offer;
+import com.example.systemrezerwacji.domain.reservationModule.dto.UserReservationDataDto;
 import com.example.systemrezerwacji.domain.reservationModule.exception.ReservationDeleteException;
 import com.example.systemrezerwacji.domain.userModule.User;
 import com.example.systemrezerwacji.domain.reservationModule.dto.UserReservationDto;
@@ -61,9 +62,9 @@ class ReservationService {
     }
 
 
-    public List<UserReservationDto> getReservationToCurrentUser(User user) {
+    public List<UserReservationDataDto> getReservationToCurrentUser(User user) {
         List<Reservation> allByUser = reservationRepository.findAllByUser(user);
-        return mapperReservationDto.mapToUserReservationDtoList(allByUser);
+        return mapperReservationDto.mapToUserReservationDataDtoList(allByUser);
     }
 
     public List<Reservation> getAllReservationToTomorrow() {

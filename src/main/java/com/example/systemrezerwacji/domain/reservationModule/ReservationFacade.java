@@ -86,10 +86,10 @@ public class ReservationFacade {
         return new ReservationFacadeResponse(false, result.message(),null);
     }
 
-    public List<UserReservationDto> getUserReservation(String email) {
+    public List<UserReservationDataDto> getUserReservation(String email) {
         User user = userFacade.getUserByEmail(email);
 
-        List<UserReservationDto> userReservationDtoList = reservationService.getReservationToCurrentUser(user);
+        List<UserReservationDataDto> userReservationDtoList = reservationService.getReservationToCurrentUser(user);
 
         return userReservationDtoList;
     }

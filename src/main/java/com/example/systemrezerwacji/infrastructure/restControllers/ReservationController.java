@@ -2,10 +2,7 @@ package com.example.systemrezerwacji.infrastructure.restControllers;
 
 
 import com.example.systemrezerwacji.domain.reservationModule.ReservationFacade;
-import com.example.systemrezerwacji.domain.reservationModule.dto.CreateReservationDto;
-import com.example.systemrezerwacji.domain.reservationModule.dto.DeleteReservationDto;
-import com.example.systemrezerwacji.domain.reservationModule.dto.UpdateReservationDto;
-import com.example.systemrezerwacji.domain.reservationModule.dto.UserReservationDto;
+import com.example.systemrezerwacji.domain.reservationModule.dto.*;
 import com.example.systemrezerwacji.domain.reservationModule.response.ReservationFacadeResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -38,8 +35,8 @@ public class ReservationController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/reservations")
-    public ResponseEntity<List<UserReservationDto>> showReservationToCurrentUser(@RequestParam String email) {
-        List<UserReservationDto> userReservationList =  reservationFacade.getUserReservation(email);
+    public ResponseEntity<List<UserReservationDataDto>> showReservationToCurrentUser(@RequestParam String email) {
+        List<UserReservationDataDto> userReservationList =  reservationFacade.getUserReservation(email);
 
         return ResponseEntity.ok(userReservationList);
     }
