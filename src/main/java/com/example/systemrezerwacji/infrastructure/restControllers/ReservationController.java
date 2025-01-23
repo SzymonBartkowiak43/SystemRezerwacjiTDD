@@ -36,7 +36,8 @@ public class ReservationController {
         }
     }
 
-    @GetMapping("/reservation")
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/reservations")
     public ResponseEntity<List<UserReservationDto>> showReservationToCurrentUser(@RequestParam String email) {
         List<UserReservationDto> userReservationList =  reservationFacade.getUserReservation(email);
 

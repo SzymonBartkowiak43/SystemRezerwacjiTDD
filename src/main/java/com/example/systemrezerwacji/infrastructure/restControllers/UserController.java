@@ -41,4 +41,10 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PatchMapping("/user")
+    public ResponseEntity<UserFacadeResponse> updateUser(@RequestBody UserRegisterDto userDto) {
+        UserFacadeResponse updatedUser = userFacade.updateUser(userDto);
+
+        return ResponseEntity.ok(updatedUser);
+    }
 }

@@ -23,18 +23,15 @@ public class Salon {
     private String street;
     private String number;
 
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
 
     @OneToMany(mappedBy = "salon", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OpeningHours> openingHours;
 
     @OneToMany(mappedBy = "salon", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
-
 
     private Salon(SalonBuilder salonServiceBuilder) {
         this.salonName = salonServiceBuilder.name;
