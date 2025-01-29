@@ -5,13 +5,12 @@ import com.example.systemrezerwacji.infrastructure.emailSender.http.dto.EmailReq
 import com.example.systemrezerwacji.infrastructure.emailSender.http.dto.EmailRequestWithPasswordDto;
 import com.example.systemrezerwacji.infrastructure.emailSender.http.dto.EmailResponseDto;
 import com.example.systemrezerwacji.infrastructure.notificationMode.SendMail;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -89,16 +88,21 @@ public class SendMailHttpClient implements SendMail {
             HttpHeaders headers = getDefaultHeaders();
             HttpEntity<List<EmailRemindDto>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-            ResponseEntity<EmailResponseDto> response = restTemplate.exchange(
+            ResponseEntity<List<EmailResponseDto>> response = restTemplate.exchange(
                     url,
                     HttpMethod.POST,
                     requestEntity,
-                    EmailResponseDto.class
+                    new ParameterizedTypeReference<>() {
+                    }
             );
 
-            log.info("Response from service: " + response.getBody());
-        } catch (ResourceAccessException e) {
-            log.error("Error while sending remind: " + e.getMessage());
+            if (response.getStatusCode().is2xxSuccessful()) {
+                log.info("Response from server: {}", response.getBody() + " for " + to);
+            } else {
+                log.error("Error from server: {}", response.getStatusCode());
+            }
+        } catch (RestClientException e) {
+            log.error("Error sending remind: {}", e.getMessage());
         }
     }
 

@@ -39,7 +39,7 @@ springdoc:
     path: /swagger-ui
 
 reservation:
-  send-remind: "0 59 22 * * *"
+  send-remind: "0 53 20 * * *"
 
 scheduling:
   enabled: true
