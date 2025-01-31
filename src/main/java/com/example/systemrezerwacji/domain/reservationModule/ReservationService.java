@@ -96,4 +96,10 @@ class ReservationService {
         }
         throw new ReservationDeleteException("This is not a reservation for this user");
     }
+
+    public Reservation getReservation(Long reservationId) {
+        return reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new ReservationDeleteException("Reservation not found"));
+    }
+
 }

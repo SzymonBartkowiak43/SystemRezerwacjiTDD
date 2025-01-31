@@ -1,5 +1,6 @@
 package com.example.systemrezerwacji.domain.reservationModule;
 
+import com.example.systemrezerwacji.domain.employeeModule.dto.AvailableTermWithDateDto;
 import com.example.systemrezerwacji.domain.offerModule.OfferFacade;
 import com.example.systemrezerwacji.domain.employeeModule.Employee;
 import com.example.systemrezerwacji.domain.employeeModule.EmployeeFacade;
@@ -20,7 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ReservationFacade {
@@ -32,7 +35,6 @@ public class ReservationFacade {
     private final SalonFacade salonFacade;
     private final EmployeeFacade employeeFacade;
     private final NotificationFacade notificationFacade;
-
     private final ReservationService reservationService;
     private final ReservationValidator validator;
 
@@ -56,9 +58,7 @@ public class ReservationFacade {
 
     @Transactional
     public ReservationFacadeResponse createNewReservation(CreateReservationDto reservationDto) {
-
         LocalTime duration = offerFacade.getDurationToOffer(reservationDto.offerId());
-
         ReservationValidationResult result = validator.validate(reservationDto, duration);
 
         if (result.isValid()) {
@@ -118,9 +118,39 @@ public class ReservationFacade {
     }
 
     public UserReservationDto updateReservationDate(UpdateReservationDto updateReservationDto) {
-        User userByEmail = userFacade.getUserByEmail(updateReservationDto.userEmail());
+        Reservation reservation1 = reservationService.getReservation(updateReservationDto.reservationId());
+        User userByEmail = userFacade.getUserByEmail(reservation1.getUser().getEmail());
         UserReservationDto reservation =  reservationService.updateReservationDate(updateReservationDto.reservationId(), userByEmail, updateReservationDto.newReservationDate());
-
         return reservation;
     }
+
+    public List<AvailableTermWithDateDto> getNearest5AvailableHours(Long reservationId) {
+        Reservation reservation = reservationService.getReservation(reservationId);
+        Long employeeId = reservation.getEmployee().getId();
+        Long offerId = reservation.getOffer().getId();
+        LocalDate date = reservation.getReservationDateTime().toLocalDate();
+
+        List<AvailableTermWithDateDto> nearestAvailableTerms = new ArrayList<>();
+
+        while (nearestAvailableTerms.size() < 5) {
+            List<AvailableTermDto> availableHours = employeeFacade.getAvailableHours(
+                    new AvailableDatesReservationDto(date, employeeId, offerId));
+
+            LocalDate finalDate = date;
+            List<AvailableTermWithDateDto> availableTermsWithDate = availableHours.stream()
+                    .map(term -> new AvailableTermWithDateDto(term.startServices(), term.endServices(), finalDate))
+                    .toList();
+
+            nearestAvailableTerms.addAll(availableTermsWithDate);
+
+            if (nearestAvailableTerms.size() >= 5) {
+                break;
+            }
+
+            date = date.plusDays(1);
+        }
+
+        return nearestAvailableTerms.stream().limit(5).collect(Collectors.toList());
+    }
+
 }

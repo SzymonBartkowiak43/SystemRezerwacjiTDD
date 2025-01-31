@@ -1,6 +1,8 @@
 package com.example.systemrezerwacji.infrastructure.restControllers;
 
 
+import com.example.systemrezerwacji.domain.employeeModule.dto.AvailableTermDto;
+import com.example.systemrezerwacji.domain.employeeModule.dto.AvailableTermWithDateDto;
 import com.example.systemrezerwacji.domain.reservationModule.ReservationFacade;
 import com.example.systemrezerwacji.domain.reservationModule.dto.*;
 import com.example.systemrezerwacji.domain.reservationModule.response.ReservationFacadeResponse;
@@ -52,12 +54,19 @@ public class ReservationController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PatchMapping("/reservation")
     public ResponseEntity<UserReservationDto> changeDateOfReservation(@RequestBody UpdateReservationDto updateReservationDto) {
         log.info("Updating reservation date: " + updateReservationDto);
         UserReservationDto response = reservationFacade.updateReservationDate(updateReservationDto);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/reservation/{reservationId}/nearest")
+    public ResponseEntity<List<AvailableTermWithDateDto>> getNearest5Reservations(@PathVariable Long reservationId) {
+        List<AvailableTermWithDateDto> userReservationList = reservationFacade.getNearest5AvailableHours(reservationId);
+        return ResponseEntity.ok(userReservationList);
     }
 
 
