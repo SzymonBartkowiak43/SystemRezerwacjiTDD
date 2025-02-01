@@ -81,17 +81,12 @@ class SalonValidator {
     void validateStreet(String street) {
         if (street == null) {
             errors.add(ValidationError.EMPTY_STREET);
-            return;
-        }
-        if (!street.matches("^[a-zA-Z\\s]+$")) {
-            errors.add(ValidationError.FORBIDDEN_CHARACTERS_IN_STREET);
         }
     }
 
     void validateNumber(String number) {
         if (number == null) {
             errors.add(ValidationError.EMPTY_NUMBER);
-            return;
         }
     }
 

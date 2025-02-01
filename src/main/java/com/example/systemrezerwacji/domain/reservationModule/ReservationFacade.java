@@ -88,24 +88,16 @@ public class ReservationFacade {
 
     public List<UserReservationDataDto> getUserReservation(String email) {
         User user = userFacade.getUserByEmail(email);
-
         List<UserReservationDataDto> userReservationDtoList = reservationService.getReservationToCurrentUser(user);
 
         return userReservationDtoList;
     }
 
     public List<ReservationToTomorrow> getAllReservationToTomorrow() {
-        List<Reservation> allReservationToTomorrow = reservationService.getAllReservationToTomorrow();
-
-        return allReservationToTomorrow.stream()
-                .map(reservation -> new ReservationToTomorrow(
-                        reservation.getSalon().getId(),
-                        reservation.getUser().getId(),
-                        reservation.getOffer().getId(),
-                        reservation.getReservationDateTime()
-                ))
-                .toList();
+        List<ReservationToTomorrow> allReservationToTomorrow = reservationService.getAllReservationToTomorrow();
+        return allReservationToTomorrow;
     }
+
 
     public ReservationFacadeResponse deleteReservation(DeleteReservationDto deleteReservationDto) {
         User userByEmail = userFacade.getUserByEmail(deleteReservationDto.userEmail());
@@ -132,7 +124,7 @@ public class ReservationFacade {
 
         List<AvailableTermWithDateDto> nearestAvailableTerms = new ArrayList<>();
 
-        while (nearestAvailableTerms.size() < 5) {
+         do {
             List<AvailableTermDto> availableHours = employeeFacade.getAvailableHours(
                     new AvailableDatesReservationDto(date, employeeId, offerId));
 
@@ -140,15 +132,10 @@ public class ReservationFacade {
             List<AvailableTermWithDateDto> availableTermsWithDate = availableHours.stream()
                     .map(term -> new AvailableTermWithDateDto(term.startServices(), term.endServices(), finalDate))
                     .toList();
-
             nearestAvailableTerms.addAll(availableTermsWithDate);
-
-            if (nearestAvailableTerms.size() >= 5) {
-                break;
-            }
-
             date = date.plusDays(1);
-        }
+
+        }while (nearestAvailableTerms.size() < 5);
 
         return nearestAvailableTerms.stream().limit(5).collect(Collectors.toList());
     }

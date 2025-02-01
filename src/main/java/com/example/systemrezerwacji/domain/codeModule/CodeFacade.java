@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CodeFacade {
     private final CodeService codeService;
 
+    @Transactional
     public CodeDto generateNewCode() {
         return codeService.generateNewCode();
     }

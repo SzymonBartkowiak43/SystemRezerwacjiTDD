@@ -8,7 +8,6 @@ import com.example.systemrezerwacji.domain.salonModule.SalonFacade;
 import com.example.systemrezerwacji.domain.salonModule.dto.SalonWithIdDto;
 import com.example.systemrezerwacji.domain.userModule.UserFacade;
 import com.example.systemrezerwacji.domain.userModule.dto.UserRegisterDto;
-import com.example.systemrezerwacji.infrastructure.emailSender.http.SendMailHttpClient;
 import com.example.systemrezerwacji.infrastructure.notificationMode.response.NotificationFacadeResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -45,7 +44,7 @@ public class NotificationFacade {
         return allReservations.stream()
                 .map(reservation -> {
                     Optional<SalonWithIdDto> salonOpt = salonFacade.getSalonById(reservation.salonId());
-                    Optional<UserRegisterDto> userOpt = userFacade.getUserByid(reservation.userId());
+                    Optional<UserRegisterDto> userOpt = userFacade.getUserById(reservation.userId());
                     Offer offer = offerFacade.getOffer(reservation.offerId());
 
                     if (salonOpt.isPresent() && userOpt.isPresent()) {

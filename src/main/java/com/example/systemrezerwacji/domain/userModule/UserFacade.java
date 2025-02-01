@@ -61,11 +61,11 @@ public class UserFacade {
         return new UserFacadeResponse(message,user.getId(), user.getName());
     }
 
-    public Optional<UserRegisterDto> getUserByid(Long id) {
+    public Optional<UserRegisterDto> getUserById(Long id) {
         return userService.getUser(id);
     }
 
-    public Optional<User> getUser(Long id) {
+    public Optional<User> getUserWithId(Long id) {
         return userService.getUserWithId(id);
     }
 

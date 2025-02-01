@@ -37,7 +37,7 @@ class SalonCreator {
     }
 
     private User findUser(String userId) throws SalonCreationException {
-        return userFacade.getUser(Long.valueOf(userId))
+        return userFacade.getUserWithId(Long.valueOf(userId))
                 .orElseThrow(() -> new SalonCreationException("User not found"));
     }
 

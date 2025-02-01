@@ -65,7 +65,7 @@ class SalonFacadeTest {
         when(consumeMessage1.isSuccess()).thenReturn(true);
 
         when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
-        when(userFacade.getUser(Long.valueOf(userId))).thenReturn(Optional.of(new User()));
+        when(userFacade.getUserWithId(Long.valueOf(userId))).thenReturn(Optional.of(new User()));
         when(codeFacade.consumeCode(eq(code.getCode()), any(User.class))).thenReturn(consumeMessage1);
 
 

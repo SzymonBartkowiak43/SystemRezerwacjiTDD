@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CodeController {
     private final CodeFacade codeFacade;
 
-    @GetMapping("/generateCode")
+    @PostMapping("/generateCode")
     public ResponseEntity<CodeDto> generateCode() {
         CodeDto codeDto = codeFacade.generateNewCode();
         return ResponseEntity.status(HttpStatus.CREATED).body(codeDto);

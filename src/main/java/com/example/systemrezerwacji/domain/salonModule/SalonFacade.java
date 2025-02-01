@@ -1,6 +1,6 @@
 package com.example.systemrezerwacji.domain.salonModule;
 
-import com.example.systemrezerwacji.domain.codeModule.CodeFacade;
+
 import com.example.systemrezerwacji.domain.employeeModule.EmployeeFacade;
 import com.example.systemrezerwacji.domain.employeeModule.response.CreateEmployeeResponseDto;
 import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeDto;
@@ -18,17 +18,14 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Component
 @AllArgsConstructor
 public class SalonFacade {
-    private final SalonValidator validator;
-    private final SalonService salonService;
 
+    private final SalonService salonService;
     private final UserFacade userFacade;
-    private final CodeFacade codeFacade;
     private final OpeningHoursFacade openingHoursFacade;
     private final EmployeeFacade employeeFacade;
     private final OfferFacade offerFacade;
@@ -49,7 +46,6 @@ public class SalonFacade {
         Salon salon = salonService.getSalon(salonId);
 
         AddHoursResponseDto response = openingHoursFacade.addOpeningHours(openingHours, salon);
-
         salon.addOpeningHours(response.openingHours());
 
         return new SalonFacadeResponseDto("success", salonId);
@@ -61,7 +57,7 @@ public class SalonFacade {
         return employeeFacade.createEmployeeAndAddToSalon(employeeDto, salon);
     }
 
-    public SalonOffersListDto getAllOffersSalon(Long salonId) {
+    public SalonOffersListDto getAllOffersToSalon(Long salonId) {
         List<OfferDto> allOffers = offerFacade.getAllOffers(salonId);
 
         return new SalonOffersListDto("success", allOffers);
@@ -80,9 +76,9 @@ public class SalonFacade {
         return salonService.getSalon(id);
     }
 
-    public String addImageToSalon(Long salonId, Image image) {
+
+    public void addImageToSalon(Long salonId, Image image) {
         Salon salon = salonService.addImageToSalon(salonId, image);
-        return "success";
     }
 
     public List<ImageDto> findImagesBySalonId(Long salonId) {
@@ -90,7 +86,7 @@ public class SalonFacade {
     }
 
     public List<SalonWithIdDto> getAllSalonsToOwner(Integer ownerId) {
-        User user = userFacade.getUser(ownerId.longValue()).orElseThrow(
+        User user = userFacade.getUserWithId(ownerId.longValue()).orElseThrow(
                 () -> new RuntimeException("User not Found"));
         List<SalonWithIdDto> allSalons =  salonService.getAllSalons(user);
         return allSalons;

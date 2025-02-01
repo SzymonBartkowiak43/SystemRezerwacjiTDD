@@ -26,6 +26,6 @@ public class OpeningHoursFacade {
             return result;
         }
 
-        return null;
+        return new AddHoursResponseDto("failure", null);
     }
 }
