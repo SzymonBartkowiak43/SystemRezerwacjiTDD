@@ -3,6 +3,7 @@ package com.example.systemrezerwacji.domain.reservationModule;
 import com.example.systemrezerwacji.domain.employeeModule.Employee;
 import com.example.systemrezerwacji.domain.employeeModule.dto.AvailableTermDto;
 import com.example.systemrezerwacji.domain.offerModule.Offer;
+import com.example.systemrezerwacji.domain.reservationModule.dto.ReservationToTomorrow;
 import com.example.systemrezerwacji.domain.reservationModule.dto.UserReservationDataDto;
 import com.example.systemrezerwacji.domain.reservationModule.exception.ReservationDeleteException;
 import com.example.systemrezerwacji.domain.userModule.User;
@@ -50,7 +51,7 @@ class ReservationService {
 
     }
 
-    private  List<AvailableTermDto> getAvailableTermDto(List<Reservation> allServicesOnSpecificDay) {
+    private List<AvailableTermDto> getAvailableTermDto(List<Reservation> allServicesOnSpecificDay) {
         List<AvailableTermDto> list = allServicesOnSpecificDay.stream()
                 .map(reservation -> {
                     LocalTime start = reservation.getReservationDateTime().toLocalTime();
@@ -67,11 +68,12 @@ class ReservationService {
         return mapperReservationDto.mapToUserReservationDataDtoList(allByUser);
     }
 
-    public List<Reservation> getAllReservationToTomorrow() {
+    public List<ReservationToTomorrow> getAllReservationToTomorrow() {
         LocalDateTime startOfTomorrow = LocalDate.now().plusDays(1).atStartOfDay();
         LocalDateTime endOfTomorrow = startOfTomorrow.plusDays(1).minusSeconds(1);
 
-        return reservationRepository.findAllByReservationDateTimeBetween(startOfTomorrow, endOfTomorrow);
+        List<Reservation> allByReservationDateTimeBetween = reservationRepository.findAllByReservationDateTimeBetween(startOfTomorrow, endOfTomorrow);
+        return mapperReservationDto.mapToReservationToTomorrowList(allByReservationDateTimeBetween);
     }
 
     public Boolean deleteReservation(Long reservationId, User userByEmail) {

@@ -15,9 +15,7 @@ import static com.example.systemrezerwacji.domain.reservationModule.ValidationEr
 
 @Component
 class ReservationValidator {
-
     private final ReservationService reservationService;
-
     private static final String ERROR_DELIMITER = ",";
     List<ValidationError> errors;
 
@@ -36,9 +34,7 @@ class ReservationValidator {
         validateEmail(reservationDto.userEmail());
         validateTerm(reservationDto, duration);
 
-
         return errors.isEmpty() ? ReservationValidationResult.success() : ReservationValidationResult.failure(getFailureMessage());
-
     }
 
 

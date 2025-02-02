@@ -1,5 +1,6 @@
 package com.example.systemrezerwacji.domain.reservationModule;
 
+import com.example.systemrezerwacji.domain.reservationModule.dto.ReservationToTomorrow;
 import com.example.systemrezerwacji.domain.reservationModule.dto.UserReservationDataDto;
 import com.example.systemrezerwacji.domain.reservationModule.dto.UserReservationDto;
 import org.springframework.stereotype.Service;
@@ -42,5 +43,20 @@ class MapperReservationDto {
         return reservations.stream()
                 .map(this::mapToUserReservationDataDto)
                 .collect(Collectors.toList());
+    }
+
+    ReservationToTomorrow mapToReservationToTomorrow(Reservation reservation) {
+        return new ReservationToTomorrow(
+                reservation.getSalon().getId(),
+                reservation.getUser().getId(),
+                reservation.getOffer().getId(),
+                reservation.getReservationDateTime()
+        );
+    }
+
+    List<ReservationToTomorrow> mapToReservationToTomorrowList(List<Reservation> reservations) {
+        return reservations.stream()
+                .map(this::mapToReservationToTomorrow)
+                .toList();
     }
 }

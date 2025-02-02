@@ -16,10 +16,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -41,12 +43,9 @@ public class EmployeeFacade {
         }
         User user = userOptional.get();
 
-        Employee employee = new Employee();
-        employee.setSalonAndUser(salon,user);
-        List<EmployeeAvailability> availabilityList = employeeService.createAvailabilityList(employeeDto.availability(), employee);
-        employee.setAvailability(availabilityList);
-
+        Employee employee = createEmployee(employeeDto, salon, user);
         Employee savedEmployee = employeeService.saveEmployee(employee);
+
         return CreateEmployeeResponseDto.builder()
                 .message("success")
                 .employeeEmail(user.getEmail())
@@ -56,12 +55,10 @@ public class EmployeeFacade {
 
     public List<EmployeeToOfferDto> getEmployeesToOffer(Long id) {
         List<Long> employeesId = employeeService.findEmployeesIdByOfferId(id);
-
         List<Long> employeesUserIdById = employeeService.findEmployeesUserIdById(employeesId);
-
         Map<Long, String> userIdAndName = userFacade.getEmployeeNameById(employeesUserIdById);
 
-         return employeesId.stream()
+        return employeesId.stream()
                 .map(employeeId -> {
                     Long userId = employeeService.getUserIdByEmployeeId(employeeId);
                     String name = userIdAndName.get(userId);
@@ -72,11 +69,16 @@ public class EmployeeFacade {
 
     public List<AvailableTermDto> getAvailableHours(AvailableDatesReservationDto availableDate) {
         LocalTime duration = offerFacade.getDurationToOffer(availableDate.offerId());
-
         List<AvailableTermDto> employeeBusyTermsList = reservationFacade.getEmployeeBusyTerm(availableDate.employeeId(), availableDate.date());
-
         List<AvailableTermDto> termsDto = employeeService.findAvailability(
-                availableDate.employeeId(), availableDate.date(),duration, employeeBusyTermsList);
+                availableDate.employeeId(), availableDate.date(), duration, employeeBusyTermsList);
+
+        if (availableDate.date().isEqual(LocalDate.now())) {
+            LocalTime currentTime = LocalTime.now();
+            termsDto = termsDto.stream()
+                    .filter(term -> term.startServices().isAfter(currentTime))
+                    .collect(Collectors.toList());
+        }
 
         return termsDto;
     }
@@ -84,7 +86,6 @@ public class EmployeeFacade {
     @Transactional
     public EmployeeFacadeResponseDto addOfferToEmployee(Long employeeId, Long offerId) {
         Offer offer = offerFacade.getOffer(offerId);
-
         Employee employee = employeeService.addOfferToEmployee(employeeId, offer);
 
         return new EmployeeFacadeResponseDto("success", employee.getId());
@@ -92,5 +93,13 @@ public class EmployeeFacade {
 
     public Employee getEmployee(Long id) {
         return employeeService.getEmployee(id);
+    }
+
+    private Employee createEmployee(EmployeeDto employeeDto, Salon salon, User user) {
+        Employee employee = new Employee();
+        employee.setSalonAndUser(salon, user);
+        List<EmployeeAvailability> availabilityList = employeeService.createAvailabilityList(employeeDto.availability(), employee);
+        employee.setAvailability(availabilityList);
+        return employee;
     }
 }

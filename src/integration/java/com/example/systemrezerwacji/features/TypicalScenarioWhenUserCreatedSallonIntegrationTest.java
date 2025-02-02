@@ -7,6 +7,7 @@ import com.example.systemrezerwacji.domain.employeeModule.dto.AvailableTermDto;
 import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeFacadeResponseDto;
 import com.example.systemrezerwacji.domain.employeeModule.response.CreateEmployeeResponseDto;
 import com.example.systemrezerwacji.domain.offerModule.response.OfferFacadeResponse;
+import com.example.systemrezerwacji.domain.reservationModule.dto.UserReservationDataDto;
 import com.example.systemrezerwacji.domain.reservationModule.dto.UserReservationDto;
 import com.example.systemrezerwacji.domain.reservationModule.response.ReservationFacadeResponse;
 import com.example.systemrezerwacji.domain.salonModule.dto.SalonFacadeResponseDto;
@@ -114,7 +115,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
 
 //        step 5: generate Code to create Salon.
         // given && when
-        ResultActions generateCode = mockMvc.perform(get("/generateCode")
+        ResultActions generateCode = mockMvc.perform(post("/generateCode")
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
         // then
         MvcResult mvcCodeCreated = generateCode.andExpect(status().isCreated()).andReturn();
@@ -184,7 +185,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
                 () -> assertThat(salonEmployeeResponse.message()).isEqualTo("success")
         );
 
-    //  step 8: owner made POST /offers with offer details and system created the offer, returning Created(201) with offerId=1
+    //  step 8: owner made POST /offer with offer details and system created the offer, returning Created(201) with offerId=1
         // given
         String offer = """
                 {
@@ -385,9 +386,11 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
         JwtResponseDto userJwtResponse = objectMapper.readValue(tokenJson, JwtResponseDto.class);
         String userToken = userJwtResponse.token();
         assertThat(userToken).isNotNull();
+
+
 //      step 16: user make GET /reservation with body email, returning OK(200)
         // given && when
-        ResultActions performUserReservation = mockMvc.perform(get("/reservation")
+        ResultActions performUserReservation = mockMvc.perform(get("/reservations")
                 .header("Authorization", "Bearer " + userToken)
                 .param("email", "szymon.b4310xxx@gmail.com")
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
@@ -397,14 +400,15 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
                 .getResponse()
                 .getContentAsString();
 
-        List<UserReservationDto> userReservationDtoList= objectMapper.readValue(userReservationJson, new TypeReference<>() {
+        List<UserReservationDataDto> userReservationDtoList= objectMapper.readValue(userReservationJson, new TypeReference<>() {
         });
-        UserReservationDto userReservationDto = userReservationDtoList.get(0);
+        UserReservationDataDto userReservationDto = userReservationDtoList.get(0);
 
         assertAll(
-                () -> assertThat(userReservationDto.userId()).isEqualTo(3),
-                () -> assertThat(userReservationDto.salonId()).isEqualTo(1),
-                () -> assertThat(userReservationDto.offerId()).isEqualTo(1)
+                () -> assertThat(userReservationDto.offerName()).isEqualTo("Haircut"),
+                () -> assertThat(userReservationDto.employeeName()).isEqualTo("Seba"),
+                () -> assertThat(userReservationDto.salonName()).isEqualTo("Amazing Barber"),
+                () -> assertThat(userReservationDto.reservationDateTime()).isEqualTo("2024-12-31T13:00:00")
         );
 
 //      step 17: user make PATCH /reservation and change the date of reservation to 2024-12-31T14:00:00

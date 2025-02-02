@@ -36,7 +36,7 @@ public class UserController {
 
     @GetMapping("/user/{id}")
     public ResponseEntity<UserRegisterDto> getUser(@PathVariable Integer id) {
-        return userFacade.getUserByid(id.longValue())
+        return userFacade.getUserById(id.longValue())
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

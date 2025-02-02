@@ -1,7 +1,6 @@
 package com.example.systemrezerwacji.infrastructure.restControllers;
 
 
-import com.example.systemrezerwacji.domain.employeeModule.dto.AvailableTermDto;
 import com.example.systemrezerwacji.domain.employeeModule.dto.AvailableTermWithDateDto;
 import com.example.systemrezerwacji.domain.reservationModule.ReservationFacade;
 import com.example.systemrezerwacji.domain.reservationModule.dto.*;
@@ -64,7 +63,7 @@ public class ReservationController {
     }
 
     @GetMapping("/reservation/{reservationId}/nearest")
-    public ResponseEntity<List<AvailableTermWithDateDto>> getNearest5Reservations(@PathVariable Long reservationId) {
+    public ResponseEntity<List<AvailableTermWithDateDto>> getNearest5AvailableTerm(@PathVariable Long reservationId) {
         List<AvailableTermWithDateDto> userReservationList = reservationFacade.getNearest5AvailableHours(reservationId);
         return ResponseEntity.ok(userReservationList);
     }

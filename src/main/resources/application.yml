@@ -24,7 +24,7 @@ spring:
   cache:
     type: none
     redis:
-      time-to-live: PT5S
+      time-to-live: PT30M
 
   data:
     redis:

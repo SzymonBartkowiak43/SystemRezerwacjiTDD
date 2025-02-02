@@ -7,12 +7,12 @@ import com.example.systemrezerwacji.domain.salonModule.Salon;
 import com.example.systemrezerwacji.domain.salonModule.SalonFacade;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
 import java.util.List;
 
 @Component
-
 public class OfferFacade {
     private final OfferService offerService;
     private final  SalonFacade salonFacade;
@@ -34,6 +34,7 @@ public class OfferFacade {
         return offerService.getOffer(offerId);
     }
 
+    @Transactional
     public OfferFacadeResponse createOffer(CreateOfferDto createOfferDto) {
         Salon salon = salonFacade.getSalon(Long.valueOf(createOfferDto.salonId()));
         Offer offer = offerService.createOffer(createOfferDto, salon);

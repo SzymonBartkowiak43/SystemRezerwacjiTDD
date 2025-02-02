@@ -83,7 +83,7 @@ public class SalonController {
 
     @PostMapping("/salons/image/{salonId}")
     @ResponseBody
-    public ResponseEntity<String> upload(
+    public ResponseEntity<String> uploadImage(
             @PathVariable Integer salonId,
             @RequestParam MultipartFile multipartFile) throws IOException {
 

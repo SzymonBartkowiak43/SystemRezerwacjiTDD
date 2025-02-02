@@ -26,7 +26,6 @@ public class OfferController {
 
     @PostMapping("/offer")
     public ResponseEntity<OfferFacadeResponse> createNewOffer(@RequestBody CreateOfferDto createOfferDto) {
-
         OfferFacadeResponse newOffer = offerFacade.createOffer(createOfferDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -39,7 +38,7 @@ public class OfferController {
 
     @GetMapping("/offers/{salonId}")
     public ResponseEntity<List<OfferDto>> getOffers(@PathVariable Integer salonId) {
-        SalonOffersListDto allOffers = salonFacade.getAllOffersSalon(salonId.longValue());
+        SalonOffersListDto allOffers = salonFacade.getAllOffersToSalon(salonId.longValue());
         return ResponseEntity.ok(allOffers.offers());
     }
 
