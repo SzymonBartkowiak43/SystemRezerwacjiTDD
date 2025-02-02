@@ -5,6 +5,7 @@ import com.example.systemrezerwacji.domain.salonModule.dto.ImageDto;
 import com.example.systemrezerwacji.domain.salonModule.dto.SalonWithIdDto;
 import com.example.systemrezerwacji.domain.salonModule.exception.SalonNotFoundException;
 import com.example.systemrezerwacji.domain.userModule.User;
+import com.example.systemrezerwacji.domain.userModule.exception.InvalidOwnerException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -82,5 +83,21 @@ class SalonService {
         return salonsByUser.stream()
                 .map(mapper::map)
                 .collect(Collectors.toList());
+    }
+
+    public SalonWithIdDto getSalonByIdAndCheckOwner(Long salonId, User user) {
+        Optional<Salon> optionalSalon = salonRepository.findById(salonId);
+
+        if (optionalSalon.isPresent()) {
+            Salon salon = optionalSalon.get();
+            User owner = salon.getUser();
+            if (owner.getId().equals(user.getId())) {
+                return mapper.map(salon);
+            } else {
+                throw new InvalidOwnerException("This user is not the owner of this salon!");
+            }
+        } else {
+            throw new SalonNotFoundException("Salon with this Id not exist");
+        }
     }
 }

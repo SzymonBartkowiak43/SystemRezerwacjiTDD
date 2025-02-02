@@ -7,6 +7,7 @@ import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeDto;
 import com.example.systemrezerwacji.domain.offerModule.OfferFacade;
 import com.example.systemrezerwacji.domain.offerModule.dto.OfferDto;
 import com.example.systemrezerwacji.domain.openingHoursModule.dto.OpeningHoursDto;
+import com.example.systemrezerwacji.domain.reservationModule.ReservationFacade;
 import com.example.systemrezerwacji.domain.salonModule.dto.*;
 import com.example.systemrezerwacji.domain.salonModule.exception.SalonCreationException;
 import com.example.systemrezerwacji.domain.userModule.User;
@@ -30,6 +31,7 @@ public class SalonFacade {
     private final EmployeeFacade employeeFacade;
     private final OfferFacade offerFacade;
     private final SalonCreator salonCreator;
+    private final ReservationFacade reservationFacade;
 
 
     public SalonFacadeResponseDto createNewSalon(CreateNewSalonDto salonDto) {
@@ -72,23 +74,63 @@ public class SalonFacade {
         return salonService.getSalonById(id);
     }
 
+
     public Salon getSalon(Long id) {
         return salonService.getSalon(id);
     }
 
-
+//*******************************IMAGE*******************************************
     public void addImageToSalon(Long salonId, Image image) {
         Salon salon = salonService.addImageToSalon(salonId, image);
     }
 
     public List<ImageDto> findImagesBySalonId(Long salonId) {
         return salonService.findImagesBySalonId(salonId);
-    }
 
-    public List<SalonWithIdDto> getAllSalonsToOwner(Integer ownerId) {
-        User user = userFacade.getUserWithId(ownerId.longValue()).orElseThrow(
-                () -> new RuntimeException("User not Found"));
+    }
+//*******************************OWNER*******************************************
+    public List<SalonWithIdDto> getAllSalonsToOwner(String email) {
+        User user = userFacade.getUserByEmail(email);
         List<SalonWithIdDto> allSalons =  salonService.getAllSalons(user);
         return allSalons;
     }
+
+    public OwnerSalonWithAllInformation getSalonByIdToOwner(Long salonId, String email) {
+        User user = userFacade.getUserByEmail(email);
+        SalonWithIdDto salon = salonService.getSalonByIdAndCheckOwner(salonId, user);
+//        reservationFacade.get
+//
+//        return salon;
+        return null;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

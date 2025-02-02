@@ -6,14 +6,18 @@ import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeFacadeResp
 import com.example.systemrezerwacji.domain.employeeModule.response.CreateEmployeeResponseDto;
 import com.example.systemrezerwacji.domain.offerModule.response.OfferFacadeResponse;
 import com.example.systemrezerwacji.domain.salonModule.dto.SalonFacadeResponseDto;
+import com.example.systemrezerwacji.domain.salonModule.dto.SalonWithIdDto;
 import com.example.systemrezerwacji.domain.userModule.response.UserFacadeResponse;
 import com.example.systemrezerwacji.infrastructure.loginandregister.dto.JwtResponseDto;
+import com.fasterxml.jackson.core.type.TypeReference;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,6 +27,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
+@Slf4j
 public class TypicalScenarioWhenOwnerCreateSalonTest extends BaseIntegrationTest {
 
     @Test
@@ -279,8 +285,47 @@ public class TypicalScenarioWhenOwnerCreateSalonTest extends BaseIntegrationTest
                 () -> assertThat(employeeFacadeResponse3.message()).isEqualTo("success")
         );
 
-//        step 12: owner made GET /owner/salon/ with email in body to view all they salons and system returned OK(200) with salons information
+//        step 12: owner made GET /owner/salons/with email in body to view all they salons and system returned OK(200) with salons information
+        //given
+        String ownerMailJson = """
+                {
+                "email": "Owner@owner.pl"
+                }
+                """.trim();
+        //when
+        ResultActions performGetSalonsToOwner = mockMvc.perform(get("/owner/salons")
+                .header("Authorization", "Bearer " + token)
+                .content(ownerMailJson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        //then
+        MvcResult mvcResultToGetSalons = performGetSalonsToOwner.andExpect(status().isOk()).andReturn();
+        String salonsJson = mvcResultToGetSalons.getResponse().getContentAsString();
+        List<SalonWithIdDto> salons = objectMapper.readValue(salonsJson, new TypeReference<>() {
+        });
+
+        assertAll(
+                () -> assertThat(salons.size()).isEqualTo(1),
+                () -> assertThat(salons.get(0).salonName()).isEqualTo("Owner Test Salon")
+        );
+
+
 //        step 13: owner made GET /owner/salon/{id} with email in body to view details this salon system returned OK(200) with salon details
+        //given & when
+        ResultActions performGetSalonToOwner = mockMvc.perform(get("/owner/salon/1")
+                .header("Authorization", "Bearer " + token)
+                .content(ownerMailJson)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        //then
+        MvcResult mvcResultToGetSalon = performGetSalonToOwner.andExpect(status().isOk()).andReturn();
+        String salonJson = mvcResultToGetSalon.getResponse().getContentAsString();
+        SalonWithIdDto ownerSalon = objectMapper.readValue(salonJson, SalonWithIdDto.class);
+
+        assertAll(
+                () -> assertThat(ownerSalon.userId()).isEqualTo("1"),
+                () -> assertThat(ownerSalon.id()).isEqualTo("1"),
+                () -> assertThat(ownerSalon.salonName()).isEqualTo("Owner Test Salon")
+        );
+
 //        (in the middle owner see information about all reservation to this day, and he can go to next day to check reservation)
 //        step 14: owner made GET /owner/reservation-details/{reservation-id} and now he can see information about this
 //        step 15: owner made GET /owner/salon-details/{salonId} and now he can see all information about salon and can manage it
