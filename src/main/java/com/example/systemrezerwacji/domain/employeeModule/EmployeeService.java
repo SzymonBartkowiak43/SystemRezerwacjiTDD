@@ -2,8 +2,10 @@ package com.example.systemrezerwacji.domain.employeeModule;
 
 import com.example.systemrezerwacji.domain.employeeModule.dto.AvailableTermDto;
 import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeAvailabilityDto;
+import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeWithAllInformationDto;
 import com.example.systemrezerwacji.domain.employeeModule.exception.EmployeeDuplicateOfferException;
 import com.example.systemrezerwacji.domain.offerModule.Offer;
+import com.example.systemrezerwacji.domain.offerModule.dto.OfferDto;
 import com.example.systemrezerwacji.domain.userModule.User;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,7 @@ import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 class EmployeeService {
@@ -115,4 +118,33 @@ class EmployeeService {
                 ).toList();
 
     }
+
+    public List<EmployeeWithAllInformationDto> getAllEmployeesToSalon(Long salonId) {
+        return employeeRepository.findAllBySalonId(salonId)
+                .stream()
+                .map(employee -> new EmployeeWithAllInformationDto(
+                        employee.getId(),
+                        employee.getSalon().getId(),
+                        employee.getUser().getName(),
+                        employee.getUser().getEmail(),
+                        employee.getAvailability()
+                                .stream()
+                                .map(availability -> new EmployeeAvailabilityDto(
+                                        availability.getDayOfWeek().name(),
+                                        availability.getStartTime(),
+                                        availability.getEndTime()))
+                                .toList(),
+                        employee.getOffers()
+                                .stream()
+                                .map(offer -> new OfferDto(
+                                        offer.getId(),
+                                        offer.getName(),
+                                        offer.getDescription(),
+                                        offer.getPrice(),
+                                        offer.getDuration()))
+                                .toList()
+                ))
+                .collect(Collectors.toList());
+    }
+
 }

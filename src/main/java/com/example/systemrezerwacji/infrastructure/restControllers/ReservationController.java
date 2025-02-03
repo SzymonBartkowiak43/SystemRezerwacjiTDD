@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @Log4j2
+@CrossOrigin(origins = "http://localhost:3000")
 public class ReservationController {
     private final ReservationFacade reservationFacade;
 
@@ -34,7 +35,7 @@ public class ReservationController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+//    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/reservations")
     public ResponseEntity<List<UserReservationDataDto>> showReservationToCurrentUser(@RequestParam String email) {
         List<UserReservationDataDto> userReservationList =  reservationFacade.getUserReservation(email);
@@ -53,7 +54,7 @@ public class ReservationController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+//    @CrossOrigin(origins = "http://localhost:3000")
     @PatchMapping("/reservation")
     public ResponseEntity<UserReservationDto> changeDateOfReservation(@RequestBody UpdateReservationDto updateReservationDto) {
         log.info("Updating reservation date: " + updateReservationDto);
@@ -62,6 +63,7 @@ public class ReservationController {
         return ResponseEntity.ok(response);
     }
 
+//    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/reservation/{reservationId}/nearest")
     public ResponseEntity<List<AvailableTermWithDateDto>> getNearest5AvailableTerm(@PathVariable Long reservationId) {
         List<AvailableTermWithDateDto> userReservationList = reservationFacade.getNearest5AvailableHours(reservationId);
