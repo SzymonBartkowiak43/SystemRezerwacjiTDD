@@ -2,12 +2,14 @@ package com.example.systemrezerwacji.domain.salonModule;
 
 
 import com.example.systemrezerwacji.domain.employeeModule.EmployeeFacade;
+import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeWithAllInformationDto;
 import com.example.systemrezerwacji.domain.employeeModule.response.CreateEmployeeResponseDto;
 import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeDto;
 import com.example.systemrezerwacji.domain.offerModule.OfferFacade;
 import com.example.systemrezerwacji.domain.offerModule.dto.OfferDto;
 import com.example.systemrezerwacji.domain.openingHoursModule.dto.OpeningHoursDto;
 import com.example.systemrezerwacji.domain.reservationModule.ReservationFacade;
+import com.example.systemrezerwacji.domain.reservationModule.dto.ReservationDto;
 import com.example.systemrezerwacji.domain.salonModule.dto.*;
 import com.example.systemrezerwacji.domain.salonModule.exception.SalonCreationException;
 import com.example.systemrezerwacji.domain.userModule.User;
@@ -18,7 +20,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -60,7 +64,7 @@ public class SalonFacade {
     }
 
     public SalonOffersListDto getAllOffersToSalon(Long salonId) {
-        List<OfferDto> allOffers = offerFacade.getAllOffers(salonId);
+        List<OfferDto> allOffers = offerFacade.getAllOffersToSalon(salonId);
 
         return new SalonOffersListDto("success", allOffers);
     }
@@ -96,12 +100,12 @@ public class SalonFacade {
     }
 
     public OwnerSalonWithAllInformation getSalonByIdToOwner(Long salonId, String email) {
-        User user = userFacade.getUserByEmail(email);
-        SalonWithIdDto salon = salonService.getSalonByIdAndCheckOwner(salonId, user);
-//        reservationFacade.get
-//
-//        return salon;
-        return null;
+        Map<LocalDate, List<ReservationDto>> reservationDto = reservationFacade.getAllReservationBySalonId(salonId);
+        List<EmployeeWithAllInformationDto> employeeDto = employeeFacade.getAllEmployees(salonId);
+        List<OfferDto> offerDto = offerFacade.getAllOffersToSalon(salonId);
+        String salonName = salonService.getSalon(salonId).getSalonName();
+
+        return new OwnerSalonWithAllInformation(reservationDto, employeeDto, offerDto, salonName);
     }
 }
 

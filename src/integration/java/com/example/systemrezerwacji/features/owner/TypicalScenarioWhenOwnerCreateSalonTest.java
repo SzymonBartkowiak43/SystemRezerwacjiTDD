@@ -5,6 +5,7 @@ import com.example.systemrezerwacji.domain.codeModule.dto.CodeDto;
 import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeFacadeResponseDto;
 import com.example.systemrezerwacji.domain.employeeModule.response.CreateEmployeeResponseDto;
 import com.example.systemrezerwacji.domain.offerModule.response.OfferFacadeResponse;
+import com.example.systemrezerwacji.domain.salonModule.dto.OwnerSalonWithAllInformation;
 import com.example.systemrezerwacji.domain.salonModule.dto.SalonFacadeResponseDto;
 import com.example.systemrezerwacji.domain.salonModule.dto.SalonWithIdDto;
 import com.example.systemrezerwacji.domain.userModule.response.UserFacadeResponse;
@@ -101,7 +102,7 @@ public class TypicalScenarioWhenOwnerCreateSalonTest extends BaseIntegrationTest
             "zipCode": "15-370",
             "street": "Józefa Bema",
             "number": "91",
-            "userId": 1,
+            "email": "Owner@owner.pl",
             "code": "%s"
         }
         """.trim(), codeDto.code());
@@ -286,16 +287,10 @@ public class TypicalScenarioWhenOwnerCreateSalonTest extends BaseIntegrationTest
         );
 
 //        step 12: owner made GET /owner/salons/with email in body to view all they salons and system returned OK(200) with salons information
-        //given
-        String ownerMailJson = """
-                {
-                "email": "Owner@owner.pl"
-                }
-                """.trim();
-        //when
+        //given && when
         ResultActions performGetSalonsToOwner = mockMvc.perform(get("/owner/salons")
                 .header("Authorization", "Bearer " + token)
-                .content(ownerMailJson)
+                .param("email", "Owner@owner.pl")
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
         //then
         MvcResult mvcResultToGetSalons = performGetSalonsToOwner.andExpect(status().isOk()).andReturn();
@@ -313,20 +308,20 @@ public class TypicalScenarioWhenOwnerCreateSalonTest extends BaseIntegrationTest
         //given & when
         ResultActions performGetSalonToOwner = mockMvc.perform(get("/owner/salon/1")
                 .header("Authorization", "Bearer " + token)
-                .content(ownerMailJson)
+                .param("email", "Owner@owner.pl")
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
         //then
         MvcResult mvcResultToGetSalon = performGetSalonToOwner.andExpect(status().isOk()).andReturn();
         String salonJson = mvcResultToGetSalon.getResponse().getContentAsString();
-        SalonWithIdDto ownerSalon = objectMapper.readValue(salonJson, SalonWithIdDto.class);
+        OwnerSalonWithAllInformation ownerSalon = objectMapper.readValue(salonJson, OwnerSalonWithAllInformation.class);
 
         assertAll(
-                () -> assertThat(ownerSalon.userId()).isEqualTo("1"),
-                () -> assertThat(ownerSalon.id()).isEqualTo("1"),
+                () -> assertThat(ownerSalon.offerDto().size()).isEqualTo(2),
+                () -> assertThat(ownerSalon.employeeDto().size()).isEqualTo(2),
+                () -> assertThat(ownerSalon.reservationDto().size()).isEqualTo(0),
                 () -> assertThat(ownerSalon.salonName()).isEqualTo("Owner Test Salon")
         );
 
-//        (in the middle owner see information about all reservation to this day, and he can go to next day to check reservation)
 //        step 14: owner made GET /owner/reservation-details/{reservation-id} and now he can see information about this
 //        step 15: owner made GET /owner/salon-details/{salonId} and now he can see all information about salon and can manage it
 //        step 16: owner made PATCH /owner/salon/{id} to update salon details (e.g., name, category) and system returned OK(200)

@@ -1,9 +1,6 @@
 package com.example.systemrezerwacji.domain.employeeModule;
 
-import com.example.systemrezerwacji.domain.employeeModule.dto.AvailableTermDto;
-import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeDto;
-import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeFacadeResponseDto;
-import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeToOfferDto;
+import com.example.systemrezerwacji.domain.employeeModule.dto.*;
 import com.example.systemrezerwacji.domain.offerModule.Offer;
 import com.example.systemrezerwacji.domain.offerModule.OfferFacade;
 import com.example.systemrezerwacji.domain.reservationModule.ReservationFacade;
@@ -101,5 +98,10 @@ public class EmployeeFacade {
         List<EmployeeAvailability> availabilityList = employeeService.createAvailabilityList(employeeDto.availability(), employee);
         employee.setAvailability(availabilityList);
         return employee;
+    }
+
+    public List<EmployeeWithAllInformationDto> getAllEmployees(Long salonId) {
+        List<EmployeeWithAllInformationDto> allEmployees = employeeService.getAllEmployeesToSalon(salonId);
+        return allEmployees;
     }
 }

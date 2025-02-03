@@ -3,6 +3,7 @@ package com.example.systemrezerwacji.domain.reservationModule;
 import com.example.systemrezerwacji.domain.employeeModule.Employee;
 import com.example.systemrezerwacji.domain.employeeModule.dto.AvailableTermDto;
 import com.example.systemrezerwacji.domain.offerModule.Offer;
+import com.example.systemrezerwacji.domain.reservationModule.dto.ReservationDto;
 import com.example.systemrezerwacji.domain.reservationModule.dto.ReservationToTomorrow;
 import com.example.systemrezerwacji.domain.reservationModule.dto.UserReservationDataDto;
 import com.example.systemrezerwacji.domain.reservationModule.exception.ReservationDeleteException;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Service
 class ReservationService {
@@ -104,4 +106,8 @@ class ReservationService {
                 .orElseThrow(() -> new ReservationDeleteException("Reservation not found"));
     }
 
+    public Map<LocalDate, List<ReservationDto>> getAllReservationBySalonId(Long salonId) {
+        List<Reservation> allBySalonId = reservationRepository.findAllBySalonId(salonId);
+        return mapperReservationDto.toMap(allBySalonId);
+    }
 }

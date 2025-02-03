@@ -22,7 +22,7 @@ class SalonCreator {
     public Long create(CreateNewSalonDto salonDto) throws SalonCreationException {
         validateSalonDto(salonDto);
 
-        User user = findUser(salonDto.userId());
+        User user = findUserByEmail(salonDto.email());
         verifyCode(salonDto.code(), user);
 
         User owner = assignOwnerRole(user);
@@ -36,9 +36,8 @@ class SalonCreator {
         }
     }
 
-    private User findUser(String userId) throws SalonCreationException {
-        return userFacade.getUserWithId(Long.valueOf(userId))
-                .orElseThrow(() -> new SalonCreationException("User not found"));
+    private User findUserByEmail(String email) throws SalonCreationException {
+        return userFacade.getUserByEmail(email);
     }
 
     private void verifyCode(String code, User user) throws SalonCreationException {
@@ -52,4 +51,10 @@ class SalonCreator {
         return userFacade.addUserRoleOwner(user.getId())
                 .orElseThrow(() -> new SalonCreationException("Failed to assign owner role"));
     }
+
+    private User findUser(String userId) throws SalonCreationException {
+        return userFacade.getUserWithId(Long.valueOf(userId))
+                .orElseThrow(() -> new SalonCreationException("User not found"));
+    }
+
 }

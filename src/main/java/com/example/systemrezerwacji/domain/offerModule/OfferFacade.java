@@ -22,7 +22,7 @@ public class OfferFacade {
         this.salonFacade = salonFacade;
     }
 
-    public List<OfferDto> getAllOffers(Long salonId) {
+    public List<OfferDto> getAllOffersToSalon(Long salonId) {
         return offerService.getAllOffers(salonId);
     }
 

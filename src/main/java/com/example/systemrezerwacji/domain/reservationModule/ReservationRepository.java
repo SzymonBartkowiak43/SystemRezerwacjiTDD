@@ -1,6 +1,7 @@
 package com.example.systemrezerwacji.domain.reservationModule;
 
 import com.example.systemrezerwacji.domain.userModule.User;
+import io.micrometer.common.KeyValues;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,7 @@ interface ReservationRepository extends CrudRepository<Reservation, Long> {
     List<Reservation> findAll();
     List<Reservation> findAllByUser(User user);
     List<Reservation> findAllByReservationDateTimeBetween(LocalDateTime start, LocalDateTime end);
+    List<Reservation> findAllBySalonId(Long salonId);
 }
 
 

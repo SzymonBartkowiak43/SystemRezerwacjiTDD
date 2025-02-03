@@ -8,4 +8,6 @@ import java.util.List;
 @Repository
 interface EmployeeRepository extends CrudRepository<Employee, Long> {
     List<Employee> findByOffersId(Long offerId);
+
+    List<Employee> findAllBySalonId(Long salonId);
 }

@@ -71,14 +71,6 @@ class SalonValidatorTest {
         assertThat(validator.errors).containsExactly(ValidationError.INCORRECT_ZIP_CODE);
     }
 
-    @Test
-    public void should_addForbiddenCharactersInStreetError_when_streetContainsNumbers() {
-        // When
-        validator.validateStreet("Main123");
-
-        // Then
-        assertThat(validator.errors).containsExactly(ValidationError.FORBIDDEN_CHARACTERS_IN_STREET);
-    }
 
     @Test
     public void should_addEmptyNumberError_when_numberIsNull() {

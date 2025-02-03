@@ -16,6 +16,11 @@ public class EmployeeRepositoryTestImpl implements EmployeeRepository {
     }
 
     @Override
+    public List<Employee> findAllBySalonId(Long salonId) {
+        return null;
+    }
+
+    @Override
     public <S extends Employee> S save(S entity) {
         employeeDataBase.put(id, entity);
         id++;
