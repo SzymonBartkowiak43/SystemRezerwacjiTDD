@@ -66,6 +66,9 @@ class EmployeeService {
     List<AvailableTermDto> findAvailability(Long employeeId, LocalDate date, LocalTime duration, List<AvailableTermDto> employeeBusyTermsList) {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
 
+        if(date.isBefore(LocalDate.now())) {
+            return new ArrayList<>();
+        }
         EmployeeAvailability availability =  employeeAvailabilityService.findEmployeeAvability(employeeId, dayOfWeek);
 
         return generateAvailableTerms(availability.getStartTime(), availability.getEndTime(), employeeBusyTermsList);

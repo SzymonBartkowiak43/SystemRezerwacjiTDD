@@ -321,11 +321,6 @@ public class TypicalScenarioWhenOwnerCreateSalonTest extends BaseIntegrationTest
                 () -> assertThat(ownerSalon.reservationDto().size()).isEqualTo(0),
                 () -> assertThat(ownerSalon.salonName()).isEqualTo("Owner Test Salon")
         );
-
-//        step 14: owner made GET /owner/reservation-details/{reservation-id} and now he can see information about this
-//        step 15: owner made GET /owner/salon-details/{salonId} and now he can see all information about salon and can manage it
-//        step 16: owner made PATCH /owner/salon/{id} to update salon details (e.g., name, category) and system returned OK(200)
-
     }
 
 
