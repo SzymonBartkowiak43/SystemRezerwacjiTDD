@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 class EmployeeService {
-    public static final int MINUTES_IN_INTERVAL = 30;
+    public static final int MINUTES_IN_INTERVAL = 15;
 
     private final EmployeeRepository employeeRepository;
     private final EmployeeAvailabilityService employeeAvailabilityService;
@@ -66,13 +66,12 @@ class EmployeeService {
     List<AvailableTermDto> findAvailability(Long employeeId, LocalDate date, LocalTime duration, List<AvailableTermDto> employeeBusyTermsList) {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
 
-        if(date.isBefore(LocalDate.now())) {
+        if (date.isBefore(LocalDate.now())) {
             return new ArrayList<>();
         }
         EmployeeAvailability availability =  employeeAvailabilityService.findEmployeeAvability(employeeId, dayOfWeek);
 
-        return generateAvailableTerms(availability.getStartTime(), availability.getEndTime(), employeeBusyTermsList);
-
+        return generateAvailableTerms(availability.getStartTime(), availability.getEndTime(), duration, employeeBusyTermsList);
     }
 
     Long getUserIdByEmployeeId(Long employeeId) {
@@ -99,27 +98,36 @@ class EmployeeService {
     }
 
 
-    private List<AvailableTermDto> generateAvailableTerms(LocalTime start, LocalTime end,List<AvailableTermDto> employeeBusyTermsList ) {
+    private List<AvailableTermDto> generateAvailableTerms(LocalTime start, LocalTime end, LocalTime duration, List<AvailableTermDto> employeeBusyTermsList) {
         List<AvailableTermDto> termsList = new ArrayList<>();
 
-        Duration interval = Duration.ofMinutes(MINUTES_IN_INTERVAL);
+        int serviceDurationMinutes = duration.getHour() * 60 + duration.getMinute();
+        Duration serviceDuration = Duration.ofMinutes(serviceDurationMinutes);
 
         LocalTime currentStart = start;
-        while (currentStart.plus(interval).isBefore(end) || currentStart.plus(interval).equals(end)) {
-            LocalTime currentEnd = currentStart.plus(interval);
-            termsList.add(new AvailableTermDto(currentStart, currentEnd));
-            currentStart = currentStart.plusMinutes(MINUTES_IN_INTERVAL );
+
+        while (!currentStart.plus(serviceDuration).isAfter(end)) {
+            LocalTime currentEnd = currentStart.plus(serviceDuration);
+            if (!currentEnd.isAfter(end)) {
+                termsList.add(new AvailableTermDto(currentStart, currentEnd));
+            }
+            currentStart = currentStart.plusMinutes(MINUTES_IN_INTERVAL);
         }
 
-
         return termsList.stream()
-                .filter(term -> employeeBusyTermsList.stream()
-                        .noneMatch(busyTerm ->
-                                term.startServices().equals(busyTerm.startServices()) &&
-                                        term.endServices().equals(busyTerm.endServices())
-                        )
-                ).toList();
+                .filter(term -> isTermAvailable(term, employeeBusyTermsList))
+                .collect(Collectors.toList());
+    }
 
+    private boolean isTermAvailable(AvailableTermDto term, List<AvailableTermDto> busyTerms) {
+        LocalTime termStart = term.startServices();
+        LocalTime termEnd = term.endServices();
+
+        return busyTerms.stream().noneMatch(busyTerm -> {
+            LocalTime busyStart = busyTerm.startServices();
+            LocalTime busyEnd = busyTerm.endServices();
+            return termStart.isBefore(busyEnd) && termEnd.isAfter(busyStart);
+        });
     }
 
     public List<EmployeeWithAllInformationDto> getAllEmployeesToSalon(Long salonId) {
