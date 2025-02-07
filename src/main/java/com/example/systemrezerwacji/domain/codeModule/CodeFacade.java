@@ -23,4 +23,7 @@ public class CodeFacade {
     }
 
 
+    public String getLinkToCode() {
+        return codeService.getLinkToCode();
+    }
 }

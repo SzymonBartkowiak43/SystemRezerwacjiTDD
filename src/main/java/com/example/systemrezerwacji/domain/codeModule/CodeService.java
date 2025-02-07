@@ -40,4 +40,7 @@ class CodeService {
                 .orElseGet(() -> ConsumeMessage.failure(CODE_NOT_FOUND.getMessage()));
     }
 
+    public String getLinkToCode() {
+        return "Code link";
+    }
 }

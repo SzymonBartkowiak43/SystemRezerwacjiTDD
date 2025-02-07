@@ -2,7 +2,7 @@ spring:
   flyway:
     enabled: false
   application:
-    name: SystemRezerwacji_TDD
+    name: reservation-service
   datasource:
     url: jdbc:postgresql://localhost:5432/reservations #jesli chce uruchomic bez dockera to zmien na localhost zamiast postgres
     username: postgres
@@ -63,3 +63,12 @@ mail:
 server:
   port: 8080
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+management:
+  tracing:
+    sampling:
+      probability: 1
