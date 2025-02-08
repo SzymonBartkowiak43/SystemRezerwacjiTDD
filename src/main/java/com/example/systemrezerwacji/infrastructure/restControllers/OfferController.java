@@ -14,6 +14,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost")
 public class OfferController {
 
     private final OfferFacade offerFacade;

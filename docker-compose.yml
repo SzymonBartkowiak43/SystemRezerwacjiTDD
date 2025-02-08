@@ -36,21 +36,81 @@ services:
     ports:
       - "8082:8081"
 
-#  app:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    container_name: system-rezerwacji
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      - postgres
-#      - redis
-#    environment:
-#      SPRING_PROFILES_ACTIVE: docker
-#      REDIS_HOST: redis
-#      POSTGRES_HOST: postgres
-#    restart: always
+  eureka:
+    image: 140023391826.dkr.ecr.eu-central-1.amazonaws.com/service-registry
+    container_name: service-registry
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    restart: always
+
+  api-gateway:
+    image: 140023391826.dkr.ecr.eu-central-1.amazonaws.com/api-gateway
+    container_name: api-gateway
+    ports:
+      - "8060:8060"
+    depends_on:
+      - eureka
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+    restart: always
+
+  payment-validation-service:
+    image: 140023391826.dkr.ecr.eu-central-1.amazonaws.com/payment-validation-service
+    container_name: payment-validation-service
+    depends_on:
+      - eureka
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+    restart: always
+
+  code-delivery-service:
+    image: 140023391826.dkr.ecr.eu-central-1.amazonaws.com/code-delivery-service
+    container_name: code-delivery-service
+    depends_on:
+      - eureka
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+    restart: always
+
+
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: system-rezerwacji
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - redis
+      - eureka
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      REDIS_HOST: redis
+      POSTGRES_HOST: postgres
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-registry:8761/eureka/
+    restart: always
+
+  reservation-front:
+    container_name: reservation-front
+    image: 140023391826.dkr.ecr.eu-central-1.amazonaws.com/front-reservation
+    restart: always
+    ports:
+      - "80:80"
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    restart: always
+
 
 
 volumes:
