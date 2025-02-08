@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost")
+@CrossOrigin(origins = "http://164.90.190.165")
 public class TokenController {
 
     private final JwtAuthenticatorFacade jwtAuthenticatorFacade;

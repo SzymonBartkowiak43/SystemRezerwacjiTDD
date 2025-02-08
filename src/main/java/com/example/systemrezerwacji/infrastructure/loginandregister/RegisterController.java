@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost")
+@CrossOrigin(origins = "http://164.90.190.165")
 public class RegisterController {
 
     private final UserFacade userFacade;

@@ -11,7 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@CrossOrigin(origins = "http://localhost")
+@CrossOrigin(origins = "http://164.90.190.165")
 public class UserController {
     private final UserFacade userFacade;
 

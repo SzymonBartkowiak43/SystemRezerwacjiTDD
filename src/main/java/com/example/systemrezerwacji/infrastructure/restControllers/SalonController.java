@@ -21,7 +21,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost")
+@CrossOrigin(origins = "http://164.90.190.165")
 @RestController
 public class SalonController {
     private final SalonFacade salonFacade;
