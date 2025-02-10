@@ -1,17 +1,15 @@
-# Reservation System - Your Personal Booking Assistant 💼
+Reservation System - Your Personal Booking Assistant 
 
-The **Reservation System** is an advanced and intuitive platform designed to revolutionize appointment scheduling and salon management. Tailored to meet the needs of both salon owners and clients, this system offers a seamless experience for organizing salon operations and booking appointments. Salon owners can create and fully configure their salons by providing detailed information, adding employees, and defining each team member's work schedule. The system also allows the specification of available services, including their descriptions and pricing, making it easy for clients to explore what is offered.
+A smart and easy-to-use platform for managing salon appointments. Salon owners can set up their salons, add employees, create work schedules, and list services with details and pricing. Clients can browse salons, choose services, and book appointments with their preferred employees, receiving instant email confirmations and reminders to prevent no-shows.  
 
-Clients benefit from a user-friendly interface that enables them to browse salons, search for services, and select specific employees for their appointments. Booking is a smooth process, enhanced by instant email confirmations that ensure clients have all the necessary details. To further enhance the client experience and minimize no-shows, the system automatically sends email reminders one day before the scheduled appointment.
-
-The Reservation System supports dedicated user accounts for both salon owners and clients, ensuring a personalized and secure experience. Security is a top priority, implemented through robust JWT-based Spring Security authentication. Notifications are seamlessly integrated, with email-based updates keeping users informed about bookings and reminders.
-
-Built with extensive unit and integration tests, this platform guarantees reliability and security, making it a production-ready solution that streamlines operations and enhances client satisfaction in the salon industry.
+The system offers secure user accounts with JWT authentication and keeps users informed through email notifications. Built with thorough testing, it ensures a smooth, reliable, and secure booking experience for both salon owners and clients.
 
 If you would like to try the system, please visit: http://164.90.190.165/
 
 Frontend Repository: [Reservation Frontend](https://github.com/SzymonBartkowiak43/RezervationFront)
+
 Microservices Repository: [Microservices](https://github.com/SzymonBartkowiak43/micro-services)
+
 Mail-Sender Repository: [Mail-Sender](https://github.com/SzymonBartkowiak43/MailSender.git)
 
 
