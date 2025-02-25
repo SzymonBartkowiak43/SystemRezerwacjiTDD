@@ -63,7 +63,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
 
 //        step 2: user made GET /reservation/user/1 with no jwt token and system returned UNAUTHORIZED(401)
         // given && when
-        ResultActions failedGetReservationToUser = mockMvc.perform(get("/reservation/user/1")
+        ResultActions failedGetReservationToUser = mockMvc.perform(get("/reservation-service/code/get-link-to-code")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
         );
         // then
@@ -115,7 +115,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
 
 //        step 5: generate Code to create Salon.
         // given && when
-        ResultActions generateCode = mockMvc.perform(post("/generateCode")
+        ResultActions generateCode = mockMvc.perform(post("/reservation-service/code/generateCode")
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
         // then
         MvcResult mvcCodeCreated = generateCode.andExpect(status().isCreated()).andReturn();
@@ -136,7 +136,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
             "zipCode": "00-001",
             "street": "Main Street",
             "number": "123",
-            "userId": 1,
+            "email": "someEmail@some.pl",
             "code": "%s"
         }
         """.trim(), codeDto.code());
@@ -310,7 +310,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
        );
 //     step 13: user choose offer and employee GET /employee/available-dates on 2024-12-31 with employee id 1 and offer 1, returning OK(200)
         // given
-        String date = "2024-12-31";
+        String date = "2025-12-27";
         String employeeId = "1";
         String offerId = "1";
 

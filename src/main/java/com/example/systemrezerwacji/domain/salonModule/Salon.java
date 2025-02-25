@@ -5,6 +5,7 @@ import com.example.systemrezerwacji.domain.openingHoursModule.OpeningHours;
 import com.example.systemrezerwacji.domain.userModule.User;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import java.util.Optional;
 public class Salon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter
     private Long id;
     private String salonName;
     private String category;

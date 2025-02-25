@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.StreamSupport;
 
 public class EmployeeRepositoryTestImpl implements EmployeeRepository {
 
@@ -12,12 +13,17 @@ public class EmployeeRepositoryTestImpl implements EmployeeRepository {
 
     @Override
     public List<Employee> findByOffersId(Long offerId) {
-        return null;
+        return employeeDataBase.values().stream()
+                .filter(employee -> employee.getOffers().stream()
+                        .anyMatch(offer -> offer.getId().equals(offerId)))
+                .toList();
     }
 
     @Override
     public List<Employee> findAllBySalonId(Long salonId) {
-        return null;
+        return employeeDataBase.values().stream()
+                .filter(employee -> employee.getSalon().getId().equals(salonId))
+                .toList();
     }
 
     @Override
@@ -34,7 +40,7 @@ public class EmployeeRepositoryTestImpl implements EmployeeRepository {
 
     @Override
     public Optional<Employee> findById(Long aLong) {
-        return Optional.empty();
+        return Optional.ofNullable(employeeDataBase.get(aLong));
     }
 
     @Override
@@ -44,17 +50,20 @@ public class EmployeeRepositoryTestImpl implements EmployeeRepository {
 
     @Override
     public Iterable<Employee> findAll() {
-        return null;
+        return employeeDataBase.values();
     }
 
     @Override
     public Iterable<Employee> findAllById(Iterable<Long> longs) {
-        return null;
+        return employeeDataBase.values().stream()
+                .filter(employee -> StreamSupport.stream(longs.spliterator(), false)
+                        .anyMatch(id -> id.equals(employee.getId())))
+                .toList();
     }
 
     @Override
     public long count() {
-        return 0;
+        return id-1;
     }
 
     @Override

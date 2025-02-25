@@ -41,6 +41,6 @@ class CodeService {
     }
 
     public String getLinkToCode() {
-        return "Code link";
+        return "https://buy.stripe.com/test_bIYeXu5QW2za3D2aEF";
     }
 }

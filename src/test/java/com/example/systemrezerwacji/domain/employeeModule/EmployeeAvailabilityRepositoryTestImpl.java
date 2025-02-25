@@ -1,17 +1,28 @@
 package com.example.systemrezerwacji.domain.employeeModule;
 
 import java.time.DayOfWeek;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EmployeeAvailabilityRepositoryTestImpl implements EmployeeAvailabilityRepository{
+
+    private Map<Long, EmployeeAvailability> employeeAvailabilityDataBase = new ConcurrentHashMap<>();
+    private Long id = 1L;
+
     @Override
     public Optional<EmployeeAvailability> findByEmployeeIdAndDayOfWeek(Long employee_id, DayOfWeek dayOfWeek) {
-        return Optional.empty();
+        return employeeAvailabilityDataBase.values().stream()
+                .filter(employeeAvailability -> employeeAvailability.getEmployee().getId().equals(employee_id))
+                .filter(employeeAvailability -> employeeAvailability.getDayOfWeek().equals(dayOfWeek))
+                .findFirst();
     }
 
     @Override
     public <S extends EmployeeAvailability> S save(S entity) {
-        return null;
+        employeeAvailabilityDataBase.put(id, entity);
+        id++;
+        return entity;
     }
 
     @Override
@@ -21,7 +32,7 @@ public class EmployeeAvailabilityRepositoryTestImpl implements EmployeeAvailabil
 
     @Override
     public Optional<EmployeeAvailability> findById(Long aLong) {
-        return Optional.empty();
+        return Optional.ofNullable(employeeAvailabilityDataBase.get(aLong));
     }
 
     @Override

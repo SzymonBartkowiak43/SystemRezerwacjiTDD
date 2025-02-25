@@ -82,7 +82,8 @@ public class TypicalScenarioWhenOwnerCreateSalonTest extends BaseIntegrationTest
 
 //        step 3: user made POST/generateCode and system return code with status CREATED(201)
         // given && when
-        ResultActions generateCode = mockMvc.perform(post("/generateCode")
+        ResultActions generateCode = mockMvc.perform(post("/reservation-service/code/generateCode")
+                .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
         // then
         MvcResult mvcCodeCreated = generateCode.andExpect(status().isCreated()).andReturn();

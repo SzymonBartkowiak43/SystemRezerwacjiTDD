@@ -69,7 +69,7 @@ public class SalonFacade {
         return new SalonOffersListDto("success", allOffers);
     }
 
-    @Cacheable(value = "salons", unless = "#result.isEmpty()")
+    @Cacheable(value = "salons")
     public List<SalonWithIdDto> getAllSalons() {
         return salonService.getAllSalons();
     }

@@ -45,6 +45,22 @@ public class Employee {
         this.user = user;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setSalon(Salon salon) {
+        this.salon = salon;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setOffers(List<Offer> offers) {
+        this.offers = offers;
+    }
+
     void setAvailability(List<EmployeeAvailability> availability) {
         this.availability = availability;
     }

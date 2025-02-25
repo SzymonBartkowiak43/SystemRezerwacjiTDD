@@ -4,6 +4,7 @@ import com.example.systemrezerwacji.domain.salonModule.Salon;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -49,15 +50,19 @@ public class User  implements UserDetails {
         return this;
     }
 
-    void setEmail(String email) {
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    void setPassword(String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 

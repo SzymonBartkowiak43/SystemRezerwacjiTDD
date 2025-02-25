@@ -33,4 +33,8 @@ public class Offer {
         this.duration = duration;
         this.salon = salon;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
