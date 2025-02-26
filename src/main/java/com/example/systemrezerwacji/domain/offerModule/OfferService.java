@@ -17,10 +17,6 @@ class OfferService {
         this.offerRepository = offerRepository;
     }
 
-    List<Offer> findOffers(List<Long> offersId) {
-        return null;
-    }
-
     List<OfferDto> getAllOffers(Long salonId) {
         List<Offer> allOffers= offerRepository.findAllBySalonId(salonId);
 

@@ -24,6 +24,9 @@ class OpeningHoursService {
         openingHoursRepository.deleteBySalon(salon);
         List<OpeningHours> openingHoursList = openingHoursDto.stream()
                 .map(dto -> {
+                            if(dto.openingTime().isAfter(dto.closingTime())) {
+                                throw new IllegalArgumentException("Opening time cannot be after closing time");
+                            }
                             OpeningHours openingHours = new OpeningHours();
                             openingHours.setDayOfWeek(DayOfWeek.valueOf(dto.dayOfWeek()));
                             openingHours.setOpeningTime(dto.openingTime());

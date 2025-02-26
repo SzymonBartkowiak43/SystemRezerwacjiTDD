@@ -48,4 +48,12 @@ public class Reservation {
     public Reservation() {
     }
 
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
+    public void setOffer(Offer offer) {
+        this.offer = offer;
+    }
+
 }
