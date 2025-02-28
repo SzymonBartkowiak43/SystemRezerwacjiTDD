@@ -77,16 +77,22 @@ public class ReservationRepositoryTestImpl implements ReservationRepository{
 
     @Override
     public List<Reservation> findAllByUser(User user) {
-        return null;
+        return reservationsDataBase.values().stream()
+                .filter(reservation -> reservation.getUser().getId().equals(user.getId()))
+                .toList();
     }
 
     @Override
     public List<Reservation> findAllByReservationDateTimeBetween(LocalDateTime start, LocalDateTime end) {
-        return null;
+        return reservationsDataBase.values().stream()
+                .filter(reservation -> reservation.getReservationDateTime().isAfter(start) && reservation.getReservationDateTime().isBefore(end))
+                .toList();
     }
 
     @Override
     public List<Reservation> findAllBySalonId(Long salonId) {
-        return null;
+        return reservationsDataBase.values().stream()
+                .filter(reservation -> reservation.getSalon().getId().equals(salonId))
+                .toList();
     }
 }

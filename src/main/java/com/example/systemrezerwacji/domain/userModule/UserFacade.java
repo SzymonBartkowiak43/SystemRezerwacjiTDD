@@ -21,6 +21,7 @@ import static com.example.systemrezerwacji.domain.userModule.UserValidationResul
 @Component
 public class UserFacade {
     private static final String USER_NOT_FOUND = "Not found";
+
     private final UserService userService;
     private final UserValidator validator;
 

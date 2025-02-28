@@ -14,6 +14,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @Service
 class SalonCreator {
+
     private final SalonValidator validator;
     private final UserFacade userFacade;
     private final CodeFacade codeFacade;

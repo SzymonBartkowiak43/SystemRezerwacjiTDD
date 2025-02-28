@@ -26,6 +26,8 @@ public class ReservationConfiguration {
     @Mock
     NotificationFacade notificationFacade;
 
+
+
     public ReservationConfiguration() {
         MockitoAnnotations.openMocks(this);
     }
@@ -34,6 +36,7 @@ public class ReservationConfiguration {
         MapperReservationDto mapperReservationDto = new MapperReservationDto();
         ReservationService reservationService = new ReservationService(reservationRepository, mapperReservationDto);
         ReservationValidator validator = new ReservationValidator(reservationService);
-        return new ReservationFacade(offerFacade, userFacade, salonFacade, employeeFacade, notificationFacade, reservationService, validator);
+        ReservationResponseFactory reservationResponseFactory = new ReservationResponseFactory();
+        return new ReservationFacade(offerFacade, userFacade, salonFacade, employeeFacade, notificationFacade, reservationService, validator,reservationResponseFactory);
     }
 }

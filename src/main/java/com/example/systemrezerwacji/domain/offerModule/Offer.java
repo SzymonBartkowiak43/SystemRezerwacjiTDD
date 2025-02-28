@@ -37,4 +37,8 @@ public class Offer {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public void setDuration(LocalTime duration) {
+        this.duration = duration;
+    }
 }

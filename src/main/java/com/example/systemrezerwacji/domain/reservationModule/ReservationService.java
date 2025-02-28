@@ -110,4 +110,5 @@ class ReservationService {
         List<Reservation> allBySalonId = reservationRepository.findAllBySalonId(salonId);
         return mapperReservationDto.toMap(allBySalonId);
     }
+
 }

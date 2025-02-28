@@ -48,6 +48,10 @@ public class Reservation {
     public Reservation() {
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setEmployee(Employee employee) {
         this.employee = employee;
     }
@@ -56,4 +60,15 @@ public class Reservation {
         this.offer = offer;
     }
 
+    public void setSalon(Salon salon) {
+        this.salon = salon;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setReservationDateTime(LocalDateTime reservationDateTime) {
+        this.reservationDateTime = reservationDateTime;
+    }
 }

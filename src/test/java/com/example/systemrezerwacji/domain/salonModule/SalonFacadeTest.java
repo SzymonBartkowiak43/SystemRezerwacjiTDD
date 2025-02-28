@@ -1,311 +1,297 @@
 package com.example.systemrezerwacji.domain.salonModule;
 
-import com.example.systemrezerwacji.domain.codeModule.Code;
 import com.example.systemrezerwacji.domain.codeModule.CodeFacade;
 import com.example.systemrezerwacji.domain.codeModule.message.ConsumeMessage;
-import com.example.systemrezerwacji.domain.salonModule.dto.CreateNewSalonDto;
-import com.example.systemrezerwacji.domain.salonModule.dto.SalonFacadeResponseDto;
+import com.example.systemrezerwacji.domain.employeeModule.EmployeeFacade;
+import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeDto;
+import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeWithAllInformationDto;
+import com.example.systemrezerwacji.domain.employeeModule.response.CreateEmployeeResponseDto;
+import com.example.systemrezerwacji.domain.offerModule.OfferFacade;
+import com.example.systemrezerwacji.domain.offerModule.dto.OfferDto;
+import com.example.systemrezerwacji.domain.openingHoursModule.OpeningHoursFacade;
+import com.example.systemrezerwacji.domain.openingHoursModule.dto.OpeningHoursDto;
+import com.example.systemrezerwacji.domain.reservationModule.ReservationFacade;
+import com.example.systemrezerwacji.domain.reservationModule.dto.ReservationDto;
+import com.example.systemrezerwacji.domain.salonModule.dto.*;
 import com.example.systemrezerwacji.domain.userModule.User;
 import com.example.systemrezerwacji.domain.userModule.UserFacade;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-import static com.example.systemrezerwacji.domain.salonModule.SalonValidationResult.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.*;
 
 class SalonFacadeTest {
-    @Mock
-    private SalonValidator validator;
 
-    @Mock
-    private SalonService salonService;
+    SalonRepository salonRepository = new SalonRepositoryTestImpl();
+    ImageRepository imageRepository = new ImageRepositoryTestImpl();
+
 
     @Mock
     private UserFacade userFacade;
 
     @Mock
-    SalonCreator salonCreator;
-
-    @Mock
     private CodeFacade codeFacade;
 
-    @InjectMocks
+    @Mock
+    OpeningHoursFacade openingHoursFacade;
+
+    @Mock
+    EmployeeFacade employeeFacade;
+
+    @Mock
+    OfferFacade offerFacade;
+
+    @Mock
+    ReservationFacade reservationFacade;
+
     private SalonFacade salonFacade;
 
-    private Code code;
 
     @BeforeEach
-    void init() {
-        MockitoAnnotations.openMocks(this);
-        code = new Code();
+    void setUp() {
+        SalonConfiguration salonConfiguration = new SalonConfiguration();
+        userFacade = salonConfiguration.userFacade;
+        codeFacade = salonConfiguration.codeFacade;
+        openingHoursFacade = salonConfiguration.openingHoursFacade;
+        employeeFacade = salonConfiguration.employeeFacade;
+        offerFacade = salonConfiguration.offerFacade;
+        reservationFacade = salonConfiguration.reservationFacade;
+
+        salonFacade = salonConfiguration.createForTest(salonRepository, imageRepository);
+
+    }
+
+    private final Long testSalonId = 1L;
+    private final String testEmail = "owner@example.com";
+
+    @Test
+    void shouldCreateNewSalonSuccessfully() {
+        // given
+        CreateNewSalonDto dto = new CreateNewSalonDto("Test Salon", "Test Category", "Bialystok", "12-345", "Test Street", "1", testEmail, "1234");
+        User user = new User();
+        user.setId(1L);
+        user.setName("Owner");
+        user.setEmail(testEmail);
+
+
+        when(codeFacade.consumeCode(any(), any())).thenReturn(new ConsumeMessage("success", true));
+        when(userFacade.addUserRoleOwner(any())).thenReturn(Optional.of(user));
+        when(userFacade.getUserByEmail(any())).thenReturn(user);
+
+        // when
+        SalonFacadeResponseDto result = salonFacade.createNewSalon(dto);
+
+        // then
+        assertThat(result.message()).isEqualTo(SalonValidationResult.SUCCESS_MESSAGE);
+        ;
     }
 
     @Test
-    public void should_create_salon() {
-        //Given
-        String name = "Cat massage";
-        String category = "massage";
-        String city = "Bialystok";
-        String zipCode = "15-376";
-        String street = "Kopernika";
-        String number = "37a";
-        String userId = "1";
+    void shouldHandleSalonCreationFailure() {
+        // given
+        CreateNewSalonDto dto = new CreateNewSalonDto("", "", "Bialystok", "", "Test Street", "1", testEmail, "1234");
 
+        // when
+        SalonFacadeResponseDto result = salonFacade.createNewSalon(dto);
 
-        SalonValidationResult validationResult = new SalonValidationResult(SUCCESS_MESSAGE);
-        ConsumeMessage consumeMessage1 = mock(ConsumeMessage.class);
-        when(consumeMessage1.isSuccess()).thenReturn(true);
-
-        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
-        when(userFacade.getUserWithId(Long.valueOf(userId))).thenReturn(Optional.of(new User()));
-        when(codeFacade.consumeCode(eq(code.getCode()), any(User.class))).thenReturn(consumeMessage1);
-
-
-        //When
-        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId,code.getCode()));
-        //Then
-        assertThat(result.message()).isEqualTo(SUCCESS_MESSAGE);
+        // then
+        assertThat(result.message()).contains("Salon name should be longer");
+        assertThat(result.salonId()).isNull();
     }
 
-//    @Test
-//    public void should_failed_test_name_is_null() {
-//        //Given
-//        String name = null;
-//        String category = "massage";
-//        String city = "Bialystok";
-//        String zipCode = "15-376";
-//        String street = "Kopernika";
-//        String number = "37a";
-//        String userId = "1";
-//
-//
-//        SalonValidationResult validationResult = new SalonValidationResult(EMPTY_NAME.message);
-//        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
-//
-//        //When
-//        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
-//        //Then
-//        assertThat(result.message()).isEqualTo(EMPTY_NAME.message);
-//    }
-//
-//    @Test
-//    public void should_failed_test_category_is_null() {
-//        //Given
-//        String name = "Sallon";
-//        String category = null;
-//        String city = "Bialystok";
-//        String zipCode = "15-376";
-//        String street = "Kopernika";
-//        String number = "37a";
-//        String userId = "1";
-//
-//
-//        SalonValidationResult validationResult = new SalonValidationResult(EMPTY_CATEGORY.message);
-//        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
-//        //When
-//        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
-//        //Then
-//        assertThat(result.message()).isEqualTo(EMPTY_CATEGORY.message);
-//
-//    }
-//    @Test
-//    public void should_failed_test_city_is_null() {
-//        //Given
-//        String name = "Cat massage";
-//        String category = "massage";
-//        String city = null;
-//        String zipCode = "15-376";
-//        String street = "Kopernika";
-//        String number = "37a";
-//        String userId = "1";
-//
-//        SalonValidationResult validationResult = new SalonValidationResult(EMPTY_CITY.message);
-//        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
-//        //When
-//        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
-//        //Then
-//        assertThat(result.message()).isEqualTo(EMPTY_CITY.message);
-//
-//    }
-//    @Test
-//    public void should_failed_test_zip_code_is_null() {
-//        //Given
-//        String name = "Mesage";
-//        String category = "massage";
-//        String city = "Bialystok";
-//        String zipCode = null;
-//        String street = "Kopernika";
-//        String number = "37a";
-//        String userId = "1";
-//
-//        SalonValidationResult validationResult = new SalonValidationResult(EMPTY_ZIP_CODE.message);
-//        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
-//
-//        //When
-//        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
-//        //Then
-//        assertThat(result.message()).isEqualTo(EMPTY_ZIP_CODE.message);
-//
-//    }
-//    @Test
-//    public void should_failed_test_street_is_null() {
-//        //Given
-//        String name = "Cat message";
-//        String category = "massage";
-//        String city = "Bialystok";
-//        String zipCode = "15-376";
-//        String street = null;
-//        String number = "37a";
-//        String userId = "1";
-//
-//        SalonValidationResult validationResult = new SalonValidationResult(EMPTY_STREET.message);
-//        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
-//        //When
-//        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
-//        //Then
-//        assertThat(result.message()).isEqualTo(EMPTY_STREET.message);
-//
-//    }
-//    @Test
-//    public void should_failed_test_number_is_null() {
-//        //Given
-//        String name = "Cat message";
-//        String category = "massage";
-//        String city = "Bialystok";
-//        String zipCode = "15-376";
-//        String street = "Kopernika";
-//        String number = null;
-//        String userId = "1";
-//
-//        SalonValidationResult validationResult = new SalonValidationResult(EMPTY_NUMBER.message);
-//        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
-//        //When
-//        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
-//        //Then
-//        assertThat(result.message()).isEqualTo(EMPTY_NUMBER.message);
-//    }
-//
-//    @Test
-//    public void should_failed_test_2_fields_is_null() {
-//        //Given
-//        String name = null;
-//        String category = "massage";
-//        String city = "Bialystok";
-//        String zipCode = "15-376";
-//        String street = "Kopernika";
-//        String number = null;
-//        String userId = "1";
-//
-//        SalonValidationResult validationResult = new SalonValidationResult(EMPTY_NAME.message + " " + EMPTY_NUMBER.message);
-//        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
-//        //When
-//        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
-//        //Then
-//        assertThat(result.message()).contains(EMPTY_NAME.message);
-//        assertThat(result.message()).contains(EMPTY_NUMBER.message);
-//    }
-//
-//    @Test
-//    public void should_failed_name_is_too_short() {
-//        //Given
-//        String name = "Ca";
-//        String category = "massage";
-//        String city = "Bialystok";
-//        String zipCode = "15-376";
-//        String street = "Kopernika";
-//        String number = "57 a";
-//        String userId = "1";
-//
-//        SalonValidationResult validationResult = new SalonValidationResult(SHORT_NAME.message);
-//        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
-//        //When
-//        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
-//        //Then
-//        assertThat(result.message()).isEqualTo(SHORT_NAME.message);
-//    }
-//
-//    @Test
-//    public void should_failed_category_is_too_short() {
-//        //Given
-//        String name = "Cat message";
-//        String category = "xx";
-//        String city = "Bialystok";
-//        String zipCode = "15-376";
-//        String street = "Kopernika";
-//        String number = "57 a";
-//        String userId = "1";
-//
-//        SalonValidationResult validationResult = new SalonValidationResult(SHORT_CATEGORY.message);
-//        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
-//        //When
-//        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
-//        //Then
-//        assertThat(result.message()).isEqualTo(SHORT_CATEGORY.message);
-//    }
-//
-//    @Test
-//    public void should_failed_city_contains_weird_sign() {
-//        //Given
-//        String name = "Cat massage";
-//        String category = "massage";
-//        String city = "Bialy$t0k";
-//        String zipCode = "15-376";
-//        String street = "Kopernika";
-//        String number = "57 a";
-//        String userId = "1";
-//
-//        SalonValidationResult validationResult = new SalonValidationResult(FORBIDDEN_CHARACTERS_IN_CITY.message);
-//        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
-//        //When
-//        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
-//        //Then
-//        assertThat(result.message()).isEqualTo(FORBIDDEN_CHARACTERS_IN_CITY.message);
-//    }
-//
-//    @Test
-//    public void should_failed_zip_code_is_incorrect() {
-//        //Given
-//        String name = "Cat massage";
-//        String category = "massage";
-//        String city = "Bialystok";
-//        String zipCode = "X5-3";
-//        String street = "Kopernika";
-//        String number = "57 a";
-//        String userId = "1";
-//
-//        SalonValidationResult validationResult = new SalonValidationResult(INCORRECT_ZIP_CODE.message);
-//        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
-//        //When
-//        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
-//        //Then
-//        assertThat(result.message()).isEqualTo(INCORRECT_ZIP_CODE.message);
-//    }
-//
-//    @Test
-//    public void should_failed_street_contains_weird_sign() {
-//        //Given
-//        String name = "Cat massage";
-//        String category = "massage";
-//        String city = "Bialystok";
-//        String zipCode = "15-376";
-//        String street = "K0pe*n1ka";
-//        String number = "57 a";
-//        String userId = "1";
-//
-//        SalonValidationResult validationResult = new SalonValidationResult(FORBIDDEN_CHARACTERS_IN_STREET.message);
-//        when(validator.validate(any(CreateNewSalonDto.class))).thenReturn(validationResult);
-//        //When
-//        SalonFacadeResponseDto result = salonFacade.createNewSalon(new CreateNewSalonDto(name, category, city, zipCode, street, number, userId, code.getCode()));
-//        //Then
-//        assertThat(result.message()).isEqualTo(FORBIDDEN_CHARACTERS_IN_STREET.message);
-//    }
+    @Test
+    void shouldAddOpeningHoursToSalon() {
+        // given
+        List<OpeningHoursDto> hours = List.of(new OpeningHoursDto(testSalonId, "MONDAY", LocalTime.of(8, 0), LocalTime.of(20, 0)));
+        Salon salon = new Salon();
+        salon.setId(1L);
+        salonRepository.save(salon);
 
+        when(openingHoursFacade.addOpeningHours(anyList(), any())).thenReturn(new AddHoursResponseDto("success", List.of()));
+
+        // when
+        SalonFacadeResponseDto result = salonFacade.addOpeningHoursToSalon(hours);
+
+        // then
+        assertThat(result.message()).isEqualTo("success");
+        assertThat(result.salonId()).isEqualTo(testSalonId);
+    }
+
+    @Test
+    void shouldAddEmployeeToSalon() {
+        // given
+        EmployeeDto dto = new EmployeeDto(testSalonId, "John", "Doe", List.of());
+        CreateEmployeeResponseDto expected = new CreateEmployeeResponseDto("success", "john@example.com", "password");
+
+        Salon salon = new Salon();
+        salon.setId(1L);
+        salonRepository.save(salon);
+
+        when(employeeFacade.createEmployeeAndAddToSalon(any(), any())).thenReturn(expected);
+
+        // when
+        CreateEmployeeResponseDto result = salonFacade.addEmployeeToSalon(dto);
+
+        // then
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    void shouldGetAllOffersForSalon() {
+        // given
+        List<OfferDto> offers = List.of(new OfferDto(1L, "Offer 1", "Description", BigDecimal.valueOf(200.0), LocalTime.of(1, 0)));
+        when(offerFacade.getAllOffersToSalon(testSalonId)).thenReturn(offers);
+
+        // when
+        SalonOffersListDto result = salonFacade.getAllOffersToSalon(testSalonId);
+
+        // then
+        assertThat(result.offers()).hasSize(1);
+        assertThat(result.message()).isEqualTo("success");
+    }
+
+    @Test
+    void shouldGetAllSalons() {
+        // given
+        User user = new User();
+        user.setId(1L);
+        user.setName("Owner");
+        user.setEmail(testEmail);
+        Salon salon = new Salon();
+        salon.setId(1L);
+        salon.setUser(user);
+        salonRepository.save(salon);
+
+        // when
+        List<SalonWithIdDto> result = salonFacade.getAllSalons();
+
+        // then
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).id()).isEqualTo("1");
+    }
+
+    @Test
+    void shouldGetSalonById() {
+        // given
+        User user = new User();
+        user.setId(1L);
+        user.setName("Owner");
+        user.setEmail(testEmail);
+        Salon salon = new Salon();
+        salon.setId(1L);
+        salon.setUser(user);
+        salonRepository.save(salon);
+
+        // when
+        Optional<SalonWithIdDto> result = salonFacade.getSalonById(testSalonId);
+
+        // then
+        assertThat(result).isPresent();
+        assertThat(result.get().id()).isEqualTo(testSalonId.toString());
+    }
+
+    @Test
+    void shouldAddImageToSalon() {
+        // given
+        Salon salon = new Salon();
+        salon.setId(testSalonId);
+        salonRepository.save(salon);
+
+        Image image = new Image();
+        image.setName("test.jpg");
+        image.setSalon(salon);
+        imageRepository.save(image);
+
+        // when
+        salonFacade.addImageToSalon(testSalonId, image);
+
+        // then
+        List<Image> images = imageRepository.findBySalonId(testSalonId);
+        assertThat(images).hasSize(1);
+        assertThat(images.get(0).getName()).isEqualTo("test.jpg");
+    }
+
+    @Test
+    void shouldGetImagesForSalon() {
+        // given
+        Salon salon = new Salon();
+        salon.setId(testSalonId);
+        salonRepository.save(salon);
+
+        Image image = new Image();
+        image.setName("test.jpg");
+        image.setSalon(salon);
+        imageRepository.save(image);
+
+        // when
+        List<ImageDto> result = salonFacade.findImagesBySalonId(testSalonId);
+
+        // then
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).name()).isEqualTo("test.jpg");
+    }
+
+    @Test
+    void shouldGetSalonsForOwner() {
+        // given
+        User owner = new User();
+        owner.setEmail(testEmail);
+        owner.setId(1L);
+
+        Salon salon = new Salon();
+        salon.setId(testSalonId);
+        salon.setUser(owner);
+        salonRepository.save(salon);
+
+        when(userFacade.getUserByEmail(testEmail)).thenReturn(owner);
+
+        // when
+        List<SalonWithIdDto> result = salonFacade.getAllSalonsToOwner(testEmail);
+
+        // then
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).id()).isEqualTo(testSalonId.toString());
+    }
+
+    @Test
+    void shouldGetFullSalonDetailsForOwner() {
+        // given
+        User owner = new User();
+        owner.setEmail(testEmail);
+
+        Salon salon = new Salon();
+        salon.setId(testSalonId);
+        salon.setSalonName("Test Salon");
+        salonRepository.save(salon);
+
+        when(reservationFacade.getAllReservationBySalonId(testSalonId))
+                .thenReturn(Map.of(LocalDate.now(), List.of(new ReservationDto(1L,"Employee name", "Offer name", BigDecimal.valueOf(200), LocalDateTime.of(2026,2,2,10,20), LocalDateTime.of(2026,2,2,10,20)))));
+
+        when(employeeFacade.getAllEmployees(testSalonId))
+                .thenReturn(List.of(new EmployeeWithAllInformationDto(1L,1L,"Test", "email", List.of(), List.of())));
+
+        when(offerFacade.getAllOffersToSalon(testSalonId))
+                .thenReturn(List.of(new OfferDto(1L, "Offer 1", "Description", BigDecimal.valueOf(200.0), LocalTime.of(1, 0))));
+
+        // when
+        OwnerSalonWithAllInformation result = salonFacade.getSalonByIdToOwner(testSalonId, testEmail);
+
+        // then
+        assertThat(result.salonName()).isEqualTo("Test Salon");
+        assertThat(result.employeeDto()).isNotEmpty();
+        assertThat(result.offerDto()).isNotEmpty();
+
+    }
 }

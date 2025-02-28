@@ -6,6 +6,9 @@ import com.example.systemrezerwacji.domain.employeeModule.Employee;
 import com.example.systemrezerwacji.domain.employeeModule.EmployeeFacade;
 import com.example.systemrezerwacji.domain.employeeModule.dto.AvailableTermDto;
 import com.example.systemrezerwacji.domain.reservationModule.dto.*;
+import com.example.systemrezerwacji.domain.reservationModule.response.AvailableTermSearchCriteria;
+import com.example.systemrezerwacji.domain.reservationModule.response.NotificationResult;
+import com.example.systemrezerwacji.domain.reservationModule.response.ReservationEntities;
 import com.example.systemrezerwacji.infrastructure.notificationMode.NotificationFacade;
 import com.example.systemrezerwacji.infrastructure.notificationMode.response.NotificationFacadeResponse;
 import com.example.systemrezerwacji.domain.offerModule.Offer;
@@ -29,21 +32,29 @@ import java.util.stream.Collectors;
 @Component
 public class ReservationFacade {
 
-    private static final String PROBLEM_WITH_SENDING_NOTIFICATION = "Someone problem with sending notification ;/ ";
+    private static final String NOTIFICATION_ERROR = "Problem with sending notification";
+    private static final String SUCCESS = "success";
+    private static final String FAILURE = "failure";
+    private static final int MAX_TERMS = 5;
 
     private final UserFacade userFacade;
     private final OfferFacade offerFacade;
     private final SalonFacade salonFacade;
     private final EmployeeFacade employeeFacade;
     private final NotificationFacade notificationFacade;
-
     private final ReservationService reservationService;
     private final ReservationValidator validator;
+    private final ReservationResponseFactory responseFactory;
 
-
-    public ReservationFacade(@Lazy OfferFacade offerFacade, @Lazy UserFacade userFacade,
-                             @Lazy SalonFacade salonFacade, @Lazy  EmployeeFacade employeeFacade,
-                             @Lazy NotificationFacade notificationFacade, ReservationService reservationService, ReservationValidator validator) {
+    public ReservationFacade(
+            @Lazy OfferFacade offerFacade,
+            @Lazy UserFacade userFacade,
+            @Lazy SalonFacade salonFacade,
+            @Lazy EmployeeFacade employeeFacade,
+            @Lazy NotificationFacade notificationFacade,
+            ReservationService reservationService,
+            ReservationValidator validator,
+            ReservationResponseFactory responseFactory) {
         this.offerFacade = offerFacade;
         this.userFacade = userFacade;
         this.salonFacade = salonFacade;
@@ -51,98 +62,136 @@ public class ReservationFacade {
         this.notificationFacade = notificationFacade;
         this.reservationService = reservationService;
         this.validator = validator;
-    }
-
-
-    public List<AvailableTermDto> getEmployeeBusyTerm(Long employeeId, LocalDate date) {
-        return reservationService.getEmployeeBusyTerms(employeeId, date);
+        this.responseFactory = responseFactory;
     }
 
     @Transactional
-    public ReservationFacadeResponse createNewReservation(CreateReservationDto reservationDto) {
-        LocalTime duration = offerFacade.getDurationToOffer(reservationDto.offerId());
-        ReservationValidationResult result = validator.validate(reservationDto, duration);
-
-        if (result.isValid()) {
-            Salon salon = salonFacade.getSalon(reservationDto.salonId());
-            Employee employee = employeeFacade.getEmployee(reservationDto.employeeId());
-            Offer offer = offerFacade.getOffer(reservationDto.offerId());
-            UserCreatedWhenRegisteredDto userByEmailOrCreateNewAccount = userFacade.getUserByEmailOrCreateNewAccount(reservationDto.userEmail());
-
-            User user = userByEmailOrCreateNewAccount.user();
-            NotificationFacadeResponse emailRespond;
-            if(!userByEmailOrCreateNewAccount.isNewUser()) {
-                emailRespond = notificationFacade.sendAnEmailWhenClientHasAccount(reservationDto.userEmail(), offer.getName(), reservationDto.reservationDateTime(),salon.getSalonName());
-            } else {
-                emailRespond = notificationFacade.sendAnEmailWhenClientDoNotHasAccount(reservationDto.userEmail(), offer.getName(),
-                        userByEmailOrCreateNewAccount.unHashedPassword(),reservationDto.reservationDateTime(),salon.getSalonName());
-            }
-
-            if(emailRespond.isSuccess()) {
-                reservationService.addNewReservation(salon, employee, user, offer, reservationDto.reservationDateTime());
-                return new ReservationFacadeResponse(true, "success", userByEmailOrCreateNewAccount.unHashedPassword());
-            }
-
-            return new ReservationFacadeResponse(false, PROBLEM_WITH_SENDING_NOTIFICATION, null);
+    public ReservationFacadeResponse createNewReservation(CreateReservationDto dto) {
+        ReservationValidationResult validationResult = validateReservation(dto);
+        if (!validationResult.isValid()) {
+            return responseFactory.createError(validationResult.message());
         }
-        return new ReservationFacadeResponse(false, result.message(),null);
-    }
 
-    public List<UserReservationDataDto> getUserReservation(String email) {
-        User user = userFacade.getUserByEmail(email);
-        List<UserReservationDataDto> userReservationDtoList = reservationService.getReservationToCurrentUser(user);
+        ReservationEntities entities = fetchReservationEntities(dto);
+        NotificationResult notificationResult = sendReservationNotification(dto, entities);
 
-        return userReservationDtoList;
-    }
-
-    public List<ReservationToTomorrow> getAllReservationToTomorrow() {
-        List<ReservationToTomorrow> allReservationToTomorrow = reservationService.getAllReservationToTomorrow();
-        return allReservationToTomorrow;
-    }
-
-
-    public ReservationFacadeResponse deleteReservation(DeleteReservationDto deleteReservationDto) {
-        User userByEmail = userFacade.getUserByEmail(deleteReservationDto.userEmail());
-        Boolean isDeleted =  reservationService.deleteReservation(deleteReservationDto.reservationId(), userByEmail);
-
-        if(isDeleted) {
-            return new ReservationFacadeResponse(true, "success",null);
-        }
-        return new ReservationFacadeResponse(false, "failure", null);
-    }
-
-    public UserReservationDto updateReservationDate(UpdateReservationDto updateReservationDto) {
-        Reservation reservation1 = reservationService.getReservation(updateReservationDto.reservationId());
-        User userByEmail = userFacade.getUserByEmail(reservation1.getUser().getEmail());
-        UserReservationDto reservation =  reservationService.updateReservationDate(updateReservationDto.reservationId(), userByEmail, updateReservationDto.newReservationDate());
-        return reservation;
+        return handleReservationCreation(dto, entities, notificationResult);
     }
 
     public List<AvailableTermWithDateDto> getNearest5AvailableHours(Long reservationId) {
         Reservation reservation = reservationService.getReservation(reservationId);
-        Long employeeId = reservation.getEmployee().getId();
-        Long offerId = reservation.getOffer().getId();
-        LocalDate date = reservation.getReservationDateTime().toLocalDate();
+        AvailableTermSearchCriteria criteria = new AvailableTermSearchCriteria(
+                reservation.getEmployee().getId(),
+                reservation.getOffer().getId(),
+                reservation.getReservationDateTime().toLocalDate()
+        );
 
-        List<AvailableTermWithDateDto> nearestAvailableTerms = new ArrayList<>();
+        return new AvailableTermFinder(employeeFacade)
+                .findNearestAvailableTerms(criteria, MAX_TERMS);
+    }
 
-         do {
-            List<AvailableTermDto> availableHours = employeeFacade.getAvailableHours(
-                    new AvailableDatesReservationDto(date, employeeId, offerId));
+    public List<UserReservationDataDto> getUserReservation(String email) {
+        User user = userFacade.getUserByEmail(email);
+        return reservationService.getReservationToCurrentUser(user);
+    }
 
-            LocalDate finalDate = date;
-            List<AvailableTermWithDateDto> availableTermsWithDate = availableHours.stream()
-                    .map(term -> new AvailableTermWithDateDto(term.startServices(), term.endServices(), finalDate))
-                    .toList();
-            nearestAvailableTerms.addAll(availableTermsWithDate);
-            date = date.plusDays(1);
+    public List<ReservationToTomorrow> getAllReservationToTomorrow() {
+        return reservationService.getAllReservationToTomorrow();
+    }
 
-        }while (nearestAvailableTerms.size() < 5);
+    public ReservationFacadeResponse deleteReservation(DeleteReservationDto dto) {
+        User user = userFacade.getUserByEmail(dto.userEmail());
+        boolean isDeleted = reservationService.deleteReservation(dto.reservationId(), user);
+        return responseFactory.createSimpleResponse(isDeleted);
+    }
 
-        return nearestAvailableTerms.stream().limit(5).collect(Collectors.toList());
+    public UserReservationDto updateReservationDate(UpdateReservationDto dto) {
+        Reservation reservation = reservationService.getReservation(dto.reservationId());
+        User user = userFacade.getUserByEmail(reservation.getUser().getEmail());
+        return reservationService.updateReservationDate(dto.reservationId(), user, dto.newReservationDate());
     }
 
     public Map<LocalDate, List<ReservationDto>> getAllReservationBySalonId(Long salonId) {
         return reservationService.getAllReservationBySalonId(salonId);
     }
+
+    public List<AvailableTermDto> getEmployeeBusyTerm(Long employeeId, LocalDate date) {
+        return reservationService.getEmployeeBusyTerms(employeeId, date);
+    }
+/*****************************Private Method *********************************/
+
+    private ReservationValidationResult validateReservation(CreateReservationDto dto) {
+        LocalTime duration = offerFacade.getDurationToOffer(dto.offerId());
+        return validator.validate(dto, duration);
+    }
+
+    private ReservationEntities fetchReservationEntities(CreateReservationDto dto) {
+        return new ReservationEntities(
+                salonFacade.getSalon(dto.salonId()),
+                employeeFacade.getEmployee(dto.employeeId()),
+                offerFacade.getOffer(dto.offerId()),
+                userFacade.getUserByEmailOrCreateNewAccount(dto.userEmail())
+        );
+    }
+
+    private NotificationResult sendReservationNotification(
+            CreateReservationDto dto,
+            ReservationEntities entities
+    ) {
+        if (entities.userInfo().isNewUser()) {
+            return sendNewUserNotification(dto, entities);
+        }
+        return sendExistingUserNotification(dto, entities);
+    }
+
+    private NotificationResult sendNewUserNotification(
+            CreateReservationDto dto,
+            ReservationEntities entities
+    ) {
+        NotificationFacadeResponse response = notificationFacade.sendAnEmailWhenClientDoNotHasAccount(
+                dto.userEmail(),
+                entities.offer().getName(),
+                entities.userInfo().unHashedPassword(),
+                dto.reservationDateTime(),
+                entities.salon().getSalonName()
+        );
+        return new NotificationResult(response.isSuccess(), entities.userInfo());
+    }
+
+    private NotificationResult sendExistingUserNotification(
+            CreateReservationDto dto,
+            ReservationEntities entities
+    ) {
+        NotificationFacadeResponse response = notificationFacade.sendAnEmailWhenClientHasAccount(
+                dto.userEmail(),
+                entities.offer().getName(),
+                dto.reservationDateTime(),
+                entities.salon().getSalonName()
+        );
+        return new NotificationResult(response.isSuccess(), entities.userInfo());
+    }
+
+    private ReservationFacadeResponse handleReservationCreation(
+            CreateReservationDto dto,
+            ReservationEntities entities,
+            NotificationResult notificationResult
+    ) {
+        if (!notificationResult.success()) {
+            return responseFactory.createError(NOTIFICATION_ERROR);
+        }
+
+        reservationService.addNewReservation(
+                entities.salon(),
+                entities.employee(),
+                entities.userInfo().user(),
+                entities.offer(),
+                dto.reservationDateTime()
+        );
+
+        return responseFactory.createSuccess(
+                SUCCESS,
+                notificationResult.userInfo().unHashedPassword()
+        );
+    }
+
 }

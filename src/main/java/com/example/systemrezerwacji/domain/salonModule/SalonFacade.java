@@ -29,13 +29,14 @@ import java.util.Optional;
 @AllArgsConstructor
 public class SalonFacade {
 
-    private final SalonService salonService;
     private final UserFacade userFacade;
     private final OpeningHoursFacade openingHoursFacade;
     private final EmployeeFacade employeeFacade;
     private final OfferFacade offerFacade;
-    private final SalonCreator salonCreator;
     private final ReservationFacade reservationFacade;
+
+    private final SalonCreator salonCreator;
+    private final SalonService salonService;
 
 
     public SalonFacadeResponseDto createNewSalon(CreateNewSalonDto salonDto) {

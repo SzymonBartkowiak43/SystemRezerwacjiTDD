@@ -139,8 +139,6 @@ class EmployeeFacadeTest {
         availability.setEmployee(employee);
         employeeAvailabilityRepository.save(availability);
 
-
-
         when(offerFacade.getDurationToOffer(1L)).thenReturn(LocalTime.of(1, 0));
         when(reservationFacade.getEmployeeBusyTerm(any(), any())).thenReturn(List.of());
 
