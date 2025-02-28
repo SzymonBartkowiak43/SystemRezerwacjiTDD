@@ -1,185 +1,211 @@
 package com.example.systemrezerwacji.domain.userModule;
 
-import com.example.systemrezerwacji.domain.userModule.response.UserFacadeResponse;
+import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeDto;
+import com.example.systemrezerwacji.domain.userModule.dto.UserCreatedWhenRegisteredDto;
+import com.example.systemrezerwacji.domain.userModule.dto.UserDto;
 import com.example.systemrezerwacji.domain.userModule.dto.UserRegisterDto;
+import com.example.systemrezerwacji.domain.userModule.response.UserFacadeResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.springframework.security.authentication.BadCredentialsException;
 
-import static com.example.systemrezerwacji.domain.userModule.ValidationError.*;
+import java.util.*;
+
+import static com.example.systemrezerwacji.domain.userModule.UserValidationResult.SUCCESS_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 
 class UserFacadeTest {
 
-    @Mock
-    private UserValidator validator;
+    UserRepository userRepository = new UserRepositoryTestImpl();
+    UserRoleRepository userRoleRepository = new UserRoleRepositoryTestImpl();
 
-    @Mock
-    private UserService userService;
-
-    @InjectMocks
     private UserFacade userFacade;
 
+    private final Long testUserId = 1L;
+    private final String testEmail = "test@example.com";
+    private final String testName = "John";
+
     @BeforeEach
-    void inti() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
+        UserConfiguration userConfiguration = new UserConfiguration();
+        userFacade = userConfiguration.createForTest(userRepository, userRoleRepository);
     }
 
 
-//    @Test
-//    public void should_create_user() {
-//        //Given
-//        String name = "Kuba";
-//        String email = "kuba@test.pl";
-//        String password = "kuba123@";
-//
-//        UserValidationResult validationResult = new UserValidationResult(SUCCESS_MESSAGE);
-//        Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
-//
-//        //When
-//        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(email,name,password));
-//
-//        //Then
-//        assertThat(result.message()).isEqualTo(SUCCESS_MESSAGE);
-//    }
-
     @Test
-    public void should_failed_name_is_null() {
-        //Given
-        String name = null;
-        String email = "kuba@test.pl";
-        String password = "kuba123@";
+    void shouldFindUserByEmailSuccessfully() {
+        // given
+        User user = new User();
+        user.setEmail(testEmail);
+        user.setId(testUserId);
+        user.setRoles(Set.of(new UserRole("USER", "Description")));
+        userRepository.save(user);
 
-        UserValidationResult validationResult = new UserValidationResult(EMPTY_NAME.getMessage());
-        Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
+        // when
+        UserDto result = userFacade.findByEmail(testEmail);
 
-        //When
-        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
-
-        //Then
-        assertThat(result.message()).isEqualTo(EMPTY_NAME.getMessage());
+        // then
+        assertThat(result.email()).isEqualTo(testEmail);
     }
 
     @Test
-    public void should_failed_email_is_null() {
-        //Given
-        String name = "Kuba";
-        String email = null;
-        String password = "kuba123@";
+    void shouldThrowExceptionWhenUserNotFoundByEmail() {
+        // given
 
-        UserValidationResult validationResult = new UserValidationResult(EMPTY_EMAIL.getMessage());
-        Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
-
-        //When
-        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
-
-        //Then
-        assertThat(result.message()).isEqualTo(EMPTY_EMAIL.getMessage());
+        // when & then
+        assertThatThrownBy(() -> userFacade.findByEmail(testEmail)).isInstanceOf(BadCredentialsException.class).hasMessageContaining("Not found");
     }
 
     @Test
-    public void should_failed_password_is_null() {
-        //Given
-        String name = "Kuba";
-        String email = "kuba@test.pl";
-        String password = null;
+    void shouldCreateNewUserSuccessfully() {
+        // given
+        UserRegisterDto dto = new UserRegisterDto(testEmail, testName, "Password123!");
+        User user = new User();
+        user.setId(1L);
+        user.setEmail(testEmail);
+        user.setId(testUserId);
+        userRepository.save(user);
 
-        UserValidationResult validationResult = new UserValidationResult(EMPTY_PASSWORD.getMessage());
-        Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
+        // when
+        UserFacadeResponse response = userFacade.createNewUser(dto);
 
-        //When
-        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
-
-        //Then
-        assertThat(result.message()).isEqualTo(EMPTY_PASSWORD.getMessage());
+        // then
+        assertThat(response.message()).isEqualTo(SUCCESS_MESSAGE);
     }
 
     @Test
-    public void should_failed_name_is_to_short() {
-        //Given
-        String name = "xx";
-        String email = "kuba@test.pl";
-        String password = "Kuba123@";
+    void shouldReturnErrorWhenValidationFails() {
+        // given
+        UserRegisterDto invalidDto = new UserRegisterDto("", "invalid-email", "short");
 
-        UserValidationResult validationResult = new UserValidationResult(SHORT_NAME.getMessage());
-        Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
+        // when
+        UserFacadeResponse response = userFacade.createNewUser(invalidDto);
 
-        //When
-        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
+        // then
+        assertThat(response.message()).contains("Name contains forbidden characters");
+        assertThat(response.userId()).isNull();
 
-        //Then
-        assertThat(result.message()).isEqualTo(SHORT_NAME.getMessage());
     }
 
     @Test
-    public void should_failed_name_contains_weird_sign() {
-        //Given
-        String name = "$#%#KAW";
-        String email = "kuba@test.pl";
-        String password = "Kuba123@";
+    void shouldGetUserByIdSuccessfully() {
+        // given
+        User user = new User();
+        user.setId(testUserId);
+        user.setEmail(testEmail);
+        userRepository.save(user);
 
-        UserValidationResult validationResult = new UserValidationResult(FORBIDDEN_CHARACTERS_IN_NAME.getMessage());
-        Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
+        // when
+        Optional<UserRegisterDto> result = userFacade.getUserById(testUserId);
 
-        //When
-        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
-
-        //Then
-        assertThat(result.message()).isEqualTo(FORBIDDEN_CHARACTERS_IN_NAME.getMessage());
+        // then
+        assertThat(result.get().email()).isEqualTo(testEmail);
     }
 
     @Test
-    public void should_failed_email_is_invalid() {
-        //Given
-        String name = "Kuba";
-        String email = "kubatest.pl";
-        String password = "Kuba123@";
+    void shouldAddOwnerRoleSuccessfully() {
+        // given
+        User user = new User();
+        user.setId(1L);
+        user.setEmail(testEmail);
+        user.setId(testUserId);
+        Set<UserRole> roles = new HashSet<>();
+        roles.add(new UserRole("USER", "Description"));
+        user.setRoles(roles);
 
-        UserValidationResult validationResult = new UserValidationResult(INVALID_EMAIL.getMessage());
-        Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
+        userRepository.save(user);
 
-        //When
-        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
+        // when
+        Optional<User> result = userFacade.addUserRoleOwner(testUserId);
 
-        //Then
-        assertThat(result.message()).isEqualTo(INVALID_EMAIL.getMessage());
+        // then
+        assertThat(result).isPresent().contains(user);
     }
 
     @Test
-    public void should_failed_password_is_to_short() {
-        //Given
-        String name = "Kuba";
-        String email = "kubatest.pl";
-        String password = "Ku@1";
+    void shouldCreateEmployeeSuccessfully() {
+        // given
+        String employeeEmail = "employee@example.com";
+        EmployeeDto employeeDto = new EmployeeDto(1L, "John", employeeEmail, List.of());
 
-        UserValidationResult validationResult = new UserValidationResult(SHORT_PASSWORD.getMessage());
-        Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
+        User newUser = new User();
+        newUser.setId(1L);
+        newUser.setEmail(employeeEmail);
+        newUser.setName(employeeDto.name());
 
-        //When
-        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
+        // when
+        Optional<User> result = userFacade.createEmployee(employeeDto);
 
-        //Then
-        assertThat(result.message()).isEqualTo(SHORT_PASSWORD.getMessage());
+        // then
+        assertThat(result.get().getEmail()).isEqualTo(employeeEmail);
+        assertThat(result.get().getRoles().size()).isEqualTo(2);
     }
 
     @Test
-    public void should_failed_password_do_not_contains_special_characters() {
-        //Given
-        String name = "Kuba";
-        String email = "kubatest.pl";
-        String password = "Kuba@";
+    void shouldGetExistingUserByEmail() {
+        // given
+        User user = new User();
+        user.setId(1L);
+        user.setEmail(testEmail);
+        user.setId(testUserId);
+        userRepository.save(user);
 
-        UserValidationResult validationResult = new UserValidationResult(NO_SPECIAL_CHARACTERS_IN_PASSWORD.getMessage());
-        Mockito.when(validator.validate(Mockito.any(UserRegisterDto.class))).thenReturn(validationResult);
+        // when
+        UserCreatedWhenRegisteredDto result = userFacade.getUserByEmailOrCreateNewAccount(testEmail);
 
-        //When
-        UserFacadeResponse result = userFacade.createNewUser(new UserRegisterDto(name,email,password));
+        // then
+        assertThat(result.user()).isEqualTo(user);
+        assertThat(result.isNewUser()).isFalse();
+    }
 
-        //Then
-        assertThat(result.message()).isEqualTo(NO_SPECIAL_CHARACTERS_IN_PASSWORD.getMessage());
+    @Test
+    void shouldCreateNewUserWhenNotFoundByEmail() {
+        // given
+        User user = new User();
+        user.setId(1L);
+        user.setEmail(testEmail);
+        user.setId(testUserId);
+        userRepository.save(user);
+
+        // when
+        UserCreatedWhenRegisteredDto result = userFacade.getUserByEmailOrCreateNewAccount(testEmail);
+
+        // then
+        assertThat(result.user().getEmail()).isEqualTo(testEmail);
+        assertThat(result.isNewUser()).isFalse();
+    }
+
+    @Test
+    void shouldUpdateUserSuccessfully() {
+        // given
+        UserRegisterDto dto = new UserRegisterDto( testEmail, "NewName","NewPassword123!");
+
+        User user = new User();
+        user.setId(1L);
+        user.setEmail(testEmail);
+        user.setId(testUserId);
+        user.setName("Old Name");
+        userRepository.save(user);
+
+
+        // when
+        UserFacadeResponse response = userFacade.updateUser(dto);
+
+        // then
+        assertThat(response.name()).isEqualTo("NewName");
+        assertThat(response.userId()).isEqualTo(1L);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenGettingNonExistingUser() {
+
+
+        // when & then
+        assertThatThrownBy(() -> userFacade.getUserByEmail(testEmail)).isInstanceOf(RuntimeException.class).hasMessageContaining("user not found!!");
     }
 }
+

@@ -5,8 +5,11 @@ import com.example.systemrezerwacji.domain.reservationModule.dto.CreateReservati
 import com.example.systemrezerwacji.domain.employeeModule.dto.AvailableTermDto;
 import org.springframework.stereotype.Component;
 
+import java.time.Clock;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,6 +84,10 @@ class ReservationValidator {
 
 
     void validateTerm(CreateReservationDto reservationDto, LocalTime duration) {
+        if(reservationDto.reservationDateTime().isBefore(LocalDateTime.now())) {
+            errors.add(PAST_DATE);
+        }
+
         Long employeeId = reservationDto.employeeId();
         LocalDate dateOfReservation =  reservationDto.reservationDateTime().toLocalDate();
         LocalTime startTime = reservationDto.reservationDateTime().toLocalTime();
@@ -100,6 +107,7 @@ class ReservationValidator {
         if(hasConflict) {
             errors.add(EMPLOYEE_IS_BUSY);
         }
+
 
     }
 

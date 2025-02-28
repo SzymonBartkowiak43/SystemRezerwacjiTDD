@@ -23,8 +23,7 @@ public class CodeController {
 
     @GetMapping("/get-link-to-code")
     public ResponseEntity<String> getLinkToCode() {
-//        String link = codeFacade.getLinkToCode();
-        String link = "https://buy.stripe.com/test_bIYeXu5QW2za3D2aEF";
+        String link = codeFacade.getLinkToCode();
         return ResponseEntity.ok(link);
     }
 

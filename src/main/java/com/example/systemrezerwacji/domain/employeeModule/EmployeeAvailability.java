@@ -2,6 +2,7 @@ package com.example.systemrezerwacji.domain.employeeModule;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -10,6 +11,7 @@ import java.time.LocalTime;
 class EmployeeAvailability {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter
     private Long id;
 
     @Getter
@@ -21,6 +23,7 @@ class EmployeeAvailability {
     @Getter
     private LocalTime endTime;
 
+    @Getter
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private Employee employee;
@@ -40,4 +43,5 @@ class EmployeeAvailability {
     void setEmployee(Employee employee) {
         this.employee = employee;
     }
+
 }

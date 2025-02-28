@@ -5,7 +5,9 @@ import com.example.systemrezerwacji.domain.openingHoursModule.OpeningHours;
 import com.example.systemrezerwacji.domain.userModule.User;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +17,9 @@ import java.util.Optional;
 public class Salon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter
     private Long id;
+    @Setter
     private String salonName;
     private String category;
     private String city;
@@ -23,6 +27,7 @@ public class Salon {
     private String street;
     private String number;
 
+    @Setter
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -44,7 +49,7 @@ public class Salon {
     }
 
     public Salon() {
-
+        images = new ArrayList<>();
     }
 
     Long getUserid() {

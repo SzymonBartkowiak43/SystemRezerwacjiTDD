@@ -17,6 +17,8 @@ class UserValidator {
     private static final String ERROR_DELIMITER = ",";
     List<ValidationError> errors;
 
+
+
     UserValidationResult validate(UserRegisterDto user) {
 
         errors = new ArrayList<>();

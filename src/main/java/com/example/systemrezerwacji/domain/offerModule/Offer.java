@@ -33,4 +33,12 @@ public class Offer {
         this.duration = duration;
         this.salon = salon;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setDuration(LocalTime duration) {
+        this.duration = duration;
+    }
 }
