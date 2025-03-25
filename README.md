@@ -1,4 +1,4 @@
-Reservation System - Your Personal Booking Assistant 
+## Reservation System - Your Personal Booking Assistant 
 
 A smart and easy-to-use platform for managing salon appointments. Salon owners can set up their salons, add employees, create work schedules, and list services with details and pricing. Clients can browse salons, choose services, and book appointments with their preferred employees, receiving instant email confirmations and reminders to prevent no-shows.  
 
