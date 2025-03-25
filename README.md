@@ -12,6 +12,9 @@ Microservices Repository: [Microservices](https://github.com/SzymonBartkowiak43/
 
 Mail-Sender Repository: [Mail-Sender](https://github.com/SzymonBartkowiak43/MailSender.git)
 
+> **Author:**  Szymon Bartkowiak <br>
+> **Linkedin:** https://www.linkedin.com/in/szymon-bartkowiak-7516532b4/  <br>
+> **Email:** szymon.b4310@gmail.com
 
 ## Diagram Connection with Services/Databases:
 ![Service Diagram](https://github.com/user-attachments/assets/f4c6d958-7083-4c2f-8469-29e946cb3926)
@@ -46,6 +49,11 @@ Mail-Sender Repository: [Mail-Sender](https://github.com/SzymonBartkowiak43/Mail
 - **Main Page**:
   ![Main Page](https://github.com/user-attachments/assets/e31b6220-3adb-4850-a864-115dec43756c)
 
+- **AWS ECR**:
+  ![image](https://github.com/user-attachments/assets/dfb11f5f-9756-4759-8629-c308cfcd7b6b)
+
+
+  
 - **Unit and Integration Test**:
   Over 90% of the code is covered by unit tests and more than 80% of classes integration tests.
   ![image](https://github.com/user-attachments/assets/bd452ba3-b435-4e70-a10a-ffeb10451919)
