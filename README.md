@@ -47,7 +47,9 @@ Mail-Sender Repository: [Mail-Sender](https://github.com/SzymonBartkowiak43/Mail
   
 
 
-https://github.com/user-attachments/assets/67b473ae-b2d7-4b15-9cc9-7c52903b6c0b
+
+https://github.com/user-attachments/assets/0d0af49e-a60e-4516-855c-216d355c6ebb
+
 
 
 - **Main Page**:
