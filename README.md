@@ -4,8 +4,7 @@ A smart and easy-to-use platform for managing salon appointments. Salon owners c
 
 The system offers secure user accounts with JWT authentication and keeps users informed through email notifications. Built with thorough testing, it ensures a smooth, reliable, and secure booking experience for both salon owners and clients.
 
-If you would like to try the system, please visit: http://164.90.190.165/
-
+~~If you would like to try the system, please visit: http://164.90.190.165/~~ <br><br>
 Frontend Repository: [Reservation Frontend](https://github.com/SzymonBartkowiak43/RezervationFront)
 
 Microservices Repository: [Microservices](https://github.com/SzymonBartkowiak43/micro-services)
