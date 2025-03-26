@@ -55,7 +55,7 @@ Mail-Sender Repository: [Mail-Sender](https://github.com/SzymonBartkowiak43/Mail
 
   
 - **Unit and Integration Test**:
-  Over 90% of the code is covered by unit tests and more than 80% of classes integration tests.
+  Over 90% of the code is covered by unit tests and more than 80% of classes integration tests. <br>
   ![image](https://github.com/user-attachments/assets/bd452ba3-b435-4e70-a10a-ffeb10451919)
 
 - **Swagger Interface**:
