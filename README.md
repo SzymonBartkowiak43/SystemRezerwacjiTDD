@@ -44,7 +44,11 @@ Mail-Sender Repository: [Mail-Sender](https://github.com/SzymonBartkowiak43/Mail
 ## Media and Interfaces
 
 - **Video**:
-  https://github.com/user-attachments/assets/c8f8dc60-8e57-478f-a6be-9c7eeb8cf2ba
+  
+
+
+https://github.com/user-attachments/assets/67b473ae-b2d7-4b15-9cc9-7c52903b6c0b
+
 
 - **Main Page**:
   ![Main Page](https://github.com/user-attachments/assets/e31b6220-3adb-4850-a864-115dec43756c)
