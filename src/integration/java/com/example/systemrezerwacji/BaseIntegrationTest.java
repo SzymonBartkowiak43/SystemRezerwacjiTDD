@@ -2,10 +2,12 @@ package com.example.systemrezerwacji;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -35,6 +37,9 @@ public class BaseIntegrationTest {
     @Autowired
     public ObjectMapper objectMapper;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @RegisterExtension
     public static WireMockExtension wireMockServer = WireMockExtension.newInstance()
             .options(wireMockConfig().dynamicPort())
@@ -46,6 +51,11 @@ public class BaseIntegrationTest {
             .withDatabaseName("integration-tests-db")
             .withUsername("testuser")
             .withPassword("testpass");
+
+    @BeforeEach
+    void resetWireMock() {
+        wireMockServer.resetAll();
+    }
 
     @DynamicPropertySource
     public static void propertyOverride(DynamicPropertyRegistry registry) {

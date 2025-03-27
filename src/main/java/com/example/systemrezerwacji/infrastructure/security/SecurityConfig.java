@@ -1,7 +1,7 @@
 package com.example.systemrezerwacji.infrastructure.security;
 
 
-import com.example.systemrezerwacji.domain.userModule.UserFacade;
+import com.example.systemrezerwacji.domain.usermodule.UserFacade;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -64,7 +64,6 @@ public class SecurityConfig {
                         .httpBasic(Customizer.withDefaults())
                         .addFilterBefore(new ConditionalJwtAuthTokenFilter(jwtAuthTokenFilter, "/reservation"), UsernamePasswordAuthenticationFilter.class)
                         .addFilterBefore(jwtAuthTokenFilter, UsernamePasswordAuthenticationFilter.class)
-
                         .build();
     }
 

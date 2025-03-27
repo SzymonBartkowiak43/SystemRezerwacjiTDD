@@ -1,6 +1,6 @@
 package com.example.systemrezerwacji;
 
-import com.example.systemrezerwacji.domain.userModule.UserRoleInitService;
+import com.example.systemrezerwacji.domain.usermodule.UserRoleInitService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,7 @@
 package com.example.systemrezerwacji.infrastructure.scheduler;
 
 
-import com.example.systemrezerwacji.infrastructure.notificationMode.NotificationFacade;
+import com.example.systemrezerwacji.infrastructure.notificationmode.NotificationFacade;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;

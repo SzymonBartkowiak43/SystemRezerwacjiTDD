@@ -2,18 +2,18 @@ package com.example.systemrezerwacji.features;
 
 import com.example.systemrezerwacji.BaseIntegrationTest;
 
-import com.example.systemrezerwacji.domain.codeModule.dto.CodeDto;
-import com.example.systemrezerwacji.domain.employeeModule.dto.AvailableTermDto;
-import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeFacadeResponseDto;
-import com.example.systemrezerwacji.domain.employeeModule.response.CreateEmployeeResponseDto;
-import com.example.systemrezerwacji.domain.offerModule.response.OfferFacadeResponse;
-import com.example.systemrezerwacji.domain.reservationModule.dto.UserReservationDataDto;
-import com.example.systemrezerwacji.domain.reservationModule.dto.UserReservationDto;
-import com.example.systemrezerwacji.domain.reservationModule.response.ReservationFacadeResponse;
-import com.example.systemrezerwacji.domain.salonModule.dto.SalonFacadeResponseDto;
-import com.example.systemrezerwacji.domain.salonModule.dto.SalonWithIdDto;
+import com.example.systemrezerwacji.domain.codemodule.dto.CodeDto;
+import com.example.systemrezerwacji.domain.employeemodule.dto.AvailableTermDto;
+import com.example.systemrezerwacji.domain.employeemodule.dto.EmployeeFacadeResponseDto;
+import com.example.systemrezerwacji.domain.employeemodule.response.CreateEmployeeResponseDto;
+import com.example.systemrezerwacji.domain.offermodule.response.OfferFacadeResponse;
+import com.example.systemrezerwacji.domain.reservationmodule.dto.UserReservationDataDto;
+import com.example.systemrezerwacji.domain.reservationmodule.dto.UserReservationDto;
+import com.example.systemrezerwacji.domain.reservationmodule.response.ReservationFacadeResponse;
+import com.example.systemrezerwacji.domain.salonmodule.dto.SalonFacadeResponseDto;
+import com.example.systemrezerwacji.domain.salonmodule.dto.SalonWithIdDto;
 
-import com.example.systemrezerwacji.domain.userModule.response.UserFacadeResponse;
+import com.example.systemrezerwacji.domain.usermodule.response.UserFacadeResponse;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -342,7 +342,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
                     "employeeId": 1,
                     "offerId": 1,
                     "salonId": 1,
-                    "reservationDateTime": "2024-12-31T13:00:00",
+                    "reservationDateTime": "2026-12-31T13:00:00",
                     "userEmail": "szymon.b4310xxx@gmail.com"
                 }
                 """.trim();
@@ -408,7 +408,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
                 () -> assertThat(userReservationDto.offerName()).isEqualTo("Haircut"),
                 () -> assertThat(userReservationDto.employeeName()).isEqualTo("Seba"),
                 () -> assertThat(userReservationDto.salonName()).isEqualTo("Amazing Barber"),
-                () -> assertThat(userReservationDto.reservationDateTime()).isEqualTo("2024-12-31T13:00:00")
+                () -> assertThat(userReservationDto.reservationDateTime()).isEqualTo("2026-12-31T13:00:00")
         );
 
 //      step 17: user make PATCH /reservation and change the date of reservation to 2024-12-31T14:00:00
@@ -417,7 +417,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
                 {
                   "reservationId": 1,
                   "userEmail": "szymon.b4310xxx@gmail.com",
-                  "newReservationDate": "2024-12-31T14:00:00"
+                  "newReservationDate": "2026-12-31T14:00:00"
                 }
                 """.trim();
 
@@ -435,7 +435,7 @@ public class TypicalScenarioWhenUserCreatedSallonIntegrationTest extends BaseInt
 
         UserReservationDto reservationWithChangedData = objectMapper.readValue(changeReservationJson, UserReservationDto.class);
 
-        assertThat(reservationWithChangedData.reservationDateTime()).isEqualTo("2024-12-31T14:00:00");
+        assertThat(reservationWithChangedData.reservationDateTime()).isEqualTo("2026-12-31T14:00:00");
 
 
 //      step 18: user make DELETE /reservation and delete to reservation

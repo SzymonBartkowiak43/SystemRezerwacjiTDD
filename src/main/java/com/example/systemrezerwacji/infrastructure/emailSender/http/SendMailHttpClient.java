@@ -4,7 +4,7 @@ import com.example.systemrezerwacji.infrastructure.emailSender.http.dto.EmailRem
 import com.example.systemrezerwacji.infrastructure.emailSender.http.dto.EmailRequestDto;
 import com.example.systemrezerwacji.infrastructure.emailSender.http.dto.EmailRequestWithPasswordDto;
 import com.example.systemrezerwacji.infrastructure.emailSender.http.dto.EmailResponseDto;
-import com.example.systemrezerwacji.infrastructure.notificationMode.SendMail;
+import com.example.systemrezerwacji.infrastructure.notificationmode.SendMail;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.ParameterizedTypeReference;

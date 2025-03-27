@@ -1,22 +1,17 @@
 package com.example.systemrezerwacji.features.redis;
 
 import com.example.systemrezerwacji.BaseIntegrationTest;
-import com.example.systemrezerwacji.domain.salonModule.SalonFacade;
-import org.junit.jupiter.api.Test;
+import com.example.systemrezerwacji.domain.salonmodule.SalonFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.cache.CacheManager;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 
-import java.time.Duration;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 

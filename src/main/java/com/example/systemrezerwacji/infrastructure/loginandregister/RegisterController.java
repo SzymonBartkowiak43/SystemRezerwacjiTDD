@@ -1,8 +1,8 @@
 package com.example.systemrezerwacji.infrastructure.loginandregister;
 
-import com.example.systemrezerwacji.domain.userModule.UserFacade;
-import com.example.systemrezerwacji.domain.userModule.dto.UserRegisterDto;
-import com.example.systemrezerwacji.domain.userModule.response.UserFacadeResponse;
+import com.example.systemrezerwacji.domain.usermodule.UserFacade;
+import com.example.systemrezerwacji.domain.usermodule.dto.UserRegisterDto;
+import com.example.systemrezerwacji.domain.usermodule.response.UserFacadeResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

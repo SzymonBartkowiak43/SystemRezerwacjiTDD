@@ -1,14 +1,14 @@
 package com.example.systemrezerwacji.features.owner;
 
 import com.example.systemrezerwacji.BaseIntegrationTest;
-import com.example.systemrezerwacji.domain.codeModule.dto.CodeDto;
-import com.example.systemrezerwacji.domain.employeeModule.dto.EmployeeFacadeResponseDto;
-import com.example.systemrezerwacji.domain.employeeModule.response.CreateEmployeeResponseDto;
-import com.example.systemrezerwacji.domain.offerModule.response.OfferFacadeResponse;
-import com.example.systemrezerwacji.domain.salonModule.dto.OwnerSalonWithAllInformation;
-import com.example.systemrezerwacji.domain.salonModule.dto.SalonFacadeResponseDto;
-import com.example.systemrezerwacji.domain.salonModule.dto.SalonWithIdDto;
-import com.example.systemrezerwacji.domain.userModule.response.UserFacadeResponse;
+import com.example.systemrezerwacji.domain.codemodule.dto.CodeDto;
+import com.example.systemrezerwacji.domain.employeemodule.dto.EmployeeFacadeResponseDto;
+import com.example.systemrezerwacji.domain.employeemodule.response.CreateEmployeeResponseDto;
+import com.example.systemrezerwacji.domain.offermodule.response.OfferFacadeResponse;
+import com.example.systemrezerwacji.domain.salonmodule.dto.OwnerSalonWithAllInformation;
+import com.example.systemrezerwacji.domain.salonmodule.dto.SalonFacadeResponseDto;
+import com.example.systemrezerwacji.domain.salonmodule.dto.SalonWithIdDto;
+import com.example.systemrezerwacji.domain.usermodule.response.UserFacadeResponse;
 import com.example.systemrezerwacji.infrastructure.loginandregister.dto.JwtResponseDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +19,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 

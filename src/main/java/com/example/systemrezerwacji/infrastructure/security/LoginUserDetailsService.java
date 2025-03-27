@@ -1,8 +1,8 @@
 package com.example.systemrezerwacji.infrastructure.security;
 
 
-import com.example.systemrezerwacji.domain.userModule.UserFacade;
-import com.example.systemrezerwacji.domain.userModule.dto.UserDto;
+import com.example.systemrezerwacji.domain.usermodule.UserFacade;
+import com.example.systemrezerwacji.domain.usermodule.dto.UserDto;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
