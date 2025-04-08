@@ -7,7 +7,7 @@ The system offers secure user accounts with JWT authentication and keeps users i
 ~~If you would like to try the system, please visit: http://164.90.190.165/~~ <br><br>
 Frontend Repository: [Reservation Frontend](https://github.com/SzymonBartkowiak43/RezervationFront)
 
-Microservices Repository: [Microservices](https://github.com/SzymonBartkowiak43/micro-services)
+Microservices Repository: [Microservices]((https://github.com/SzymonBartkowiak43/microservies-reservation-app))
 
 Mail-Sender Repository: [Mail-Sender](https://github.com/SzymonBartkowiak43/MailSender.git)
 
